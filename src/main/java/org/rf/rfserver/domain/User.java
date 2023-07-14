@@ -25,7 +25,6 @@ public class User {
     private String useLanguage;
     private String mbti;
     private int entrance;
-    private int monthlyMeetNumber;
     private int like;
     private int dislike;
     private LocalDateTime createdDate;
