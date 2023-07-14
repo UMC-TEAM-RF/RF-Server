@@ -17,7 +17,7 @@ public class Schedule {
     private Long id;
     private LocalDateTime date;
     private String location;
-    private int numberOfPeople;
+    private int participantCount;
     private String scheduleName;
 
     @ManyToOne(fetch = LAZY)

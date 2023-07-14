@@ -8,9 +8,9 @@ import static jakarta.persistence.FetchType.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GroupMembers {
+public class UserGroup {
     @Id @GeneratedValue
-    @Column(name = "group_members_id")
+    @Column(name = "user_group_id")
     Long id;
 
     @ManyToOne(fetch = LAZY)

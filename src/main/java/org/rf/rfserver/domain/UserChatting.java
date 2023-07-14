@@ -8,13 +8,13 @@ import static jakarta.persistence.FetchType.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class InterestingNation {
+public class UserChatting {
     @Id @GeneratedValue
-    @Column(name = "interesting_nation_id")
+    @Column(name = "user_chatting_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
     private User user;
     @ManyToOne(fetch = LAZY)
-    private Nation interestingNation;
+    private ChattingRoom chattingRoom;
 }

@@ -19,17 +19,17 @@ public class Group {
     private String guideLink;
     private String location;
     private String language;
-    private String filePath;
+    private String imageFilePath;
     private String preferAges;
     private LocalDateTime createdDate;
     private int memberCount;
-    private int nativeNumber;
+    private int nativeCount;
     private int ownerId;
 
     @OneToMany(mappedBy = "group")
     private List<Rule> rule;
     @OneToMany(mappedBy = "group")
-    private List<GroupInterestAnchor> groupInterestAnchor;
+    private List<GroupGroupInterest> groupGroupInterests;
     @OneToMany(mappedBy = "group")
     private List<GroupTag> tags;
     @OneToMany(mappedBy = "group")

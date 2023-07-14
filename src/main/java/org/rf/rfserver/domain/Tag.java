@@ -13,5 +13,5 @@ public class Tag {
     @Id @GeneratedValue
     @Column(name = "tag_id")
     private Long id;
-    private String tagContent;
+    private String content;
 }

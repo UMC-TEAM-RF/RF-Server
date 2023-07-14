@@ -24,14 +24,14 @@ public class User {
     private String introduce;
     private String useLanguage;
     private String mbti;
-    private int entrance; // -> int? String? LocalDate?
+    private int entrance;
     private int monthlyMeetNumber;
     private int like;
     private int dislike;
     private LocalDateTime createdDate;
 
     @OneToMany(mappedBy = "user")
-    private List<InterestingNation> interestingNations;
+    private List<InterestCountry> interestCountries;
     @OneToMany(mappedBy = "user")
     private List<UserInterest> userInterest;
 }
