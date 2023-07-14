@@ -17,5 +17,4 @@ public class ChattingParticipation {
     private User user;
     @ManyToOne(fetch = LAZY)
     private ChattingRoom chattingRoom;
-
 }

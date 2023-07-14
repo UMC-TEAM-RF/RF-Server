@@ -21,6 +21,7 @@ public class Chatting {
 
     @ManyToOne(fetch = LAZY)
     private User user;
+
     @ManyToOne(fetch = LAZY)
     private ChattingRoom chattingRoom;
 }

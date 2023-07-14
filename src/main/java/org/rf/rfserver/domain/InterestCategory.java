@@ -13,7 +13,4 @@ public class InterestCategory {
     @Column(name = "interest_category_id")
     private Long id;
     private String categoryName;
-
-    @OneToMany(mappedBy = "interest_category")
-    private List<Interest> interests;
 }
