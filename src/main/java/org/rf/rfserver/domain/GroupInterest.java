@@ -11,6 +11,5 @@ import static jakarta.persistence.FetchType.*;
 public class GroupInterest {
     @Id @GeneratedValue
     private Long id;
-
     private String interestName;
 }

@@ -14,7 +14,6 @@ public class GroupMembers {
 
     @ManyToOne(fetch = LAZY)
     private Group group;
-
     @ManyToOne(fetch = LAZY)
     private User user;
 }

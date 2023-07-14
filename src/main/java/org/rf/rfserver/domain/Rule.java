@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 public class Rule {
     @Id @GeneratedValue
     private Long id;
-
     private String content;
 }

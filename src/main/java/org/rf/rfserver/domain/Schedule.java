@@ -12,10 +12,8 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Schedule {
-
     @Id @GeneratedValue
     private Long id;
-
     private LocalDateTime date;
     private String location;
     private int numberOfPeople;

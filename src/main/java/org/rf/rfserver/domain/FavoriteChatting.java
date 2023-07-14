@@ -13,8 +13,8 @@ import static jakarta.persistence.FetchType.*;
 public class FavoriteChatting {
     @Id @GeneratedValue
     private Long id;
-
     private String content;
+
     @ManyToOne(fetch = LAZY)
     private User user;
 }

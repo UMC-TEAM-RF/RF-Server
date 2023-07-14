@@ -26,16 +26,14 @@ public class User {
     private String introduce;
     private String useLanguage;
     private String mbti;
+    private int entrance; // -> int? String? LocalDate?
+    private int monthlyMeetNumber;
+    private int like;
+    private int dislike;
+    private LocalDateTime createdDate;
 
     @OneToMany
     private List<InterestingNation> interestingNations;
     @OneToMany
     private List<UserInterest> userInterest;
-
-    private LocalDateTime createdDate;
-
-    private int entrance; // -> int? String? LocalDate?
-    private int monthlyMeetNumber;
-    private int like;
-    private int dislike;
 }

@@ -13,15 +13,13 @@ import static jakarta.persistence.FetchType.*;
 public class Chatting {
     @Id @GeneratedValue
     private Long id;
-
-    @ManyToOne(fetch = LAZY)
-    private User user;
-    @ManyToOne(fetch = LAZY)
-    private ChattingRoom chattingRoom;
-
     private String content;
     private LocalDateTime sendTime;
     private boolean check;
     private String imageFilePath;
 
+    @ManyToOne(fetch = LAZY)
+    private User user;
+    @ManyToOne(fetch = LAZY)
+    private ChattingRoom chattingRoom;
 }

@@ -16,25 +16,22 @@ import java.util.List;
 public class Group {
     @Id @GeneratedValue
     private Long id;
-
     private String name;
     private String content;
-    private String tag; // 객체
     private String guideLink;
     private String location;
     private String language;
     private String filePath;
     private String preferAges;
-
     private LocalDateTime createdDate;
-
     private int memberCount;
     private int nativeNumber;
     private int ownerId;
-
 
     @OneToMany
     private List<Rule> rule;
     @OneToMany
     private List<GroupInterestAnchor> groupInterestAnchor; // 객체
+    @OneToMany
+    private List<GroupTag> tags;
 }

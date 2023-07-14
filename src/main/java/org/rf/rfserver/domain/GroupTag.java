@@ -8,13 +8,12 @@ import static jakarta.persistence.FetchType.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ChattingParticipation {
+public class GroupTag {
     @Id @GeneratedValue
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    private User user;
+    private Group group;
     @ManyToOne(fetch = LAZY)
-    private ChattingRoom chattingRoom;
-
+    private Tag tag;
 }

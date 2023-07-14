@@ -11,7 +11,6 @@ import static jakarta.persistence.FetchType.*;
 public class Interest {
     @Id @GeneratedValue
     private Long id;
-
     private String interestName;
 
     @ManyToOne(fetch = LAZY)
