@@ -1,9 +1,6 @@
 package org.rf.rfserver.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +12,7 @@ import java.util.List;
 public class User {
 
     @Id @GeneratedValue
+    @Column(name = "user_id")
     private Long id;
     private String name;
     private String userId;
@@ -32,8 +30,8 @@ public class User {
     private int dislike;
     private LocalDateTime createdDate;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<InterestingNation> interestingNations;
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<UserInterest> userInterest;
 }

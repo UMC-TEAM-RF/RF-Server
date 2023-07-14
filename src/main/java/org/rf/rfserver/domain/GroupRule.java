@@ -10,6 +10,7 @@ import static jakarta.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GroupRule {
     @Id @GeneratedValue
+    @Column(name = "group_rule_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)

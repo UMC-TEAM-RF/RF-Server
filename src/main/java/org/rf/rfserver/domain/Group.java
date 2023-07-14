@@ -1,9 +1,6 @@
 package org.rf.rfserver.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Group {
     @Id @GeneratedValue
+    @Column(name = "group_id")
     private Long id;
     private String name;
     private String content;
@@ -28,10 +26,12 @@ public class Group {
     private int nativeNumber;
     private int ownerId;
 
-    @OneToMany
+    @OneToMany(mappedBy = "group")
     private List<Rule> rule;
-    @OneToMany
-    private List<GroupInterestAnchor> groupInterestAnchor; // 객체
-    @OneToMany
+    @OneToMany(mappedBy = "group")
+    private List<GroupInterestAnchor> groupInterestAnchor;
+    @OneToMany(mappedBy = "group")
     private List<GroupTag> tags;
+    @OneToMany(mappedBy = "group")
+    private List<Schedule> schedules;
 }

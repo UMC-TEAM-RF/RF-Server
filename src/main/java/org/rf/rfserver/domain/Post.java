@@ -13,6 +13,7 @@ import static jakarta.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post {
     @Id @GeneratedValue
+    @Column(name = "post_id")
     private Long id;
     private String title;
     private String content;
@@ -22,6 +23,6 @@ public class Post {
 
     @ManyToOne(fetch = LAZY)
     private User user;
-    @OneToMany
+    @OneToMany(mappedBy = "post")
     private List<PostImage> images;
 }

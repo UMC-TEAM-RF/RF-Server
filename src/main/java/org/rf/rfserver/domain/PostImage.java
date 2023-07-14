@@ -10,6 +10,7 @@ import static jakarta.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostImage {
     @Id @GeneratedValue
+    @Column(name = "post_image_id")
     private Long id;
     private String imageFilePath;
 

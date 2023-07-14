@@ -10,6 +10,7 @@ import static jakarta.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Report {
     @Id @GeneratedValue
+    @Column(name = "report_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)

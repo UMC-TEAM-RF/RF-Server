@@ -10,6 +10,7 @@ import static jakarta.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Interest {
     @Id @GeneratedValue
+    @Column(name = "interest_id")
     private Long id;
     private String interestName;
 

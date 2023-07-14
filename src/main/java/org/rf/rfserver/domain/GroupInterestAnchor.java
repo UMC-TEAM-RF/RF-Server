@@ -10,6 +10,7 @@ import static jakarta.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GroupInterestAnchor {
     @Id @GeneratedValue
+    @Column(name = "group_interest_anchor_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)

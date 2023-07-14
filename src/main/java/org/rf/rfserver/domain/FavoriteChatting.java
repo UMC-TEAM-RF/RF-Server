@@ -12,6 +12,7 @@ import static jakarta.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FavoriteChatting {
     @Id @GeneratedValue
+    @Column(name = "favorite_chatting_id")
     private Long id;
     private String content;
 

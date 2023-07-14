@@ -1,9 +1,6 @@
 package org.rf.rfserver.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -13,9 +10,10 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InterestCategory {
     @Id @GeneratedValue
+    @Column(name = "interest_category_id")
     private Long id;
     private String categoryName;
 
-    @OneToMany
+    @OneToMany(mappedBy = "interest_category")
     private List<Interest> interests;
 }
