@@ -3,11 +3,13 @@ package org.rf.rfserver.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Member;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,7 +19,6 @@ public class Group {
 
     private String name;
     private String content;
-    private String interest; // 객체
     private String tag; // 객체
     private String guideLink;
     private String location;
@@ -32,6 +33,8 @@ public class Group {
     private int ownerId;
 
 
-    private Rule rule;
-
+    @OneToMany
+    private List<Rule> rule;
+    @OneToMany
+    private List<GroupInterestAnchor> groupInterestAnchor; // 객체
 }
