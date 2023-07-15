@@ -2,6 +2,7 @@ package org.rf.rfserver.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Getter
 @Entity
-//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
     @Id @GeneratedValue
@@ -35,7 +36,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<UserInterest> userInterest;
 
-    public User createUser(String userId, String password, int entrance, String university, String nickName
+    public User(String userId, String password, int entrance, String university, String nickName
             , String country, String interestingLanguage, String introduce, String mbti) {
         this.userId= userId;
         this.password = password;
@@ -49,6 +50,5 @@ public class User {
         this.like = 0;
         this.dislike = 0;
         this.createdDate = LocalDateTime.now();
-        return this;
     }
 }

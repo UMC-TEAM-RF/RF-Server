@@ -17,8 +17,7 @@ import static org.rf.rfserver.config.BaseResponseStatus.DATABASE_ERROR;
 public class UserService {
     private final UserRepository userRepository;
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
-        User user = new User();
-        user.createUser(postUserReq.getUserId(), postUserReq.getPassword()
+        User user = new User(postUserReq.getUserId(), postUserReq.getPassword()
                 , postUserReq.getEntrance(), postUserReq.getUniversity()
                 , postUserReq.getNickName(), postUserReq.getCountry()
                 , postUserReq.getInterestingLanguage(), postUserReq.getIntroduce(), postUserReq.getMbti());
