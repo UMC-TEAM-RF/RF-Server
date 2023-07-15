@@ -3,13 +3,11 @@ package org.rf.rfserver.user.controller;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
+import org.rf.rfserver.user.dto.GetUserRes;
 import org.rf.rfserver.user.dto.PostUserReq;
 import org.rf.rfserver.user.dto.PostUserRes;
 import org.rf.rfserver.user.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,6 +18,14 @@ public class UserController {
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
         try {
             return new BaseResponse<>(userService.createUser(postUserReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+    @GetMapping("/{userId}")
+    public BaseResponse<GetUserRes> getUser(@PathVariable("userId") Long userId) {
+        try {
+            return new BaseResponse<>(userService.getUser(userId));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
