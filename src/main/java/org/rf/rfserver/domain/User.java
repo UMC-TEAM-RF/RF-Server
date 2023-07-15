@@ -2,7 +2,6 @@ package org.rf.rfserver.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -50,5 +49,13 @@ public class User {
         this.like = 0;
         this.dislike = 0;
         this.createdDate = LocalDateTime.now();
+    }
+    public User updateUser(String nickName, String password, String interestingLanguage, String introduce, String mbti) {
+        this.nickName = nickName == null ? this.nickName : nickName;
+        this.password = password == null ? this.password : password;
+        this.interestingLanguage = interestingLanguage == null ? this.interestingLanguage : interestingLanguage;
+        this.introduce = introduce == null ? this.introduce : introduce;
+        this.mbti = mbti == null ? this.mbti : mbti;
+        return this;
     }
 }
