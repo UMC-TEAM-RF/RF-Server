@@ -21,7 +21,7 @@ public class User {
     private String phoneNumber;
     private String interestingLanguage;
     private String introduce;
-    private String useLanguage;
+    private String country;
     private String mbti;
     private int entrance;
     private int like;
@@ -32,4 +32,19 @@ public class User {
     private List<InterestCountry> interestCountries;
     @OneToMany(mappedBy = "user")
     private List<UserInterest> userInterest;
+
+    public User createUser(String userId, String nickName, String password, String university, String phoneNumber
+            , String interestingLanguage, String introduce, String country, String mbti, int entrance) {
+        this.userId= userId;
+        this.nickName = nickName;
+        this.password = password;
+        this.university = university;
+        this.phoneNumber = phoneNumber;
+        this.interestingLanguage = interestingLanguage;
+        this.introduce = introduce;
+        this.country = country;
+        this.mbti = mbti;
+        this.entrance = entrance;
+        return this;
+    }
 }
