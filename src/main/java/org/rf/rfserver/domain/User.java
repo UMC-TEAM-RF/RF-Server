@@ -45,6 +45,9 @@ public class User {
         this.country = country;
         this.mbti = mbti;
         this.entrance = entrance;
+        this.like = 0;
+        this.dislike = 0;
+        this.createdDate = LocalDateTime.now();
         return this;
     }
 }
