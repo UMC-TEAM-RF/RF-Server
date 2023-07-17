@@ -25,6 +25,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.0' // 이메일 전송 위함
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis' // 인증 번호를 유효시간동안 Redis에 저장하기 위함
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
