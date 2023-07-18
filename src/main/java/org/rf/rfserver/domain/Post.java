@@ -23,6 +23,6 @@ public class Post {
 
     @ManyToOne(fetch = LAZY)
     private User user;
-    @OneToMany(mappedBy = "post")
+    @OneToMany()
     private List<PostImage> images;
 }

@@ -14,6 +14,4 @@ public class PostImage {
     private Long id;
     private String imageFilePath;
 
-    @ManyToOne(fetch = LAZY)
-    private Post post;
 }
