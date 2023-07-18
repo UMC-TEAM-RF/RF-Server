@@ -15,9 +15,9 @@ public class User {
     @Column(name = "user_id")
     private Long id;
     private String name;
-    private String userId;
-    private String nickName;
+    private String loginId;
     private String password;
+    private String nickName;
     private String university;
     private String phoneNumber;
     private String interestingLanguage;

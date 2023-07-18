@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.lang.reflect.Member;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,12 +26,13 @@ public class Group {
     private int nativeCount;
     private int ownerId;
 
-    @OneToMany(mappedBy = "group")
+    @OneToMany
+    @JoinColumn(name = "GroupRule")
     private List<Rule> rule;
     @OneToMany(mappedBy = "group")
     private List<GroupGroupInterest> groupGroupInterests;
-    @OneToMany(mappedBy = "group")
+    @OneToMany()
     private List<GroupTag> tags;
-    @OneToMany(mappedBy = "group")
+    @OneToMany()
     private List<Schedule> schedules;
 }

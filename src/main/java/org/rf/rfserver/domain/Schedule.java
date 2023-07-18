@@ -19,7 +19,4 @@ public class Schedule {
     private String location;
     private int participantCount;
     private String scheduleName;
-
-    @ManyToOne(fetch = LAZY)
-    private Group group;
 }
