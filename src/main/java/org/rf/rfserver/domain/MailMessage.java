@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum UtilsMessage {
+public enum MailMessage {
     AUTH_TITLE("[알프] 인증번호를 발송했습니다."),
     AUTH_MESSAGE("[학교 인증을 위한 메일]\n"
             + "이메일 인증을 진행해 주세요.\n"
