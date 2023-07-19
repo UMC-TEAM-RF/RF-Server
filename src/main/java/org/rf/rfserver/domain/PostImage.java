@@ -2,15 +2,16 @@ package org.rf.rfserver.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.FetchType.*;
 
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostImage {
-    @Id @GeneratedValue
-    @Column(name = "post_image_id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String imageFilePath;
 
