@@ -1,18 +1,16 @@
 package org.rf.rfserver.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @NoArgsConstructor
 public class ChattingRoom {
-    @Id @GeneratedValue
-    @Column(name = "catting_room_id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private LocalDateTime createdDate;

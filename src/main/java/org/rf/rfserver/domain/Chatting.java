@@ -2,21 +2,22 @@ package org.rf.rfserver.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.*;
 
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Chatting {
-    @Id @GeneratedValue
-    @Column(name = "catting_id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
     private LocalDateTime sendTime;
-    private boolean check;
+    private boolean checked;
     private String imageFilePath;
 
     @ManyToOne(fetch = LAZY)
