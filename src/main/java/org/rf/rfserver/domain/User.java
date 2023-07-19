@@ -13,12 +13,11 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
-    @Id @GeneratedValue
-    @Column(name = "user_id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String userId;
-    private String nickName;
+    private String loginId;
     private String password;
+    private String nickName;
     private String university;
     private String phoneNumber;
     private String interestingLanguage;
@@ -26,8 +25,8 @@ public class User {
     private String country;
     private String mbti;
     private int entrance;
-    private int like;
-    private int dislike;
+    private int love;
+    private int hate;
     private LocalDateTime createdDate;
 
     @OneToMany(mappedBy = "user")
@@ -35,9 +34,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<UserInterest> userInterest;
 
-    public User(String userId, String password, int entrance, String university, String nickName
+    public User(String loginId, String password, int entrance, String university, String nickName
             , String country, String interestingLanguage, String introduce, String mbti) {
-        this.userId= userId;
+        this.loginId= loginId;
         this.password = password;
         this.entrance = entrance;
         this.university = university;
@@ -46,8 +45,8 @@ public class User {
         this.interestingLanguage = interestingLanguage;
         this.introduce = introduce;
         this.mbti = mbti;
-        this.like = 0;
-        this.dislike = 0;
+        this.love = 0;
+        this.hate = 0;
         this.createdDate = LocalDateTime.now();
     }
     public User updateUser(String nickName, String password, String interestingLanguage, String introduce, String mbti) {
