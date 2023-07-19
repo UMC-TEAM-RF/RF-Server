@@ -2,6 +2,7 @@ package org.rf.rfserver.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,19 +28,47 @@ public class Party {
     private int nativeCount;
     private int ownerId;
 
-    @OneToMany
-    @JoinColumn(name = "PartyRule")
-    private List<Rule> rule;
-    @OneToMany
-    @JoinTable(name = "PartyInterest"
-            , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
-    private List<PartyPartyInterest> partyPartyInterests;
-    @OneToMany
-    @JoinTable(name = "Tag"
-            , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
-    private List<PartyTag> tags;
+//    @OneToMany
+//    @JoinColumn(name = "PartyRule")
+//    private List<PartyRule> rule;
+//    @OneToMany
+//    @JoinTable(name = "Tag"
+//            , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
+//    private List<PartyTag> tags;
+
+//    @OneToMany
+//    @JoinTable(name = "PartyInterest"
+//            , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
+//    private List<PartyPartyInterest> partyPartyInterests;
+
     @OneToMany
     @JoinTable(name = "Schedule"
             , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
     private List<Schedule> schedules;
+    @OneToMany
+    @JoinTable(name = "User" // ?
+            , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
+    private List<UserParty> users;
+
+    @Builder
+    public Party(Long id, String name, String content, String guideLink, String location, String language, String imageFilePath, String preferAges,
+                 LocalDateTime createdDate, int memberCount, int nativeCount, int ownerId, List<Schedule> schedules, List<UserParty> users) {
+        this.id = id;
+        this.name = name;
+        this.content = content;
+        this.guideLink = guideLink;
+        this.location = location;
+        this.language = language;
+        this.imageFilePath = imageFilePath;
+        this.preferAges = preferAges;
+        this.createdDate = createdDate;
+        this.memberCount = memberCount;
+        this.nativeCount = nativeCount;
+        this.ownerId = ownerId;
+//        this.rule = rule;
+//        this.partyPartyInterests = partyPartyInterests;
+//        this.tags = tags;
+        this.schedules = schedules;
+        this.users = users;
+    }
 }
