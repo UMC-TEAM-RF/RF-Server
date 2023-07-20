@@ -1,8 +1,8 @@
-package org.rf.rfserver.domain.university.service;
+package org.rf.rfserver.university.service;
 
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.domain.University;
-import org.rf.rfserver.domain.university.repository.UniversityRepository;
+import org.rf.rfserver.university.repository.UniversityRepository;
 import org.springframework.stereotype.Service;
 
 @Service

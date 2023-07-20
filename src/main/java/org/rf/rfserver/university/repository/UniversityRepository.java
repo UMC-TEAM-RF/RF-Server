@@ -1,4 +1,4 @@
-package org.rf.rfserver.domain.university.repository;
+package org.rf.rfserver.university.repository;
 
 import org.rf.rfserver.domain.University;
 import org.springframework.stereotype.Repository;
