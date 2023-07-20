@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class PostUserReq {
-    private String userId;
+    private String loginId;
     private String password;
     private int entrance;
     private String university;
