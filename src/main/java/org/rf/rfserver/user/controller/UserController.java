@@ -37,4 +37,13 @@ public class UserController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    @DeleteMapping("/{userId}")
+    public BaseResponse<DeleteUserRes> deleteUser(@PathVariable("userId") Long userId) {
+        try {
+            return new BaseResponse<>(userService.deleteUser(userId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }

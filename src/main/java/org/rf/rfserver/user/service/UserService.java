@@ -1,5 +1,6 @@
 package org.rf.rfserver.user.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.User;
@@ -14,12 +15,13 @@ import static org.rf.rfserver.config.BaseResponseStatus.DATABASE_ERROR;
 public class UserService {
     private final UserRepository userRepository;
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
-        User user = new User(postUserReq.getUserId(), postUserReq.getPassword()
+        User user = new User(postUserReq.getLoginId(), postUserReq.getPassword()
                 , postUserReq.getEntrance(), postUserReq.getUniversity()
                 , postUserReq.getNickName(), postUserReq.getCountry()
                 , postUserReq.getInterestingLanguage(), postUserReq.getIntroduce(), postUserReq.getMbti());
         try {
-            userRepository.save(user);
+            User userRes = userRepository.save(user);
+            System.out.println(userRes);
             return new PostUserRes(user.getId());
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
@@ -29,6 +31,7 @@ public class UserService {
     public GetUserRes getUser(Long userId) throws BaseException{
         try {
             User user = userRepository.getReferenceById(userId);
+            System.out.println(user);
             return new GetUserRes(user.getNickName(), user.getUniversity(), user.getInterestingLanguage()
                     , user.getIntroduce(), user.getCountry(), user.getMbti(), user.getEntrance());
         } catch (Exception e) {
@@ -36,12 +39,24 @@ public class UserService {
         }
     }
 
+    @Transactional
     public PatchUserRes updateUser(Long userId, PatchUserReq patchUserReq) throws BaseException{
         try {
             User user = userRepository.getReferenceById(userId);
+            System.out.println("origin : " + user);
             user.updateUser(patchUserReq.getNickName(), patchUserReq.getPassword()
                     , patchUserReq.getInterestingLanguage(), patchUserReq.getIntroduce(), patchUserReq.getMbti());
+            System.out.println("updated : " + user);
             return new PatchUserRes(true);
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public DeleteUserRes deleteUser(Long userId) throws BaseException{
+        try {
+            userRepository.deleteById(userId);
+            return new DeleteUserRes(true);
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
