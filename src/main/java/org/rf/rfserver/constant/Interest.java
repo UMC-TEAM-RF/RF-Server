@@ -1,0 +1,7 @@
+package org.rf.rfserver.constant;
+
+public enum Interest {
+    MUSIC, KPOP, SPORT, SPORT_GAME,
+    LANGUAGE_EXCHANGE, LANGUAGE, COUNTRY, FRIENDSHIP,
+    FOOD, COOKING, HOT_PLACE, CAFE, STUDY, MAJOR, GRADE, READING
+}
