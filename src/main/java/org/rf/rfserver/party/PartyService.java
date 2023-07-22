@@ -48,8 +48,8 @@ public class PartyService {
         }
     }
 
-    public GetPartyRes getGroup(Long groupId) throws BaseException {
-        Party party = partyRepository.findById(groupId)
+    public GetPartyRes getParty(Long partyId) throws BaseException {
+        Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
         return GetPartyRes.builder()
                 .id(party.getId())
@@ -71,15 +71,15 @@ public class PartyService {
                 .build();
     }
 
-    public DeletePartyRes deleteParty(Long groupId) throws BaseException {
-        Party party = partyRepository.findById(groupId)
+    public DeletePartyRes deleteParty(Long partyId) throws BaseException {
+        Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
         for (PartyInterest partyInterest: party.getInterests() ) {
             partyInterestRepository.delete(partyInterest);
         }
         partyRepository.delete(party);
         return DeletePartyRes.builder()
-                .id(groupId)
+                .id(partyId)
                 .build();
     }
 

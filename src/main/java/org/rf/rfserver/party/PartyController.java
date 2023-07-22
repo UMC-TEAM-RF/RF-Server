@@ -29,7 +29,7 @@ public class PartyController {
     @GetMapping("/{partyId}")
     public BaseResponse<GetPartyRes> getParty(@PathVariable("partyId") Long partyId ) {
         try {
-            return new BaseResponse<>(partyService.getGroup(partyId));
+            return new BaseResponse<>(partyService.getParty(partyId));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
