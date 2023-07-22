@@ -15,21 +15,14 @@ import static jakarta.persistence.FetchType.*;
 public class PartyInterest {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Interest partyInterest;
 
-    public PartyInterest(Party party, Interest partyInterest) {
-        this.party = party;
+    public PartyInterest(Interest partyInterest, Party party) {
         this.partyInterest = partyInterest;
+        this.party = party;
     }
 
     @JsonIgnore
     @ManyToOne(fetch = LAZY)
     private Party party;
-    private Interest partyInterest;
-
-    @Override
-    public String toString() {
-        return "PartyPartyInterest{" +
-                "partyInterest=" + partyInterest +
-                '}';
-    }
 }

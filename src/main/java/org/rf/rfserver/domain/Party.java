@@ -43,7 +43,7 @@ public class Party {
             , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
     private List<Schedule> schedules;
     @OneToMany
-    @JoinTable(name = "User" // ?
+    @JoinTable(name = "User"
             , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
     private List<UserParty> users;
 
