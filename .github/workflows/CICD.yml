@@ -13,6 +13,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -20,18 +21,38 @@ jobs:
     - name: Setup Java JDK
       uses: actions/setup-java@v1
       with:
-        distribution: 'Corretto'
+        distribution: 'corretto'
         java-version: 17
+        
+    - name: Write MYSQL HOST
+      run: |
+        echo "MYSQL_HOST=${{secrets.MYSQL_HOST}}"
+        echo "MYSQL_HOST=${{secrets.MYSQL_HOST}}" >> ./scripts/env.sh
+    
+    - name: Write MYSQL PASSWORD
+      run: |
+        echo "MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}"
+        echo "MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}" >> ./scripts/env.sh
+    
+    - name: Write MYSQL USERNAME
+      run: |
+        echo "MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}"
+        echo "MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}" >> ./scripts/env.sh
         
     - name : Grant execute permission for gradlew
       run: chmod +x ./gradlew
       shell: bash
       
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      
     - name: Build with Gradle
       run: ./gradlew build
       
 #     - name: Make Zip File
-#       run: zip -qq -r ./$GITHUB_SHA.zip
+#       run: |
+#         mv ./build/libs/*.jar ./
+#         zip buildFile.zip ./appspec.yml ./*.jar ./scripts/deploy.sh ./scripts/env.sh
 #       shell: bash
       
 #     - name: Configure AWS credentials
@@ -42,8 +63,18 @@ jobs:
 #         aws-region: ap-northeast-2
         
 #     - name: Upload to S3
-#       run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+#       run: |
+#         aws s3 cp \
+#           --region ap-northeast-2 \
+#           ./buildFile.zip s3://$BUCKET_NAME/$PROJECT_NAME/
       
 #     - name: Code Deploy
-#       run: aws deploy create-deployment --application-name $CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name $DEPLOYMENT_GROUP_NAME --s3-location bucket=$BUCKET_NAME, bundleType=zip, key=$PROJECT_NAME/$GITHUN_SHA.zip
+#       run: |
+#         aws deploy create-deployment \
+#           --application-name $CODE_DEPLOY_APP_NAME \
+#           --deployment-config-name CodeDeployDefault.OneAtATime \
+#           --deployment-group-name $DEPLOYMENT_GROUP_NAME \
+#           --s3-location bucket=$BUCKET_NAME, \
+#           bundleType=zip, \
+#           key=$PROJECT_NAME/buildFile.zip
       
