@@ -3,7 +3,7 @@ package org.rf.rfserver.party.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.rf.rfserver.Constant.Interest;
+import org.rf.rfserver.constant.Interest;
 
 import java.util.List;
 

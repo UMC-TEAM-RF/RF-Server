@@ -1,4 +1,4 @@
-package org.rf.rfserver.Constant;
+package org.rf.rfserver.constant;
 
 public enum Interest {
     MUSIC(0), KPOP(1), SPORT(2), SPORT_GAME(3),

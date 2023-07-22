@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.rf.rfserver.Constant.Interest;
+import org.rf.rfserver.constant.Interest;
 
 import static jakarta.persistence.FetchType.*;
 

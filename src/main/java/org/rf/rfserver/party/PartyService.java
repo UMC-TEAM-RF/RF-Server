@@ -2,7 +2,7 @@ package org.rf.rfserver.party;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.rf.rfserver.Constant.Interest;
+import org.rf.rfserver.constant.Interest;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.DeletePartyRes;
