@@ -11,3 +11,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  cloud:
+    aws:
+      s3:
+    bucket: rf-aws-bucket
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+          accessKey: ${S3_ACCESSKEY}
+          secretKey: ${S3_SECRETKEY}
