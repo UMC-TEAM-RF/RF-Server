@@ -26,18 +26,18 @@ jobs:
         
     - name: Write MYSQL HOST
       run: |
-        echo "MYSQL_HOST=${{secrets.MYSQL_HOST}}"
-        echo "MYSQL_HOST=${{secrets.MYSQL_HOST}}" >> ./scripts/env.sh
+        export MYSQL_HOST=${{secrets.MYSQL_HOST}}
+        echo "export MYSQL_HOST=${{secrets.MYSQL_HOST}}" >> ./scripts/env.sh
     
     - name: Write MYSQL PASSWORD
       run: |
-        echo "MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}"
-        echo "MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}" >> ./scripts/env.sh
+        export MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}
+        echo "export MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}" >> ./scripts/env.sh
     
     - name: Write MYSQL USERNAME
       run: |
-        echo "MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}"
-        echo "MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}" >> ./scripts/env.sh
+        export MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}
+        echo "export MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}" >> ./scripts/env.sh
         
     - name : Grant execute permission for gradlew
       run: chmod +x ./gradlew
