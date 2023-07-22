@@ -3,10 +3,7 @@ package org.rf.rfserver.party.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.rf.rfserver.domain.PartyPartyInterest;
-import org.rf.rfserver.domain.PartyRule;
-import org.rf.rfserver.domain.PartyTag;
-import org.rf.rfserver.domain.UserParty;
+import org.rf.rfserver.Constant.Interest;
 
 import java.util.List;
 
@@ -23,8 +20,8 @@ public class PostPartyReq {
     private int memberCount;
     private int nativeCount;
     private int ownerId;
+    private List<Interest> interests;
 
 //    private List<PartyTag> tags;
 //    private List<PartyRule> rules;
-//    private List<PartyPartyInterest> groupGroupInterests;
 }

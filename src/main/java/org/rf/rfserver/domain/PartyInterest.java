@@ -1,9 +1,13 @@
 package org.rf.rfserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.rf.rfserver.Constant.Interest;
+
+import static jakarta.persistence.FetchType.*;
 
 @Getter
 @Entity
@@ -11,5 +15,21 @@ import lombok.NoArgsConstructor;
 public class PartyInterest {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String interestName;
+
+    public PartyInterest(Party party, Interest partyInterest) {
+        this.party = party;
+        this.partyInterest = partyInterest;
+    }
+
+    @JsonIgnore
+    @ManyToOne(fetch = LAZY)
+    private Party party;
+    private Interest partyInterest;
+
+    @Override
+    public String toString() {
+        return "PartyPartyInterest{" +
+                "partyInterest=" + partyInterest +
+                '}';
+    }
 }

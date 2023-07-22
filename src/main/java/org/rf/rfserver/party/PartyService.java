@@ -1,9 +1,10 @@
 package org.rf.rfserver.party;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.rf.rfserver.Constant.Interest;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.*;
-import org.rf.rfserver.party.PartyRepository;
 import org.rf.rfserver.party.dto.DeletePartyRes;
 import org.rf.rfserver.party.dto.GetPartyRes;
 import org.rf.rfserver.party.dto.PostPartyReq;
@@ -14,29 +15,34 @@ import java.time.LocalDateTime;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class PartyService {
 
     private final PartyRepository partyRepository;
+    private final PartyInterestRepository partyInterestRepository;
 
     public PostPartyRes createParty(PostPartyReq postPartyReq) throws BaseException {
         try {
-            return new PostPartyRes(
-                    partyRepository.save(Party.builder()
-                            .name(postPartyReq.getName())
-                            .content(postPartyReq.getContent())
-                            .location(postPartyReq.getLocation())
-                            .language(postPartyReq.getLanguage())
-                            .imageFilePath(postPartyReq.getImageFilePath())
-                            .createdDate(LocalDateTime.now())
-                            .memberCount(postPartyReq.getMemberCount())
-                            .nativeCount(postPartyReq.getNativeCount())
-                            .ownerId(postPartyReq.getOwnerId())
-//                            .rule(postPartyReq.getRules())
-//                            .partyPartyInterests(postPartyReq.getGroupGroupInterests())
-                            .build()).getId()
-            );
+            Party party = partyRepository.save(Party.builder()
+                    .name(postPartyReq.getName())
+                    .content(postPartyReq.getContent())
+                    .location(postPartyReq.getLocation())
+                    .language(postPartyReq.getLanguage())
+                    .imageFilePath(postPartyReq.getImageFilePath())
+                    .preferAges(postPartyReq.getPreferAges())
+                    .createdDate(LocalDateTime.now())
+                    .memberCount(postPartyReq.getMemberCount())
+                    .nativeCount(postPartyReq.getNativeCount())
+                    .ownerId(postPartyReq.getOwnerId())
+                    //      .rule(postPartyReq.getRules())
+                    .build());
+            for (Interest interest : postPartyReq.getInterests()) {
+                PartyInterest partyInterest = partyInterestRepository.save(new PartyInterest(party, interest));
+                partyInterest.getParty().getInterests().add(partyInterest);
+            }
+            return new PostPartyRes(party.getId());
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
@@ -58,17 +64,20 @@ public class PartyService {
                 .nativeCount(party.getNativeCount())
                 .ownerId(party.getOwnerId())
                 .users(party.getUsers())
-//                .rule(party.getRule())
-//                .groupGroupInterests(party.getPartyPartyInterests())
-//                .tags(party.getTags())
                 .schedules(party.getSchedules())
+                .interests(party.getInterests())
+                //.rule(party.getRule())
+                //.tags(party.getTags())
                 .build();
     }
 
     public DeletePartyRes deleteParty(Long groupId) throws BaseException {
-        Party group = partyRepository.findById(groupId)
+        Party party = partyRepository.findById(groupId)
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
-        partyRepository.delete(group);
+        for (PartyInterest partyInterest: party.getInterests() ) {
+            partyInterestRepository.delete(partyInterest);
+        }
+        partyRepository.delete(party);
         return DeletePartyRes.builder()
                 .id(groupId)
                 .build();
