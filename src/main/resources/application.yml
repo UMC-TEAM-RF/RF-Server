@@ -20,3 +20,7 @@ spring:
     credentials:
           accessKey: ${S3_ACCESSKEY}
           secretKey: ${S3_SECRETKEY}
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
