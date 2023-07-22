@@ -2,6 +2,7 @@ package org.rf.rfserver.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +20,6 @@ public class User {
     private String loginId;
     private String password;
     private String nickName;
-    private String university;
     private String phoneNumber;
     private String interestingLanguage;
     private String introduce;
@@ -29,9 +29,23 @@ public class User {
     private int love;
     private int hate;
     private LocalDateTime createdDate;
+    private Boolean isEmailVerification;
+    private String email;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "university_id", nullable = true)
+    private University university;
 
     @OneToMany(mappedBy = "user")
     private List<InterestCountry> interestCountries;
     @OneToMany(mappedBy = "user")
     private List<UserInterest> userInterest;
+
+
+    @Builder
+    public void setEmailAndUniversity(String email, University university) {
+        this.email = email;
+        this.isEmailVerification = true;
+        this.university = university;
+    }
 }
