@@ -37,7 +37,11 @@ public enum BaseResponseStatus {
      * 6000 : Mail 관련
      */
     MAIL_SEND_SUCCESS(true, 6000, "이메일이 성공적으로 전송되었습니다."),
-    MAIL_CHECK_SUCCESS(false, 6001, "이메일 인증이 완료되었습니다.")
+    MAIL_CHECK_SUCCESS(false, 6001, "이메일 인증이 완료되었습니다."),
+
+
+    INVALID_MAIL(false, 6002, "유효하지 않은 이메일입니다."),
+    INVALID_CODE(false, 6003, "인증번호가 올바르지 않습니다.")
     ;
     private final boolean isSuccess;
     private final int code;
