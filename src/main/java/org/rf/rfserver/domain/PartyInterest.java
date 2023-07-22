@@ -17,12 +17,12 @@ public class PartyInterest {
     private Long id;
     private Interest partyInterest;
 
+    @JsonIgnore
+    @ManyToOne(fetch = LAZY)
+    private Party party;
+
     public PartyInterest(Interest partyInterest, Party party) {
         this.partyInterest = partyInterest;
         this.party = party;
     }
-
-    @JsonIgnore
-    @ManyToOne(fetch = LAZY)
-    private Party party;
 }
