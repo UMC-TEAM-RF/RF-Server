@@ -1,0 +1,17 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /home/ubuntu/rfServerProject
+permissions:
+  - object: /home/ubuntu/rfServerProject/
+    owner: ubuntu
+hooks:
+  AfterInstall:
+    - location: scripts/env.sh
+      timeout: 60
+      runas: ubuntu
+    - location: scripts/deploy.sh
+      timeout: 60
+      runas: ubuntu
