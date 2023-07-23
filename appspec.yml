@@ -4,9 +4,11 @@ os: linux
 files:
   - source: /
     destination: /home/ubuntu/rfServerProject
+    overwrite: yes
 permissions:
   - object: /home/ubuntu/rfServerProject/
     owner: ubuntu
+    group: ubuntu
 hooks:
   AfterInstall:
     - location: scripts/env.sh
