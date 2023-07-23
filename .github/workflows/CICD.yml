@@ -77,7 +77,4 @@ jobs:
           --application-name $CODE_DEPLOY_APP_NAME \
           --deployment-config-name CodeDeployDefault.OneAtATime \
           --deployment-group-name $DEPLOYMENT_GROUP_NAME \
-          --s3-location bucket=$BUCKET_NAME, \
-          bundleType=zip, \
-          key=$PROJECT_NAME/buildFile.zip
-      
+          --s3-location bucket=$BUCKET_NAME,key=$PROJECT_NAME/buildFile.zip,bundleType=zip
