@@ -21,7 +21,7 @@ spring:
 cloud:
   aws:
       s3:
-        bucket: rf-aws-bucket
+        bucket: ${S3_BUCKET}
       stack:
         auto: false
       region:
