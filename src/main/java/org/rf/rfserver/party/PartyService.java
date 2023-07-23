@@ -39,7 +39,7 @@ public class PartyService {
                     //      .rule(postPartyReq.getRules())
                     .build());
             for (Interest interest : postPartyReq.getInterests()) {
-                PartyInterest partyInterest = partyInterestRepository.save(new PartyInterest(party, interest));
+                PartyInterest partyInterest = partyInterestRepository.save(new PartyInterest(interest, party));
                 partyInterest.getParty().getInterests().add(partyInterest);
             }
             return new PostPartyRes(party.getId());
