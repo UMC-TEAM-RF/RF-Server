@@ -17,8 +17,5 @@ spring:
     username: ${MAIL_USERNAME} # google 계정
     password: ${MAIL_PASSWORD} # 발급 받은 앱 비밀번호 (16자리)
     properties:
-      mail:
-        smtp:
-          starttls:
-            enable: true
-          auth: true
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
