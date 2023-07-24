@@ -6,13 +6,14 @@ files:
     destination: /home/ubuntu/rfServerProject
     overwrite: yes
 permissions:
+  - object: /home/ubuntu/rfServerProject/
+    pattern: "**"
+    except: [deploy.sh]
+    owner: ubuntu
+    group: ubuntu
   - object: /home/ubuntu/rfServerProject/scripts/
     pattern: "*.sh"
     mode: 744
-    owner: ubuntu
-    group: ubuntu
-  - object: /home/ubuntu/rfServerProject/
-    except: [deploy.sh]
     owner: ubuntu
     group: ubuntu
 hooks:
