@@ -7,6 +7,7 @@ files:
     overwrite: yes
 permissions:
   - object: /home/ubuntu/rfServerProject/
+    mode: 777
     owner: ubuntu
     group: ubuntu
 hooks:
