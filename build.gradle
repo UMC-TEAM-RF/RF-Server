@@ -28,8 +28,7 @@ dependencies {
 	implementation 'org.springframework:spring-context:6.0.7' // 메일 인증 관련
 	implementation 'org.springframework:spring-context-support:6.0.7' // 메일 인증 관련
 	implementation 'com.sun.mail:jakarta.mail:2.0.1' // 메일 인증 관련
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis' // 인증 번호를 유효시간동안 Redis에 저장하기 위함
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis' // 인증 번호를 유효 시간동안 Redis에 저장하기 위함
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
