@@ -14,7 +14,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 @Service
@@ -38,24 +40,22 @@ public class MailService {
 
     // 사용자에게 받은 인증코드 확인
     public PostMailRes checkCode(PostMailReq mailRequest) {
-        // 메일 요청 객체(mailRequest)에서 인증 코드와 이메일 주소를 가져옴
+        // 인증 코드와 이메일 주소를 가져옴
         String code = mailRequest.getCode();
         String mailAddress = mailRequest.getMail();
 
-        // 메일 객체(mail)에서 이전에 저장한 인증 코드와 이메일 주소를 가져옴
+        // 이전에 저장한 인증 코드와 이메일 주소를 가져옴
         String storedCode = mail.getCode();
         String storedMailAddress = mail.getMailAddress();
 
         // 사용자가 입력한 인증 코드와 이메일 주소가 저장된 정보와 일치하는지 확인
         if (!code.equals(storedCode) || !mailAddress.equals(storedMailAddress)) {
-            // 일치하지 않는 경우, UnauthorizedException을 발생시킴
             throw new UnauthorizedException(BaseResponseStatus.INVALID_CODE);
         }
 
         // 인증 코드가 올바른 경우, mail 객체의 인증 상태를 true로 설정
         mail.setIsAuth(true);
 
-        // 대학교 정보 조회
         University university = universityService.findUniversityByName(mail.getUniversity());
 
         return new PostMailRes(mail);
@@ -87,6 +87,7 @@ public class MailService {
         mail.setCode(code);
         mail.setMailAddress(mailAddress);
         String university = parseUniversity(mailAddress);
+        String koreanUniversity = universityNameMap.getOrDefault(university, university);
         mail.setUniversity(university);
         mail.setIsAuth(false);
     }
@@ -117,5 +118,14 @@ public class MailService {
     private boolean isUniversityMail(String mailAddress) {
         MailRegex university = MailRegex.UNIVERSITY_MAIL;
         return Pattern.matches(university.getRegex(), mailAddress);
+    }
+
+    private final Map<String, String> universityNameMap = new HashMap<>(); {
+        // 대학교 이름과 해당 변환 이름을 매핑
+        universityNameMap.put("inha", "인하대학교");
+        universityNameMap.put("hanyang", "한양대학교");
+        universityNameMap.put("tukorea", "한국공항대학교");
+        universityNameMap.put("catholic", "가톨릭대학교");
+        // 다른 대학교에 대한 매핑도 필요하면 여기에 추가로 작성 예정
     }
 }
