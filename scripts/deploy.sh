@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-REPOSITORY=/home/ubuntu/rfServerProject
+REPOSITORY=/home/ubuntu/rfServerProject/content
 cd $REPOSITORY
 
 APP_NAME=rfserver

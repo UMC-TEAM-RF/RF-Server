@@ -48,8 +48,9 @@ jobs:
       
     - name: Make Zip File
       run: |
-        mv ./build/libs/*.jar ./
-        zip buildFile.zip ./appspec.yml ./*.jar ./scripts/deploy.sh
+        mkdir content
+        mv ./build/libs/*.jar ./content/
+        zip buildFile.zip ./appspec.yml ./content/*.jar ./scripts/deploy.sh
       shell: bash
       
     - name: Configure AWS credentials
