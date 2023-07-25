@@ -9,6 +9,7 @@ import org.rf.rfserver.mail.dto.PostMailReq;
 import org.rf.rfserver.mail.dto.PostMailRes;
 import org.rf.rfserver.mail.exception.InvalidMailException;
 import org.rf.rfserver.mail.exception.UnauthorizedException;
+import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,7 +25,7 @@ import java.util.regex.Pattern;
 public class MailService {
 
     private final UniversityService universityService;
-
+    private final UserRepository userRepository;
     @Autowired
     private final JavaMailSender javaMailSender;
     private final Mail mail = new Mail();
@@ -40,24 +41,8 @@ public class MailService {
 
     // 사용자에게 받은 인증코드 확인
     public PostMailRes checkCode(PostMailReq mailRequest) {
-        // 인증 코드와 이메일 주소를 가져옴
-        String code = mailRequest.getCode();
-        String mailAddress = mailRequest.getMail();
-
-        // 이전에 저장한 인증 코드와 이메일 주소를 가져옴
-        String storedCode = mail.getCode();
-        String storedMailAddress = mail.getMailAddress();
-
-        // 사용자가 입력한 인증 코드와 이메일 주소가 저장된 정보와 일치하는지 확인
-        if (!code.equals(storedCode) || !mailAddress.equals(storedMailAddress)) {
-            throw new UnauthorizedException(BaseResponseStatus.INVALID_CODE);
-        }
-
-        // 인증 코드가 올바른 경우, mail 객체의 인증 상태를 true로 설정
+        checkRequest(mailRequest, mail);
         mail.setIsAuth(true);
-
-        University university = universityService.findUniversityByName(mail.getUniversity());
-
         return new PostMailRes(mail);
     }
 
@@ -88,7 +73,7 @@ public class MailService {
         mail.setMailAddress(mailAddress);
         String university = parseUniversity(mailAddress);
         String koreanUniversity = universityNameMap.getOrDefault(university, university);
-        mail.setUniversity(university);
+        mail.setUniversity(koreanUniversity);
         mail.setIsAuth(false);
     }
 
@@ -103,18 +88,21 @@ public class MailService {
         checkValidRequestMail(mailRequest, mail.getMailAddress());
     }
 
+    // 인증 코드가 일치하는지 확인
     private void checkValidCode(PostMailReq mailRequest, String code) {
         if (!mailRequest.getCode().equals(code)) {
             throw new UnauthorizedException(BaseResponseStatus.INVALID_CODE);
         }
     }
 
+    // 입력 받은 이메일 주소가 정확한지 확인
     private void checkValidRequestMail(PostMailReq mailRequest, String mailAddress) {
         if (!mailRequest.getMail().equals(mailAddress)) {
             throw new InvalidMailException(BaseResponseStatus.INVALID_MAIL);
         }
     }
 
+    // 이메일 주소가 대학교 이메일 주소인지 확인
     private boolean isUniversityMail(String mailAddress) {
         MailRegex university = MailRegex.UNIVERSITY_MAIL;
         return Pattern.matches(university.getRegex(), mailAddress);
