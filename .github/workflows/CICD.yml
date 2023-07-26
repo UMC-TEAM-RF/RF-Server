@@ -5,9 +5,6 @@ on:
     branches: [ "main" ]
     
 env:
-  MYSQL_HOST: ${{secrets.MYSQL_HOST}}
-  MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
-  MYSQL_USERNAME: ${{secrets.MYSQL_USERNAME}}
   PROJECT_NAME: cicd_folder
   BUCKET_NAME: rf-cicd-bucket
   CODE_DEPLOY_APP_NAME: rfDeploy
@@ -27,8 +24,17 @@ jobs:
         distribution: 'corretto'
         java-version: 17
         
-    - name : Grant execute permission for gradlew
+    - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
+      shell: bash
+
+    - name: Write env.sh
+      run: |
+        echo "export MYSQL_HOST=${{secrets.MYSQL_HOST}}" >> env.sh
+        echo "export MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}" >> env.sh
+        echo "export MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}" >> env.sh
+        ehco "${{EC2_SCRIPTS_PATH}}/deploy.sh" >> env.sh
+        echo "sleep 60" >> env.sh
       shell: bash
       
     - name: Setup Gradle
@@ -46,7 +52,7 @@ jobs:
       run: |
         mkdir content
         mv ./build/libs/*.jar ./content/
-        zip buildFile.zip ./appspec.yml ./content/*.jar ./scripts/deploy.sh
+        zip buildFile.zip ./appspec.yml ./content/*.jar ./scripts/deploy.sh ./scripts/env.sh
       shell: bash
       
     - name: Configure AWS credentials
