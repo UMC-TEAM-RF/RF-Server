@@ -33,7 +33,7 @@ jobs:
         echo "export MYSQL_HOST=${{secrets.MYSQL_HOST}}" >> env.sh
         echo "export MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}" >> env.sh
         echo "export MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}" >> env.sh
-        ehco "${{EC2_SCRIPTS_PATH}}/deploy.sh" >> env.sh
+        ehco "${{secrets.EC2_SCRIPTS_PATH}}/deploy.sh" >> env.sh
         echo "sleep 60" >> env.sh
       shell: bash
       
