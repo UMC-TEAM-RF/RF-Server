@@ -5,6 +5,9 @@ on:
     branches: [ "main" ]
     
 env:
+  MYSQL_HOST: ${{secrets.MYSQL_HOST}}
+  MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
+  MYSQL_USERNAME: ${{secrets.MYSQL_USERNAME}}
   PROJECT_NAME: cicd_folder
   BUCKET_NAME: rf-cicd-bucket
   CODE_DEPLOY_APP_NAME: rfDeploy
@@ -75,3 +78,13 @@ jobs:
           --deployment-config-name CodeDeployDefault.OneAtATime \
           --deployment-group-name $DEPLOYMENT_GROUP_NAME \
           --s3-location bucket=$BUCKET_NAME,key=$PROJECT_NAME/buildFile.zip,bundleType=zip
+          
+    - name: Unset Environment Variable
+      run: |
+        unset MYSQL_HOST
+        unset MYSQL_PASSWORD
+        unset MYSQL_USERNAME
+        unset PROJECT_NAME
+        unset BUCKET_NAME
+        unset CODE_DEPLOY_APP_NAME
+        unset DEPLOYMENT_GROUP_NAME
