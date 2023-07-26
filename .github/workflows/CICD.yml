@@ -36,10 +36,10 @@ jobs:
       
     - name: Build with Gradle
       run: |
-        export MYSQL_HOST=${{secrets.MYSQL_HOST}}
-        export MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}
-        export MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}
-        ./gradlew build
+        ./gradlew build \
+          -DMYSQL_HOST=${{secrets.MYSQL_HOST}} \
+          -DMYSQL_USERNAME=${{secrets.MYSQL_USERNAME}} \
+          -DMYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}
       shell: bash
       
     - name: Make Zip File
