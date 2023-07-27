@@ -1,4 +1,4 @@
-package org.rf.rfserver.config;
+package org.rf.rfserver.config.s3;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

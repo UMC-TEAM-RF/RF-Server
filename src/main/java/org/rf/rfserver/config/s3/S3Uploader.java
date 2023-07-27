@@ -1,4 +1,4 @@
-package org.rf.rfserver.config;
+package org.rf.rfserver.config.s3;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
