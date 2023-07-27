@@ -1,0 +1,110 @@
+name: Build and Deploy to AWS EC2
+
+on:
+  push:
+    branches: [ "main" ]
+    
+env:
+  MYSQL_HOST: ${{secrets.MYSQL_HOST}}
+  MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
+  MYSQL_USERNAME: ${{secrets.MYSQL_USERNAME}}
+  S3_ACCESSKEY: ${{secrets.S3_ACCESSKEY}}
+  S3_SECRETKEY: ${{secrets.S3_SECRETKEY}}
+  S3_BUCKET: ${{secrets.S3_BUCKET}}
+  MAIL_USERNAME: ${{secrets.MAIL_USERNAME}}
+  MAIL_PASSWORD: ${{secrets.MAIL_PASSWORD}}
+  PROJECT_NAME: cicd_folder
+  BUCKET_NAME: rf-cicd-bucket
+  CODE_DEPLOY_APP_NAME: rfDeploy
+  DEPLOYMENT_GROUP_NAME: rfserver_deploy
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Setup Java JDK
+      uses: actions/setup-java@v1
+      with:
+        distribution: 'corretto'
+        java-version: 17
+        
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./gradlew
+      shell: bash
+
+    - name: Write env.sh
+      run: |
+        echo "export MYSQL_HOST=${{secrets.MYSQL_HOST}}" >> env.sh
+        echo "export MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}" >> env.sh
+        echo "export MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}" >> env.sh
+        echo "export S3_ACCESSKEY=${{secrets.S3_ACCESSKEY}}" >> env.sh
+        echo "export S3_SECRETKEY=${{secrets.S3_SECRETKEY}}" >> env.sh
+        echo "export S3_BUCKET=${{secrets.S3_BUCKET}}" >> env.sh
+        echo "export MAIL_USERNAME=${{secrets.MAIL_USERNAME}}" >> env.sh
+        echo "export MAIL_PASSWORD=${{secrets.MAIL_PASSWORD}}" >> env.sh
+        echo "${{secrets.EC2_SCRIPTS_PATH}}/deploy.sh" >> env.sh
+        echo "sleep 60" >> env.sh
+      shell: bash
+      
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      
+    - name: Build with Gradle
+      run: |
+        ./gradlew build \
+          -DMYSQL_HOST=${{secrets.MYSQL_HOST}} \
+          -DMYSQL_USERNAME=${{secrets.MYSQL_USERNAME}} \
+          -DMYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}} \
+          -DS3_ACCESSKEY=${{secrets.S3_ACCESSKEY}} \
+          -DS3_SECRETKEY=${{secrets.S3_SECRETKEY}} \
+          -DS3_BUCKET=${{secrets.S3_BUCKET}} \
+          -DMAIL_USERNAME=${{secrets.MAIL_USERNAME}} \
+          -DMAIL_PASSWORD=${{secrets.MAIL_PASSWORD}}
+      shell: bash
+      
+    - name: Make Zip File
+      run: |
+        mkdir content
+        mv ./build/libs/*.jar ./content/
+        zip buildFile.zip ./appspec.yml ./content/*.jar ./scripts/deploy.sh ./scripts/env.sh
+      shell: bash
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+        
+    - name: Upload to S3
+      run: |
+        aws s3 cp \
+          --region ap-northeast-2 \
+          ./buildFile.zip s3://$BUCKET_NAME/$PROJECT_NAME/
+      
+    - name: Code Deploy
+      run: |
+        aws deploy create-deployment \
+          --application-name $CODE_DEPLOY_APP_NAME \
+          --deployment-config-name CodeDeployDefault.OneAtATime \
+          --deployment-group-name $DEPLOYMENT_GROUP_NAME \
+          --s3-location bucket=$BUCKET_NAME,key=$PROJECT_NAME/buildFile.zip,bundleType=zip
+          
+    - name: Unset Environment Variable
+      run: |
+        unset MYSQL_HOST
+        unset MYSQL_PASSWORD
+        unset MYSQL_USERNAME
+        unset PROJECT_NAME
+        unset BUCKET_NAME
+        unset CODE_DEPLOY_APP_NAME
+        unset DEPLOYMENT_GROUP_NAME
+        unset S3_ACCESSKEY
+        unset S3_SECRETKEY
+        unset S3_BUCKET
+        unset MAIL_USERNAME
+        unset MAIL_PASSWORD
