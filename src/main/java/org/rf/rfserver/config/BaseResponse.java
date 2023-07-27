@@ -18,36 +18,18 @@ public class BaseResponse<T> {
     private final int code;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T result;
-    private final Object data;
 
     public BaseResponse(T result) {
         this.isSuccess = SUCCESS.isSuccess();
         this.message = SUCCESS.getMessage();
         this.code = SUCCESS.getCode();
         this.result = result;
-        this.data = null;
     }
 
     public BaseResponse(BaseResponseStatus status) {
         this.isSuccess = status.isSuccess();
         this.message = status.getMessage();
         this.code = status.getCode();
-        this.data = null;
-    }
-
-    public static BaseResponse of(BaseResponseStatus successCode, Object data) {
-        return new BaseResponse(successCode, data);
-    }
-
-    public static BaseResponse of(BaseResponseStatus successCode) {
-        return new BaseResponse(successCode, "");
-    }
-
-    public BaseResponse(BaseResponseStatus successCode, Object data) {
-        this.isSuccess = true;
-        this.code = successCode.getCode();
-        this.message = successCode.getMessage();
-        this.data = data;
     }
 
 }

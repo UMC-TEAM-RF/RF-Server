@@ -19,7 +19,7 @@ public class User {
     private String loginId;
     private String password;
     private String nickName;
-    // private String university;
+    private String university;
     private String phoneNumber;
     private String interestingLanguage;
     private String introduce;
@@ -32,16 +32,12 @@ public class User {
     private String email;
     private Boolean isEmailVerification;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "university_id", nullable = true)
-    private University university;
-
     @OneToMany(mappedBy = "user")
     private List<InterestCountry> interestCountries;
     @OneToMany(mappedBy = "user")
     private List<UserInterest> userInterest;
 
-    public User(String loginId, String password, int entrance, University university, String nickName
+    public User(String loginId, String password, int entrance, String university, String nickName
             , String country, String interestingLanguage, String introduce, String mbti) {
         this.loginId= loginId;
         this.password = password;
@@ -65,10 +61,4 @@ public class User {
         return this;
     }
 
-    @Builder
-    public void setEmailAndUniversity(String email, University university) {
-        this.email = email;
-        this.isEmailVerification = true;
-        this.university = university;
-    }
 }

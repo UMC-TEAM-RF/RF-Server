@@ -1,19 +1,15 @@
 package org.rf.rfserver.mail.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
-import org.rf.rfserver.mail.dto.PostMailReq;
-import org.rf.rfserver.mail.dto.PostMailRes;
+import org.rf.rfserver.mail.dto.PostCheckReq;
+import org.rf.rfserver.mail.dto.PostCheckRes;
+import org.rf.rfserver.mail.dto.PostSendReq;
+import org.rf.rfserver.mail.dto.PostSendRes;
 import org.rf.rfserver.mail.service.MailService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static org.rf.rfserver.config.BaseResponseStatus.MAIL_CHECK_SUCCESS;
-import static org.rf.rfserver.config.BaseResponseStatus.MAIL_SEND_SUCCESS;
-import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,16 +18,20 @@ public class MailController {
     private final MailService mailService;
 
     @PostMapping("/send")
-    public ResponseEntity<BaseResponse> send(@RequestBody PostMailReq mailRequest) {
-        String mail = mailRequest.getMail();
-        PostMailRes mailResponse = mailService.sendMail(mail);
-        BaseResponse response = BaseResponse.of(MAIL_SEND_SUCCESS, mailResponse);
-        return new ResponseEntity<>(response, CREATED);
+    public BaseResponse<PostSendRes> sendMail(@RequestBody PostSendReq sendReq) {
+        try {
+            return new BaseResponse<>(mailService.sendMail(sendReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
     }
 
     @PostMapping("/check")
-    public ResponseEntity<BaseResponse> auth(@RequestBody PostMailReq mailRequest) {
-        PostMailRes mailResponse = mailService.checkCode(mailRequest);
-        return ResponseEntity.ok(BaseResponse.of(MAIL_CHECK_SUCCESS));
+    public BaseResponse<PostCheckRes> auth(@RequestBody PostCheckReq checkReq) {
+        try {
+            return new BaseResponse<>(mailService.checkCode(checkReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
     }
 }

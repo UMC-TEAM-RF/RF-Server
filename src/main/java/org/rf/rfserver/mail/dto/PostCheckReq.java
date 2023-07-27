@@ -2,10 +2,12 @@ package org.rf.rfserver.mail.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.rf.rfserver.domain.Mail;
+import lombok.Setter;
 
 @Getter
+@Setter
 @AllArgsConstructor
-public class PostMailRes {
-    private Mail mail;
+public class PostCheckReq {
+    private String mail;
+    private String code;
 }
