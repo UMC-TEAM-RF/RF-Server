@@ -2,7 +2,6 @@ package org.rf.rfserver.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -60,5 +59,4 @@ public class User {
         this.mbti = mbti == null ? this.mbti : mbti;
         return this;
     }
-
 }

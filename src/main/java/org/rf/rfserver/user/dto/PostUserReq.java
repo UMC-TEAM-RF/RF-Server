@@ -3,6 +3,7 @@ package org.rf.rfserver.user.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class PostUserReq {
