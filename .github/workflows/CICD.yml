@@ -8,6 +8,11 @@ env:
   MYSQL_HOST: ${{secrets.MYSQL_HOST}}
   MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
   MYSQL_USERNAME: ${{secrets.MYSQL_USERNAME}}
+  S3_ACCESSKEY: ${{secrets.S3_ACCESSKEY}}
+  S3_SECRETKEY: ${{secrets.S3_SECRETKEY}}
+  S3_BUCKET: ${{secrets.S3_BUCKET}}
+  MAIL_USERNAME: ${{secrets.MAIL_USERNAME}}
+  MAIL_PASSWORD: ${{secrets.MAIL_PASSWORD}}
   PROJECT_NAME: cicd_folder
   BUCKET_NAME: rf-cicd-bucket
   CODE_DEPLOY_APP_NAME: rfDeploy
@@ -36,6 +41,11 @@ jobs:
         echo "export MYSQL_HOST=${{secrets.MYSQL_HOST}}" >> env.sh
         echo "export MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}" >> env.sh
         echo "export MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}" >> env.sh
+        echo "export S3_ACCESSKEY=${{secrets.S3_ACCESSKEY}}" >> env.sh
+        echo "export S3_SECRETKEY=${{secrets.S3_SECRETKEY}}" >> env.sh
+        echo "export S3_BUCKET=${{secrets.S3_BUCKET}}" >> env.sh
+        echo "export MAIL_USERNAME=${{secrets.MAIL_USERNAME}}" >> env.sh
+        echo "export MAIL_PASSWORD=${{secrets.MAIL_PASSWORD}}" >> env.sh
         echo "${{secrets.EC2_SCRIPTS_PATH}}/deploy.sh" >> env.sh
         echo "sleep 60" >> env.sh
       shell: bash
@@ -48,7 +58,12 @@ jobs:
         ./gradlew build \
           -DMYSQL_HOST=${{secrets.MYSQL_HOST}} \
           -DMYSQL_USERNAME=${{secrets.MYSQL_USERNAME}} \
-          -DMYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}
+          -DMYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}} \
+          -DS3_ACCESSKEY=${{secrets.S3_ACCESSKEY}} \
+          -DS3_SECRETKEY=${{secrets.S3_SECRETKEY}} \
+          -DS3_BUCKET=${{secrets.S3_BUCKET}} \
+          -DMAIL_USERNAME=${{secrets.MAIL_USERNAME}} \
+          -DMAIL_PASSWORD=${{secrets.MAIL_PASSWORD}}
       shell: bash
       
     - name: Make Zip File
@@ -88,3 +103,8 @@ jobs:
         unset BUCKET_NAME
         unset CODE_DEPLOY_APP_NAME
         unset DEPLOYMENT_GROUP_NAME
+        unset S3_ACCESSKEY
+        unset S3_SECRETKEY
+        unset S3_BUCKET
+        unset MAIL_USERNAME
+        unset MAIL_PASSWORD
