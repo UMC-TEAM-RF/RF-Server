@@ -38,13 +38,9 @@ public class Party {
 
     @OneToMany(mappedBy = "party")
     private List<PartyInterest> interests;
-    @OneToMany
-    @JoinTable(name = "Schedule"
-            , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
+    @OneToMany(mappedBy = "party")
     private List<Schedule> schedules;
-    @OneToMany
-    @JoinTable(name = "User"
-            , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
+    @OneToMany(mappedBy = "party")
     private List<UserParty> users;
 
     @Builder
