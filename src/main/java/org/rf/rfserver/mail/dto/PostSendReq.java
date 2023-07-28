@@ -10,5 +10,4 @@ import lombok.Setter;
 public class PostSendReq {
     private String university;
     private String mail;
-    private String code;
 }
