@@ -31,10 +31,6 @@ public enum BaseResponseStatus {
     SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
 
 
-    MAIL_SEND_SUCCESS(true, 6000, "이메일이 성공적으로 전송되었습니다."),
-    MAIL_CHECK_SUCCESS(false, 6001, "이메일 인증이 완료되었습니다."),
-
-
     INVALID_MAIL(false, 6002, "유효하지 않은 이메일입니다."),
     INVALID_CODE(false, 6003, "인증번호가 올바르지 않습니다."),
     INVALID_UNIVERSITY(false, 6004, "해당 학교의 이메일 주소가 아닙니다.")
