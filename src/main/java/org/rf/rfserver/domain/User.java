@@ -29,7 +29,7 @@ public class User {
     private int hate;
     private LocalDateTime createdDate;
     private String email;
-    private Boolean isEmailVerification;
+    private Boolean isEmailVerified;
 
     @OneToMany(mappedBy = "user")
     private List<InterestCountry> interestCountries;
