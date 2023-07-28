@@ -36,7 +36,6 @@ public class MailService {
             String mailAddress = sendReq.getMail();
             String university = sendReq.getUniversity();
             checkPossibleMail(mailAddress, university);
-            String code = mail.getCode();
             SimpleMailMessage message = new SimpleMailMessage();
             setMessage(message, mailAddress);
             javaMailSender.send(message);
@@ -121,7 +120,7 @@ public class MailService {
         // 대학교 이름과 해당 변환 이름을 매핑
         universityNameMap.put("inha.edu", "인하대학교");
         universityNameMap.put("hanyang.ac.kr", "한양대학교");
-        universityNameMap.put("tukorea.ac.kr", "한국공항대학교");
+        universityNameMap.put("tukorea.ac.kr", "한국공학대학교");
         universityNameMap.put("catholic.ac.kr", "가톨릭대학교");
         // 다른 대학교에 대한 매핑도 필요하면 여기에 추가로 작성 예정
     }
