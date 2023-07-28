@@ -10,7 +10,6 @@ import org.rf.rfserver.mail.dto.PostSendReq;
 import org.rf.rfserver.mail.dto.PostSendRes;
 import org.rf.rfserver.mail.exception.InvalidMailException;
 import org.rf.rfserver.mail.exception.UnauthorizedException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,6 @@ import static org.rf.rfserver.config.BaseResponseStatus.*;
 @Service
 @RequiredArgsConstructor
 public class MailService {
-    @Autowired
     private final JavaMailSender javaMailSender;
     private final Mail mail = new Mail();
 
@@ -66,10 +64,10 @@ public class MailService {
     // 이메일 메시지의 세부 정보를 설정
     private void setMessage(SimpleMailMessage message, String mailAddress) {
         message.setTo(mailAddress);
-        org.rf.rfserver.domain.MailMessage mailTitle = org.rf.rfserver.domain.MailMessage.MAIL_TITLE;
+        MailMessage mailTitle = MailMessage.MAIL_TITLE;
         message.setSubject(mailTitle.getContent());
         saveMailInfo(mailAddress);
-        org.rf.rfserver.domain.MailMessage mailMessage = MailMessage.MAIL_MESSAGE;
+        MailMessage mailMessage = MailMessage.MAIL_MESSAGE;
         message.setText(mailMessage.getContent() + mail.getCode());
     }
 
