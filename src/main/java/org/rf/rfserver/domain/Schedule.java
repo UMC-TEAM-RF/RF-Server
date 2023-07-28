@@ -2,9 +2,9 @@ package org.rf.rfserver.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
@@ -16,11 +16,23 @@ import static jakarta.persistence.FetchType.*;
 public class Schedule {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime date;
+    private String scheduleName;
+    private LocalDateTime datetime;
     private String location;
     private int participantCount;
-    private String scheduleName;
+    private int alert;
 
     @ManyToOne(fetch = LAZY)
     private Party party;
+
+    @Builder
+    public Schedule(Long id, String scheduleName, LocalDateTime datetime, String location, int participantCount, int alert, Party party){
+        this.id = id;
+        this.scheduleName = scheduleName;
+        this.datetime = datetime;
+        this.location = location;
+        this.participantCount = participantCount;
+        this.alert = alert;
+        this.party = party;
+    }
 }
