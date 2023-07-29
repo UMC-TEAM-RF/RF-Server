@@ -7,6 +7,7 @@ import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.*;
 import org.rf.rfserver.party.repository.PartyInterestRepository;
+import org.rf.rfserver.party.repository.PartyJoinApplyRepository;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
 import org.rf.rfserver.user.repository.UserRepository;
@@ -25,6 +26,7 @@ public class PartyService {
     private final UserRepository userRepository;
     private final UserPartyRepository userPartyRepository;
     private final PartyInterestRepository partyInterestRepository;
+    private final PartyJoinApplyRepository partyJoinApplyRepository;
 
     public PostPartyRes createParty(PostPartyReq postPartyReq) throws BaseException {
         try {
@@ -86,15 +88,26 @@ public class PartyService {
                 .build();
     }
 
-    public JoinPartyRes join(Long partyId, Long userId) throws BaseException {
-        User user = userRepository.findById(userId)
+    public PostPartyJoinRes joinParty(PostPartyJoinReq postPartyJoinReq) throws BaseException {
+        User user = userRepository.findById(postPartyJoinReq.getUserId())
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
-        Party party = partyRepository.findById(partyId)
+        Party party = partyRepository.findById(postPartyJoinReq.getPartyId())
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
         UserParty userParty = new UserParty(party, user);
         userParty.setParty(party);
         userParty.setUser(user);
         userPartyRepository.save(userParty);
-        return new JoinPartyRes(partyId);
+        return new PostPartyJoinRes(userParty.getId());
     }
+
+    public PostPartyJoinApplyRes partyJoinApply(PostPartyJoinApplyReq postPartyJoinApplyReq) throws BaseException {
+        User user = userRepository.findById(postPartyJoinApplyReq.getUserId())
+                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+        Party party = partyRepository.findById(postPartyJoinApplyReq.getPartyId())
+                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+        PartyJoinApply partyJoinApply = new PartyJoinApply(user, party);
+        partyJoinApplyRepository.save(partyJoinApply);
+        return new PostPartyJoinApplyRes(partyJoinApply.getId());
+    }
+
 }
