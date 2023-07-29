@@ -42,13 +42,20 @@ public class PartyController {
     }
 
     @PostMapping("/join")
-    public BaseResponse<JoinPartyRes> joinParty(@RequestBody PostPartyJoinReq postPartyJoinReq) {
+    public BaseResponse<PostPartyJoinRes> joinParty(@RequestBody PostPartyJoinReq postPartyJoinReq) {
         try {
-            return new BaseResponse<>(partyService.join(postPartyJoinReq.getPartyId(), postPartyJoinReq.getUserId()));
+            return new BaseResponse<>(partyService.joinParty(postPartyJoinReq));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
 
-
+    @PostMapping("/join/apply")
+    public BaseResponse<PostPartyJoinApplyRes> partyJoinApply(@RequestBody PostPartyJoinApplyReq postPartyJoinApplyReq) {
+        try {
+            return new BaseResponse<>(partyService.partyJoinApply(postPartyJoinApplyReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }
