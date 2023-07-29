@@ -38,6 +38,8 @@ public class MailService {
             setMessage(message, mailAddress);
             javaMailSender.send(message);
             return new PostSendRes(mail);
+        } catch (InvalidMailException e) {
+            throw new BaseException(INVALID_UNIVERSITY);
         } catch (Exception e) {
             throw new BaseException(INVALID_MAIL);
         }
@@ -76,14 +78,14 @@ public class MailService {
         mail.setCode(code);
         mail.setMailAddress(mailAddress);
         String university = parseUniversity(mailAddress);
-        String koreanUniversity = universityNameMap.getOrDefault(university, university);
+        String koreanUniversity = universityNameMap.get(university);
         mail.setUniversity(koreanUniversity);
         mail.setIsAuth(false);
     }
 
     private void checkPossibleMail(String mailAddress, String userUniversity) {
         String university = parseUniversity(mailAddress);
-        String koreanUniversity = universityNameMap.getOrDefault(university, university);
+        String koreanUniversity = universityNameMap.get(university);
         if (!koreanUniversity.equals(userUniversity)) {
             throw new InvalidMailException(INVALID_UNIVERSITY);
         }
