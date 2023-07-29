@@ -1,14 +1,11 @@
-package org.rf.rfserver.party;
+package org.rf.rfserver.party.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
 
-import org.rf.rfserver.party.PartyService;
-import org.rf.rfserver.party.dto.DeletePartyRes;
-import org.rf.rfserver.party.dto.GetPartyRes;
-import org.rf.rfserver.party.dto.PostPartyReq;
-import org.rf.rfserver.party.dto.PostPartyRes;
+import org.rf.rfserver.party.service.PartyService;
+import org.rf.rfserver.party.dto.*;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -43,4 +40,15 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    @PostMapping("/join")
+    public BaseResponse<JoinPartyRes> joinParty(@RequestBody PostPartyJoinReq postPartyJoinReq) {
+        try {
+            return new BaseResponse<>(partyService.join(postPartyJoinReq.getPartyId(), postPartyJoinReq.getUserId()));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+
 }

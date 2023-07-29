@@ -8,7 +8,6 @@ import org.rf.rfserver.constant.Interest;
 import java.util.List;
 
 @Getter
-@Setter
 @AllArgsConstructor
 public class PostPartyReq {
     private String name;

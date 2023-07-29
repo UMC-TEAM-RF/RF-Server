@@ -18,4 +18,19 @@ public class UserParty {
     private Party party;
     @ManyToOne(fetch = LAZY)
     private User user;
+
+    public UserParty(Party party, User user) {
+        this.party = party;
+        this.user = user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+        user.getUserParties().add(this);
+    }
+
+    public void setParty(Party party) {
+        this.party = party;
+        party.getUserParties().add(this);
+    }
 }

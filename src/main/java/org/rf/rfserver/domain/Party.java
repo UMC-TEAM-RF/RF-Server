@@ -40,7 +40,7 @@ public class Party {
     @OneToMany(mappedBy = "party")
     private List<Schedule> schedules;
     @OneToMany(mappedBy = "party")
-    private List<UserParty> users;
+    private List<UserParty> userParties;
 
     @Builder
     public Party(Long id, String name, String content,String location, String language, String imageFilePath, String preferAges,
@@ -58,7 +58,7 @@ public class Party {
         this.ownerId = ownerId;
         this.interests = new ArrayList<>();
         this.schedules = new ArrayList<>();
-        this.users = new ArrayList<>();
+        this.userParties = new ArrayList<>();
         //this.rule = rule;
         //this.tags = tags;
     }

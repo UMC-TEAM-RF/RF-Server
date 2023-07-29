@@ -35,6 +35,8 @@ public class User {
     private List<InterestCountry> interestCountries;
     @OneToMany(mappedBy = "user")
     private List<UserInterest> userInterest;
+    @OneToMany(mappedBy = "user")
+    private List<UserParty> userParties;
 
     public User(String loginId, String password, int entrance, String university, String nickName
             , String country, String interestingLanguage, String introduce, String mbti) {

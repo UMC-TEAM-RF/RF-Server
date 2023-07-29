@@ -1,14 +1,15 @@
-package org.rf.rfserver.party;
+package org.rf.rfserver.party.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.rf.rfserver.constant.Interest;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.*;
-import org.rf.rfserver.party.dto.DeletePartyRes;
-import org.rf.rfserver.party.dto.GetPartyRes;
-import org.rf.rfserver.party.dto.PostPartyReq;
-import org.rf.rfserver.party.dto.PostPartyRes;
+import org.rf.rfserver.party.dto.*;
+import org.rf.rfserver.party.repository.PartyInterestRepository;
+import org.rf.rfserver.party.repository.PartyRepository;
+import org.rf.rfserver.party.repository.UserPartyRepository;
+import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,8 @@ import static org.rf.rfserver.config.BaseResponseStatus.*;
 public class PartyService {
 
     private final PartyRepository partyRepository;
+    private final UserRepository userRepository;
+    private final UserPartyRepository userPartyRepository;
     private final PartyInterestRepository partyInterestRepository;
 
     public PostPartyRes createParty(PostPartyReq postPartyReq) throws BaseException {
@@ -63,7 +66,7 @@ public class PartyService {
                 .memberCount(party.getMemberCount())
                 .nativeCount(party.getNativeCount())
                 .ownerId(party.getOwnerId())
-                .users(party.getUsers())
+                .users(party.getUserParties())
                 .schedules(party.getSchedules())
                 .interests(party.getInterests())
                 //.rule(party.getRule())
@@ -83,4 +86,15 @@ public class PartyService {
                 .build();
     }
 
+    public JoinPartyRes join(Long partyId, Long userId) throws BaseException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+        Party party = partyRepository.findById(partyId)
+                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+        UserParty userParty = new UserParty(party, user);
+        userParty.setParty(party);
+        userParty.setUser(user);
+        userPartyRepository.save(userParty);
+        return new JoinPartyRes(partyId);
+    }
 }
