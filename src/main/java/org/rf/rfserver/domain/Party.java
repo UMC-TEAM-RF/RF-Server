@@ -27,7 +27,6 @@ public class Party {
     private int memberCount;
     private int nativeCount;
     private int ownerId;
-
 //    @OneToMany
 //    @JoinColumn(name = "PartyRule")
 //    private List<PartyRule> rule;
