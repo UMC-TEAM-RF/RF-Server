@@ -48,7 +48,7 @@ jobs:
         echo "export MAIL_USERNAME=${{secrets.MAIL_USERNAME}}" >> ./scripts/env.sh
         echo "export MAIL_PASSWORD=${{secrets.MAIL_PASSWORD}}" >> ./scripts/env.sh
         echo "${{secrets.EC2_SCRIPTS_PATH}}/deploy.sh" >> ./scripts/env.sh
-        echo "sleep 60" >> env.sh
+        echo "sleep 60" >> ./scripts/env.sh
       shell: bash
       
     - name: Setup Gradle
