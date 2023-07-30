@@ -28,8 +28,12 @@ public enum BaseResponseStatus {
      * 4000 : Database, Server 오류
      */
     DATABASE_ERROR(false, 4000, "데이터베이스 연결에 실패하였습니다."),
-    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다.")
+    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
 
+
+    INVALID_MAIL(false, 6002, "유효하지 않은 이메일입니다."),
+    INVALID_CODE(false, 6003, "인증번호가 올바르지 않습니다."),
+    INVALID_UNIVERSITY(false, 6004, "해당 학교의 이메일 주소가 아닙니다.")
     // 5000 : 필요시 만들어서 쓰세요
     // 6000 : 필요시 만들어서 쓰세요
 

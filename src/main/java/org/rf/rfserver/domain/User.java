@@ -28,6 +28,8 @@ public class User {
     private int love;
     private int hate;
     private LocalDateTime createdDate;
+    private String email;
+    private Boolean isEmailVerified;
 
     @OneToMany(mappedBy = "user")
     private List<InterestCountry> interestCountries;

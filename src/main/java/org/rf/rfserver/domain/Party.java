@@ -27,7 +27,6 @@ public class Party {
     private int memberCount;
     private int nativeCount;
     private int ownerId;
-
 //    @OneToMany
 //    @JoinColumn(name = "PartyRule")
 //    private List<PartyRule> rule;
@@ -35,7 +34,6 @@ public class Party {
 //    @JoinTable(name = "Tag"
 //            , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
 //    private List<PartyTag> tags;
-
     @OneToMany(mappedBy = "party")
     private List<PartyInterest> interests;
     @OneToMany(mappedBy = "party")
