@@ -38,15 +38,16 @@ jobs:
 
     - name: Write env.sh
       run: |
-        echo "export MYSQL_HOST=${{secrets.MYSQL_HOST}}" >> env.sh
-        echo "export MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}" >> env.sh
-        echo "export MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}" >> env.sh
-        echo "export S3_ACCESSKEY=${{secrets.S3_ACCESSKEY}}" >> env.sh
-        echo "export S3_SECRETKEY=${{secrets.S3_SECRETKEY}}" >> env.sh
-        echo "export S3_BUCKET=${{secrets.S3_BUCKET}}" >> env.sh
-        echo "export MAIL_USERNAME=${{secrets.MAIL_USERNAME}}" >> env.sh
-        echo "export MAIL_PASSWORD=${{secrets.MAIL_PASSWORD}}" >> env.sh
-        echo "${{secrets.EC2_SCRIPTS_PATH}}/deploy.sh" >> env.sh
+        sudo chmod 777 ./scripts/env.sh
+        echo "export MYSQL_HOST=${{secrets.MYSQL_HOST}}" >> ./scripts/env.sh
+        echo "export MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}" >> ./scripts/env.sh
+        echo "export MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}" >> ./scripts/env.sh
+        echo "export S3_ACCESSKEY=${{secrets.S3_ACCESSKEY}}" >> ./scripts/env.sh
+        echo "export S3_SECRETKEY=${{secrets.S3_SECRETKEY}}" >> ./scripts/env.sh
+        echo "export S3_BUCKET=${{secrets.S3_BUCKET}}" >> ./scripts/env.sh
+        echo "export MAIL_USERNAME=${{secrets.MAIL_USERNAME}}" >> ./scripts/env.sh
+        echo "export MAIL_PASSWORD=${{secrets.MAIL_PASSWORD}}" >> ./scripts/env.sh
+        echo "${{secrets.EC2_SCRIPTS_PATH}}/deploy.sh" >> ./scripts/env.sh
         echo "sleep 60" >> env.sh
       shell: bash
       
