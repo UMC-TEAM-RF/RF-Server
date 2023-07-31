@@ -82,10 +82,17 @@ public class PartyService {
         for (PartyInterest partyInterest: party.getInterests() ) {
             partyInterestRepository.delete(partyInterest);
         }
+        for (UserParty userParty: party.getUserParties()) {
+            userPartyRepository.delete(userParty);
+        }
         partyRepository.delete(party);
         return DeletePartyRes.builder()
                 .id(partyId)
                 .build();
+    }
+
+    public void deleteUserParty(UserParty userParty) {
+
     }
 
     public PostPartyJoinRes joinParty(PostPartyJoinReq postPartyJoinReq) throws BaseException {
