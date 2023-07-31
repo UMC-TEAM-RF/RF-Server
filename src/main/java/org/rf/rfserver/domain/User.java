@@ -1,5 +1,6 @@
 package org.rf.rfserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -35,6 +36,11 @@ public class User {
     private List<InterestCountry> interestCountries;
     @OneToMany(mappedBy = "user")
     private List<UserInterest> userInterest;
+    @OneToMany(mappedBy = "user")
+    private List<UserParty> userParties;
+    @OneToMany(mappedBy = "blockerUser")
+    @JsonManagedReference // 이 엔티티를 직렬화 할 때 관련된 BlockParty 엔티티를 포함
+    private List<BlockParty> blockedParties;
 
     public User(String loginId, String password, int entrance, String university, String nickName
             , String country, String interestingLanguage, String introduce, String mbti) {
