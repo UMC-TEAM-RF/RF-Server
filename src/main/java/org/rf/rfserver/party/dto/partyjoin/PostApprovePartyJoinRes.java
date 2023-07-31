@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class PostApprovePartyJoinRes {
-    private Long id;
+    Long id;
 
     public PostApprovePartyJoinRes(Long id) {
         this.id = id;

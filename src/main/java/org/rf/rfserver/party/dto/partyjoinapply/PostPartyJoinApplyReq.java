@@ -1,4 +1,4 @@
-package org.rf.rfserver.party.dto;
+package org.rf.rfserver.party.dto.partyjoinapply;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
