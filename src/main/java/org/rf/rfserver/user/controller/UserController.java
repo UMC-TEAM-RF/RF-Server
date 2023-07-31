@@ -55,4 +55,12 @@ public class UserController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+    @GetMapping("/nicknameCheck/{nickName}")
+    public BaseResponse<GetNicknameCheckRes> checkNickname(@PathVariable("nickName") String nickName) {
+        try {
+            return new BaseResponse<>(userService.checkNickname(nickName));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }

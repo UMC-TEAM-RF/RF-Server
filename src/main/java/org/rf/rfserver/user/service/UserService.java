@@ -70,4 +70,13 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public GetNicknameCheckRes checkNickname(String nickName) throws BaseException {
+        try {
+            Boolean judge = !userRepository.existsUserByNickName(nickName);
+            return new GetNicknameCheckRes(judge);
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
