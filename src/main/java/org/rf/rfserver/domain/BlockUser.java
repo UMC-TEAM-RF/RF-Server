@@ -1,15 +1,13 @@
 package org.rf.rfserver.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Block {
+public class BlockUser {
     @Id
     @Column(name = "block_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +21,8 @@ public class Block {
     @JoinColumn(name = "blocked_id") // 차단 당하는 user
     private User blocked;
 
-    @Builder
-    public Block(User blocker, User blocked) {
+    public BlockUser(User blocker, User blocked) {
         this.blocker = blocker;
         this.blocked = blocked;
     }
-
-
 }

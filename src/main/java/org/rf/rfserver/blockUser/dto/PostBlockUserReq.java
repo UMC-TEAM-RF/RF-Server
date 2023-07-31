@@ -1,4 +1,4 @@
-package org.rf.rfserver.block.dto;
+package org.rf.rfserver.blockUser.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import org.rf.rfserver.domain.User;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PostBlockReq {
+public class PostBlockUserReq {
     private User blocker;
     private User blocked;
 }

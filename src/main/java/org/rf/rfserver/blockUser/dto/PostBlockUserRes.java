@@ -1,12 +1,11 @@
-package org.rf.rfserver.block.dto;
+package org.rf.rfserver.blockUser.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.rf.rfserver.domain.User;
 
 
 @Getter
 @AllArgsConstructor
-public class PostBlockRes {
+public class PostBlockUserRes {
     private Long id;
 }
