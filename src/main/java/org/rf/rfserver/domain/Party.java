@@ -1,5 +1,6 @@
 package org.rf.rfserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -35,11 +36,12 @@ public class Party {
 //            , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
 //    private List<PartyTag> tags;
 
-    @OneToMany(mappedBy = "party")
-    private List<PartyInterest> interests;
+    /*@OneToMany(mappedBy = "party")
+    private List<PartyInterest> interests;*/
     @OneToMany(mappedBy = "party")
     private List<Schedule> schedules;
     @OneToMany(mappedBy = "party")
+    @JsonBackReference
     private List<UserParty> users;
 
     @Builder
@@ -56,7 +58,9 @@ public class Party {
         this.memberCount = memberCount;
         this.nativeCount = nativeCount;
         this.ownerId = ownerId;
+/*
         this.interests = new ArrayList<>();
+*/
         this.schedules = new ArrayList<>();
         this.users = new ArrayList<>();
         //this.rule = rule;
