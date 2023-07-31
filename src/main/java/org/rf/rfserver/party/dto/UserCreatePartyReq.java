@@ -7,7 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PostPartyReq {
+public class UserCreatePartyReq {
+    private Long userId;
     private String name;
     private String content;
     private String location;
@@ -17,8 +18,6 @@ public class PostPartyReq {
     private int memberCount;
     private int nativeCount;
     private int ownerId;
-    /*private List<Interest> interests;*/
-
-//    private List<PartyTag> tags;
-//    private List<PartyRule> rules;
 }
+
+
