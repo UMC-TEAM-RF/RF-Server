@@ -8,12 +8,12 @@ import org.rf.rfserver.party.dto.party.DeletePartyRes;
 import org.rf.rfserver.party.dto.party.GetPartyRes;
 import org.rf.rfserver.party.dto.party.PostPartyReq;
 import org.rf.rfserver.party.dto.party.PostPartyRes;
-import org.rf.rfserver.party.dto.partyjoin.PostApprovePartyJoinReq;
-import org.rf.rfserver.party.dto.partyjoin.PostApprovePartyJoinRes;
-import org.rf.rfserver.party.dto.partyjoin.PostDenyPartyJoinReq;
-import org.rf.rfserver.party.dto.partyjoin.PostDenyPartyJoinRes;
-import org.rf.rfserver.party.dto.partyjoinapply.PostPartyJoinApplyReq;
-import org.rf.rfserver.party.dto.partyjoinapply.PostPartyJoinApplyRes;
+import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinReq;
+import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
+import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinReq;
+import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
+import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
+import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
 import org.rf.rfserver.party.service.PartyService;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,18 +51,18 @@ public class PartyController {
     }
 
     @PostMapping("/join/apply")
-    public BaseResponse<PostPartyJoinApplyRes> partyJoinApply(@RequestBody PostPartyJoinApplyReq postPartyJoinApplyReq) {
+    public BaseResponse<PostJoinApplicationRes> joinApply(@RequestBody PostJoinApplicationReq postJoinApplicationReqt) {
         try {
-            return new BaseResponse<>(partyService.partyJoinApply(postPartyJoinApplyReq));
+            return new BaseResponse<>(partyService.joinApply(postJoinApplicationReqt));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
 
     @PostMapping("/join/apply/approve")
-    public BaseResponse<PostApprovePartyJoinRes> approveJoinParty(@RequestBody PostApprovePartyJoinReq postApprovePartyJoinReq) {
+    public BaseResponse<PostApproveJoinRes> approveJoin(@RequestBody PostApproveJoinReq postApproveJoinReq) {
         try {
-            return new BaseResponse<>(partyService.joinParty(postApprovePartyJoinReq));
+            return new BaseResponse<>(partyService.join(postApproveJoinReq));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -70,9 +70,9 @@ public class PartyController {
 
 
     @PostMapping("/join/apply/deny")
-    public BaseResponse<PostDenyPartyJoinRes> denyJoinParty(@RequestBody PostDenyPartyJoinReq postDenyPartyJoinReq) {
+    public BaseResponse<PostDenyJoinRes> denyJoin(@RequestBody PostDenyJoinReq postDenyJoinReq) {
         try {
-            return new BaseResponse<>(partyService.denyJoinParty(postDenyPartyJoinReq));
+            return new BaseResponse<>(partyService.denyJoin(postDenyJoinReq));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

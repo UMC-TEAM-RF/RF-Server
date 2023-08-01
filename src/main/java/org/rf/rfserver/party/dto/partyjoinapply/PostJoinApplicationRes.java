@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class PostPartyJoinApplyReq {
-    private Long userId;
-    private Long partyId;
+public class PostJoinApplicationRes {
+    private Long partyJoinApplicationId;
 }

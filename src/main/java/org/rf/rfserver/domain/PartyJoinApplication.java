@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PartyJoinApply {
+public class PartyJoinApplication {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -17,7 +17,7 @@ public class PartyJoinApply {
     @ManyToOne
     private Party party;
 
-    public PartyJoinApply(User user, Party party) {
+    public PartyJoinApplication(User user, Party party) {
         this.user = user;
         this.party = party;
     }

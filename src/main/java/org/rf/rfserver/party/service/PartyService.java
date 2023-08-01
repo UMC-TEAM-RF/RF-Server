@@ -9,14 +9,14 @@ import org.rf.rfserver.party.dto.party.DeletePartyRes;
 import org.rf.rfserver.party.dto.party.GetPartyRes;
 import org.rf.rfserver.party.dto.party.PostPartyReq;
 import org.rf.rfserver.party.dto.party.PostPartyRes;
-import org.rf.rfserver.party.dto.partyjoin.PostApprovePartyJoinReq;
-import org.rf.rfserver.party.dto.partyjoin.PostApprovePartyJoinRes;
-import org.rf.rfserver.party.dto.partyjoin.PostDenyPartyJoinReq;
-import org.rf.rfserver.party.dto.partyjoin.PostDenyPartyJoinRes;
-import org.rf.rfserver.party.dto.partyjoinapply.PostPartyJoinApplyReq;
-import org.rf.rfserver.party.dto.partyjoinapply.PostPartyJoinApplyRes;
+import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinReq;
+import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
+import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinReq;
+import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
+import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
+import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
 import org.rf.rfserver.party.repository.PartyInterestRepository;
-import org.rf.rfserver.party.repository.PartyJoinApplyRepository;
+import org.rf.rfserver.party.repository.PartyJoinApplicationRepository;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
 import org.rf.rfserver.user.repository.UserRepository;
@@ -36,7 +36,7 @@ public class PartyService {
     private final UserRepository userRepository;
     private final UserPartyRepository userPartyRepository;
     private final PartyInterestRepository partyInterestRepository;
-    private final PartyJoinApplyRepository partyJoinApplyRepository;
+    private final PartyJoinApplicationRepository partyJoinApplicationRepository;
 
     public PostPartyRes createParty(PostPartyReq postPartyReq) throws BaseException {
         try {
@@ -108,34 +108,34 @@ public class PartyService {
         }
     }
 
-    public PostPartyJoinApplyRes partyJoinApply(PostPartyJoinApplyReq postPartyJoinApplyReq) throws BaseException {
-        User user = userRepository.findById(postPartyJoinApplyReq.getUserId())
+    public PostJoinApplicationRes joinApply(PostJoinApplicationReq postJoinApplyReq) throws BaseException {
+        User user = userRepository.findById(postJoinApplyReq.getUserId())
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
-        Party party = partyRepository.findById(postPartyJoinApplyReq.getPartyId())
+        Party party = partyRepository.findById(postJoinApplyReq.getPartyId())
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
-        PartyJoinApply partyJoinApply = new PartyJoinApply(user, party);
-        partyJoinApplyRepository.save(partyJoinApply);
-        return new PostPartyJoinApplyRes(partyJoinApply.getId());
+        PartyJoinApplication partyJoinApplication = new PartyJoinApplication(user, party);
+        partyJoinApplicationRepository.save(partyJoinApplication);
+        return new PostJoinApplicationRes(partyJoinApplication.getId());
     }
 
-    public PostApprovePartyJoinRes joinParty(PostApprovePartyJoinReq postApprovePartyJoinReq) throws BaseException {
-        User user = userRepository.findById(postApprovePartyJoinReq.getUserId())
+    public PostApproveJoinRes join(PostApproveJoinReq postApproveJoinReq) throws BaseException {
+        User user = userRepository.findById(postApproveJoinReq.getUserId())
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
-        Party party = partyRepository.findById(postApprovePartyJoinReq.getPartyId())
+        Party party = partyRepository.findById(postApproveJoinReq.getPartyId())
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
         UserParty userParty = new UserParty(party, user);
         userParty.setParty(party);
         userParty.setUser(user);
         userPartyRepository.save(userParty);
-        partyJoinApplyRepository.delete(partyJoinApplyRepository.findById(postApprovePartyJoinReq.getPartyJoinApplyId())
+        partyJoinApplicationRepository.delete(partyJoinApplicationRepository.findById(postApproveJoinReq.getPartyJoinApplyId())
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR)));
-        return new PostApprovePartyJoinRes(postApprovePartyJoinReq.getPartyJoinApplyId());
+        return new PostApproveJoinRes(postApproveJoinReq.getPartyJoinApplyId());
     }
 
-    public PostDenyPartyJoinRes denyJoinParty(PostDenyPartyJoinReq postApprovePartyJoinReq) throws BaseException {
-        partyJoinApplyRepository.delete(partyJoinApplyRepository.findById(postApprovePartyJoinReq.getPartyJoinApplyId())
+    public PostDenyJoinRes denyJoin(PostDenyJoinReq postApprovePartyJoinReq) throws BaseException {
+        partyJoinApplicationRepository.delete(partyJoinApplicationRepository.findById(postApprovePartyJoinReq.getPartyJoinApplyId())
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR)));
-        return new PostDenyPartyJoinRes();
+        return new PostDenyJoinRes(postApprovePartyJoinReq.getPartyJoinApplyId());
     }
 
 }
