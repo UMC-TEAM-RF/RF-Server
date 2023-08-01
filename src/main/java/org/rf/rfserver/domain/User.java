@@ -65,4 +65,14 @@ public class User {
         this.mbti = mbti == null ? this.mbti : mbti;
         return this;
     }
+
+    public void addUserParty(UserParty userParty) {
+        this.userParties.add(userParty);
+        userParty.setUser(this);
+    }
+
+    public void removeUserParty(UserParty userParty) {
+        this.userParties.remove(userParty);
+        userParty.setUser(null);
+    }
 }

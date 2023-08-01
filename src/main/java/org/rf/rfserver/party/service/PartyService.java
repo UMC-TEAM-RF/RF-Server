@@ -109,16 +109,15 @@ public class PartyService {
         // 모임 생성
         Party party = createParty(postPartyReq);
         // 사용자 조회
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (!optionalUser.isPresent()) {
-            throw new BaseException(USER_NOT_FOUND);
-        }
-        User user = optionalUser.get();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 
         // 사용자에게 생성한 모임 추가
         UserParty userParty = new UserParty(party, user);
-        userParty.setUser(user);
-        userParty.setParty(party);
+
+        // 연관관계 편의 메소드를 사용해 양방향 관계 설정
+        user.addUserParty(userParty);
+        party.addUserParty(userParty);
 
         userPartyRepository.save(userParty);
 
@@ -130,20 +129,24 @@ public class PartyService {
         // 사용자 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
         // 모임 조회
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(PARTY_NOT_FOUND));
 
         // 이미 모임에 참여한 사용자인지 확인
-        Optional<UserParty> optionalUserParty = userPartyRepository.findByUserAndParty(user, party);
-        if (optionalUserParty.isPresent()) {
+        UserParty userParty = userPartyRepository.findByUserAndParty(user, party)
+                .orElse(null);
+        if (userParty != null) {
             throw new BaseException(ALREADY_JOINED_PARTY);
         }
 
         // 사용자에게 선택한 모임 추가
-        UserParty userParty = new UserParty(party, user);
-        userParty.setUser(user);
-        userParty.setParty(party);
+        userParty = new UserParty(party, user);
+
+        // 연관관계 편의 메소드를 사용해 양방향 관계 설정
+        user.addUserParty(userParty);
+        party.addUserParty(userParty);
 
         userPartyRepository.save(userParty);
 
@@ -167,6 +170,10 @@ public class PartyService {
         UserParty userParty = userPartyRepository.findByUserAndParty(user, party)
                 .orElseThrow(() -> new BaseException(ALREADY_LEFT_PARTY));
 
+        // 연관관계 편의 메소드를 사용해 양방향 관계 해제
+        user.removeUserParty(userParty);
+        party.removeUserParty(userParty);
+
         // 사용자와 모임 연결 제거
         userPartyRepository.delete(userParty);
 
@@ -187,6 +194,10 @@ public class PartyService {
 
         // 모임 차단
         BlockParty blockParty = new BlockParty(user, party);
+
+        // 연관관계 편의 메소드를 사용해 양방향 관계 해제
+        user.removeUserParty(userParty);
+        party.removeUserParty(userParty);
 
         // 사용자와 모임 연결 제거 (모임에서 나가기)
         userPartyRepository.delete(userParty);

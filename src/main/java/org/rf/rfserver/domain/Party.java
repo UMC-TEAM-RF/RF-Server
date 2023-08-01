@@ -66,4 +66,14 @@ public class Party {
         //this.rule = rule;
         //this.tags = tags;
     }
+
+    public void addUserParty(UserParty userParty) {
+        this.users.add(userParty);
+        userParty.setParty(this);
+    }
+
+    public void removeUserParty(UserParty userParty) {
+        this.users.remove(userParty);
+        userParty.setParty(null);
+    }
 }
