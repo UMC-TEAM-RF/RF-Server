@@ -85,8 +85,16 @@ public class PartyController {
     }
 
     // 모임 조회 (차단한 모임 빼고)
-    @GetMapping("/non-blocked")
+    /*@GetMapping("/non-blocked")
     public BaseResponse<List<GetPartyRes>> getNonBlockedParties(@RequestParam("userId") Long userId) {
+        try {
+            return new BaseResponse<>(partyService.getNonBlockedParties(userId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }*/
+    @GetMapping("/non-blocked/{userId}")
+    public BaseResponse<List<GetPartyRes>> getNonBlockedParties(@PathVariable("userId") Long userId) {
         try {
             return new BaseResponse<>(partyService.getNonBlockedParties(userId));
         } catch (BaseException e) {
