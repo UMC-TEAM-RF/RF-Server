@@ -4,6 +4,8 @@ package org.rf.rfserver.mail.service;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.*;
+import org.rf.rfserver.mail.domain.MailMessage;
+import org.rf.rfserver.mail.domain.MailRegex;
 import org.rf.rfserver.mail.dto.PostCheckReq;
 import org.rf.rfserver.mail.dto.PostCheckRes;
 import org.rf.rfserver.mail.dto.PostSendReq;
