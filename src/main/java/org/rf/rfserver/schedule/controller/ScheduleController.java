@@ -3,9 +3,7 @@ package org.rf.rfserver.schedule.controller;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
-import org.rf.rfserver.schedule.dto.GetScheduleRes;
-import org.rf.rfserver.schedule.dto.PostScheduleReq;
-import org.rf.rfserver.schedule.dto.PostScheduleRes;
+import org.rf.rfserver.schedule.dto.*;
 import org.rf.rfserver.schedule.service.ScheduleService;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,5 +44,24 @@ public class ScheduleController {
 //            return new BaseResponse<>(e.getStatus());
 //        }
 //    }
+
+    @PatchMapping("/{scheduleId}")
+    public BaseResponse<PatchScheduleRes> updateSchedule(@PathVariable ("scheduleId") Long scheduleId, @RequestBody PatchScheduleReq patchScheduleReq){
+        try{
+            return new BaseResponse<>(scheduleService.updateSchedule(scheduleId,patchScheduleReq));
+        } catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @DeleteMapping("/{scheduleId}")
+    public BaseResponse<DeleteScheduleRes> deleteSchedule(@PathVariable ("scheduleId") Long scheduleId){
+        try{
+            return new BaseResponse<>(scheduleService.deleteSchedule(scheduleId));
+        } catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
 
 }

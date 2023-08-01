@@ -1,14 +1,14 @@
 package org.rf.rfserver.schedule.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.Party;
 import org.rf.rfserver.domain.Schedule;
 import org.rf.rfserver.party.PartyRepository;
-import org.rf.rfserver.schedule.dto.GetScheduleRes;
-import org.rf.rfserver.schedule.dto.PostScheduleReq;
-import org.rf.rfserver.schedule.dto.PostScheduleRes;
+import org.rf.rfserver.schedule.dto.*;
 import org.rf.rfserver.schedule.repository.ScheduleRepository;
+import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 
@@ -24,6 +24,8 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final PartyRepository partyRepository;
+
+    private final UserRepository userRepository;
 
     //일정 생성
     public PostScheduleRes createSchedule(PostScheduleReq postScheduleReq) throws BaseException {
@@ -60,6 +62,35 @@ public class ScheduleService {
         return schedules.stream()
                 .map(GetScheduleRes::new)
                 .collect(Collectors.toList());
-        }
+    }
 
+//    public List<GetScheduleRes> getScheduleByUser(Long userId) throws BaseException{
+//        //해당 유저가 존재하는지 확인
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+//
+//
+//    }
+    //일정 수정
+    @Transactional
+    public PatchScheduleRes updateSchedule(Long scheduleId, PatchScheduleReq patchScheduleReq) throws BaseException{
+        try{
+            Schedule schedule = scheduleRepository.getReferenceById(scheduleId);
+            schedule.updateSchedule(patchScheduleReq.getScheduleName(), patchScheduleReq.getLocalDateTime(), patchScheduleReq.getLocation(),
+                    patchScheduleReq.getAlert());
+            return new PatchScheduleRes(true);
+        } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //일정 삭제
+    public DeleteScheduleRes deleteSchedule(Long scheduleId) throws BaseException{
+        try {
+            scheduleRepository.deleteById(scheduleId);
+            return new DeleteScheduleRes(true);
+        } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

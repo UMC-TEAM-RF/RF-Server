@@ -20,13 +20,13 @@ public class Schedule {
     private LocalDateTime datetime;
     private String location;
     private int participantCount;
-    private int alert;
+    private Integer alert;
 
     @ManyToOne(fetch = LAZY)
     private Party party;
 
     @Builder
-    public Schedule(Long id, String scheduleName, LocalDateTime datetime, String location, int participantCount, int alert, Party party){
+    public Schedule(Long id, String scheduleName, LocalDateTime datetime, String location, int participantCount, Integer alert, Party party){
         this.id = id;
         this.scheduleName = scheduleName;
         this.datetime = datetime;
@@ -34,5 +34,14 @@ public class Schedule {
         this.participantCount = participantCount;
         this.alert = alert;
         this.party = party;
+    }
+
+    public Schedule updateSchedule(String scheduleName, LocalDateTime datetime, String location, Integer alert){
+        this.scheduleName = scheduleName ==  null ? this.scheduleName : scheduleName;
+        this.datetime = datetime == null ? this.datetime : datetime;
+        this.location = location == null ? this.location : location;
+        this.alert = alert == null ? this.alert : alert;
+
+        return this;
     }
 }
