@@ -34,7 +34,6 @@ public class Party {
 //    @JoinTable(name = "Tag"
 //            , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
 //    private List<PartyTag> tags;
-
     @OneToMany(mappedBy = "party")
     private List<PartyInterest> interests;
     @OneToMany(mappedBy = "party")
