@@ -6,7 +6,6 @@ import org.rf.rfserver.chat.dto.ChatRes;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.lang.Nullable;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class ChatSubscriber implements MessageListener {
     private final SimpMessageSendingOperations messagingTemplate;
 
     @Override
-    public void onMessage(Message message, @Nullable byte[] pattern) {
+    public void onMessage(Message message, byte[] pattern) {
         String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
         ChatRes chatRes = new ChatRes();
         try {
