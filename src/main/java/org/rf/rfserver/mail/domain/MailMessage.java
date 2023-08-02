@@ -1,4 +1,4 @@
-package org.rf.rfserver.domain;
+package org.rf.rfserver.mail.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
