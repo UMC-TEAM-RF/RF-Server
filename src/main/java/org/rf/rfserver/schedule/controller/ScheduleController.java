@@ -35,15 +35,15 @@ public class ScheduleController {
         }
     }
 
-    //user 일정 조회
-//    @GetMapping("/{userId}")
-//    public BaseResponse<List<GetScheduleRes>> getScheduleByUser(@PathVariable ("userId") Long userId){
-//        try{
-//            return new BaseResponse<>(scheduleService.getScheduleByUser(userId));
-//        } catch (BaseException e){
-//            return new BaseResponse<>(e.getStatus());
-//        }
-//    }
+    //유저 일정 조회
+    @GetMapping("/{userId}")
+    public BaseResponse<List<GetScheduleRes>> getScheduleByUser(@PathVariable ("userId") Long userId){
+        try{
+            return new BaseResponse<>(scheduleService.getScheduleByUser(userId));
+        } catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 
     @PatchMapping("/{scheduleId}")
     public BaseResponse<PatchScheduleRes> updateSchedule(@PathVariable ("scheduleId") Long scheduleId, @RequestBody PatchScheduleReq patchScheduleReq){

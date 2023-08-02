@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.Party;
 import org.rf.rfserver.domain.Schedule;
+import org.rf.rfserver.domain.User;
+import org.rf.rfserver.domain.UserParty;
 import org.rf.rfserver.party.PartyRepository;
 import org.rf.rfserver.schedule.dto.*;
 import org.rf.rfserver.schedule.repository.ScheduleRepository;
@@ -12,6 +14,7 @@ import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,13 +67,29 @@ public class ScheduleService {
                 .collect(Collectors.toList());
     }
 
-//    public List<GetScheduleRes> getScheduleByUser(Long userId) throws BaseException{
-//        //해당 유저가 존재하는지 확인
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
-//
-//
-//    }
+    //유저별 일정 조회
+    public List<GetScheduleRes> getScheduleByUser(Long userId) throws BaseException{
+        //해당 유저가 존재하는지 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+
+        //유저가 가입한 모임 목록을 가져옴
+        List<UserParty> userParties = userPartyRepository.findByUser(userId);
+
+        List<Schedule> schedules = new ArrayList<>();
+
+        //각 모임들의 일정을 모두 schedule list에 추가
+        for(UserParty userParty : userParties){
+            Party party = userParty.getParty();
+            List<Schedule> partySchedules = scheduleRepository.findByParty(party);
+            schedules.addAll(partySchedules);
+        }
+
+        return schedules.stream()
+                .map(GetScheduleRes::new)
+                .collect(Collectors.toList());
+    }
+
     //일정 수정
     @Transactional
     public PatchScheduleRes updateSchedule(Long scheduleId, PatchScheduleReq patchScheduleReq) throws BaseException{
