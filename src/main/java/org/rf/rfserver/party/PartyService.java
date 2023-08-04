@@ -2,6 +2,7 @@ package org.rf.rfserver.party;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.rf.rfserver.config.s3.S3Uploader;
 import org.rf.rfserver.constant.Interest;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.*;
@@ -10,6 +11,7 @@ import org.rf.rfserver.party.dto.GetPartyRes;
 import org.rf.rfserver.party.dto.PostPartyReq;
 import org.rf.rfserver.party.dto.PostPartyRes;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -23,9 +25,11 @@ public class PartyService {
     private final PartyRepository partyRepository;
     private final PartyInterestRepository partyInterestRepository;
 
-    public PostPartyRes createParty(PostPartyReq postPartyReq) throws BaseException {
+    private final S3Uploader s3Uploader;
+
+    public PostPartyRes createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
         try {
-            Party party = partyRepository.save(Party.builder()
+            Party party = Party.builder()
                     .name(postPartyReq.getName())
                     .content(postPartyReq.getContent())
                     .location(postPartyReq.getLocation())
@@ -37,11 +41,19 @@ public class PartyService {
                     .nativeCount(postPartyReq.getNativeCount())
                     .ownerId(postPartyReq.getOwnerId())
                     //      .rule(postPartyReq.getRules())
-                    .build());
-            for (Interest interest : postPartyReq.getInterests()) {
-                PartyInterest partyInterest = partyInterestRepository.save(new PartyInterest(interest, party));
-                partyInterest.getParty().getInterests().add(partyInterest);
+                    .build();
+//            for (Interest interest : postPartyReq.getInterests()) {
+//                PartyInterest partyInterest = partyInterestRepository.save(new PartyInterest(interest, party));
+//                partyInterest.getParty().getInterests().add(partyInterest);
+//            }
+
+            //file 비어있는지 체크
+            if(file != null){
+                String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
+                party.updateImageUrl(imageFilePath);
             }
+            partyRepository.save(party);
+
             return new PostPartyRes(party.getId());
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
