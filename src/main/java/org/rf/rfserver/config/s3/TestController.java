@@ -16,7 +16,7 @@ public class TestController {
 
     @PostMapping("/upload")
     public ResponseEntity<String> upload(@RequestPart(value = "file") MultipartFile multipartFile) throws IOException {
-        String s3FilePath = s3Uploader.upload(multipartFile, "test");
+        String s3FilePath = s3Uploader.fileUpload(multipartFile, "test");
         return ResponseEntity.ok().body(s3FilePath);
     }
 }
