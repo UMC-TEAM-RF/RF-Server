@@ -1,4 +1,4 @@
-package org.rf.rfserver.party.dto;
+package org.rf.rfserver.blockParty.dto;
 
 import lombok.Builder;
 import lombok.Getter;
