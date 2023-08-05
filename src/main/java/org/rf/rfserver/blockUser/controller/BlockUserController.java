@@ -1,14 +1,14 @@
 package org.rf.rfserver.blockUser.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.rf.rfserver.blockUser.dto.DeleteBlockUserRes;
-import org.rf.rfserver.blockUser.dto.GetBlockUserRes;
-import org.rf.rfserver.blockUser.dto.PostBlockUserReq;
-import org.rf.rfserver.blockUser.dto.PostBlockUserRes;
+import org.rf.rfserver.blockUser.dto.*;
 import org.rf.rfserver.blockUser.service.BlockUserService;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
+import org.rf.rfserver.domain.User;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,6 +37,20 @@ public class BlockUserController {
     public BaseResponse<DeleteBlockUserRes> deleteBlock(@PathVariable("blockId") Long blockId) {
         try {
             return new BaseResponse<>(blockService.deleteBlock(blockId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 사용자가 차단한 사용자 리스트 조회
+     * @param userId
+     * @return List[GetBlockUserRes]
+     */
+    @GetMapping("/user/{userId}")
+    public BaseResponse<List<GetBlockUserRes>> getBlocks(@PathVariable("userId") User userId) {
+        try {
+            return new BaseResponse<>(blockService.getUserBlocks(userId));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
