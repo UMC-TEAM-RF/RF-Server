@@ -2,7 +2,8 @@ package org.rf.rfserver.party.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.rf.rfserver.party.repository.BlockPartyRepository;
+import org.rf.rfserver.blockParty.dto.BlockPartyRes;
+import org.rf.rfserver.blockParty.repository.BlockPartyRepository;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.*;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;

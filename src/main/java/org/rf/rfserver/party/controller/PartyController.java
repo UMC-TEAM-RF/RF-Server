@@ -1,6 +1,7 @@
 package org.rf.rfserver.party.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.rf.rfserver.blockParty.dto.BlockPartyRes;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
 
@@ -55,7 +56,7 @@ public class PartyController {
     }
 
     // 모임 들어가기
-    @PostMapping(value = "/join")
+    @PostMapping("/join")
     public BaseResponse<JoinPartyRes> joinParty(@RequestBody JoinPartyReq joinPartyReq) {
         try {
             return new BaseResponse<>(partyService.joinParty(joinPartyReq.getUserId(), joinPartyReq.getPartyId()));
@@ -84,16 +85,7 @@ public class PartyController {
         }
     }
 
-    // 모임 조회 (차단한 모임 빼고)
-    /*@GetMapping("/non-blocked")
-    public BaseResponse<List<GetPartyRes>> getNonBlockedParties(@RequestParam("userId") Long userId) {
-        try {
-            return new BaseResponse<>(partyService.getNonBlockedParties(userId));
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
-    }*/
-    @GetMapping("/non-blocked/{userId}")
+    @GetMapping("/user/{userId}")
     public BaseResponse<List<GetPartyRes>> getNonBlockedParties(@PathVariable("userId") Long userId) {
         try {
             return new BaseResponse<>(partyService.getNonBlockedParties(userId));
