@@ -4,10 +4,12 @@ package org.rf.rfserver.mail.service;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.*;
+import org.rf.rfserver.mail.domain.MailRegex;
 import org.rf.rfserver.mail.dto.PostCheckReq;
 import org.rf.rfserver.mail.dto.PostCheckRes;
 import org.rf.rfserver.mail.dto.PostSendReq;
 import org.rf.rfserver.mail.dto.PostSendRes;
+import org.rf.rfserver.mail.domain.MailMessage;
 import org.rf.rfserver.mail.exception.InvalidMailException;
 import org.rf.rfserver.mail.exception.UnauthorizedException;
 import org.springframework.mail.SimpleMailMessage;
@@ -119,9 +121,12 @@ public class MailService {
     private final Map<String, String> universityNameMap = new HashMap<>(); {
         // 대학교 이름과 해당 변환 이름을 매핑
         universityNameMap.put("inha.edu", "인하대학교");
+        universityNameMap.put("inha.ac.kr", "인하대학교");
         universityNameMap.put("hanyang.ac.kr", "한양대학교");
+        universityNameMap.put("hmail.hanyang.ac.kr", "한양대학교");
         universityNameMap.put("tukorea.ac.kr", "한국공학대학교");
         universityNameMap.put("catholic.ac.kr", "가톨릭대학교");
+        universityNameMap.put("songeui.ac.kr", "가톨릭대학교");
         // 다른 대학교에 대한 매핑도 필요하면 여기에 추가로 작성 예정
     }
 }

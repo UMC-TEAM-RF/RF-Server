@@ -9,7 +9,6 @@ import org.rf.rfserver.constant.Mbti;
 import org.rf.rfserver.constant.University;
 
 import java.util.List;
-
 @Getter
 @AllArgsConstructor
 public class PostUserReq {
