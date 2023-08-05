@@ -9,16 +9,13 @@ import java.util.stream.Stream;
 
 @Getter
 @RequiredArgsConstructor
-public enum Country {
-    UNITED_STATES(1L, "미국")
-    ,JAPAN(81L, "일본")
-    ,KOREA(82L,"한국")
-    ,CHINA(86L, "중국")
+public enum Country implements EnumModel{
+    UNITED_STATES("미국")
+    ,JAPAN("일본")
+    ,KOREA("한국")
+    ,CHINA("중국")
     ;
-    private final Long code;
-    private final String koreanname;
-    private static final Map<Long, Country> BY_CODE = Stream.of(values()).collect(Collectors.toMap(Country::getCode, e->e));
-    public static Country getCountryByCode(Long code) {
-        return BY_CODE.get(code);
-    }
+    private final String value;
+    @Override
+    public String getKey() {return name();}
 }

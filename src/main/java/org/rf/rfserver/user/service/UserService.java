@@ -22,7 +22,7 @@ public class UserService {
                 .entrance(postUserReq.getEntrance())
                 .university(postUserReq.getUniversity())
                 .nickName(postUserReq.getNickName())
-                .country(Country.getCountryByCode(postUserReq.getCountryCode()))
+                .country(postUserReq.getCountry())
                 .interestingLanguages(postUserReq.getInterestingLanguages())
                 .introduce(postUserReq.getIntroduce())
                 .mbti(postUserReq.getMbti())

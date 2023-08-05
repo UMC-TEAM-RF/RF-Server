@@ -13,7 +13,7 @@ public class PostUserReq {
     private int entrance;
     private University university;
     private String nickName;
-    private Long countryCode;
+    private Country country;
     private List<Language> interestingLanguages;
     private String introduce;
     private Mbti mbti;

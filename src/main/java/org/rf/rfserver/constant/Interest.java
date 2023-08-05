@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Interest {
+public enum Interest implements EnumModel{
     MUSIC("음악")
     ,KPOP("K-pop")
     ,SPORT("스포츠")
@@ -23,5 +23,8 @@ public enum Interest {
     ,GRADE("학점")
     ,READING("독서")
     ;
-    private final String realName;
+    private final String value;
+
+    @Override
+    public String getKey() {return name();}
 }

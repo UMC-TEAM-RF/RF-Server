@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Rule {
+public enum Rule implements EnumModel{
     NONE("해당사항 없음")
     ,ACTIVE("활동적인 걸 원해요")
     ,QUICK_RESPONSE("빠른 답변을 원해요")
@@ -22,5 +22,7 @@ public enum Rule {
     ,DAILY_TALK("하루에 한 번 대화는 꼭 참여해요")
     ,FREE_MOOD("자유로운 분위기를 원해요")
     ;
-    private final String comment;
+    private final String value;
+    @Override
+    public String getKey() {return name();}
 }
