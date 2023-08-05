@@ -65,7 +65,7 @@ public class PartyService {
 
     public GetPartyRes getParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
-                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+                .orElseThrow(() -> new BaseException(INVALID_PARTY));
         return GetPartyRes.builder()
                 .id(party.getId())
                 .name(party.getName())
@@ -88,7 +88,7 @@ public class PartyService {
 
     public DeletePartyRes deleteParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
-                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+                .orElseThrow(() -> new BaseException(INVALID_PARTY));
         deletePartyInterests(party.getInterests());
         deleteUserParty(party.getUserParties());
         partyRepository.delete(party);
@@ -110,9 +110,9 @@ public class PartyService {
 
     public PostJoinApplicationRes joinApply(PostJoinApplicationReq postJoinApplyReq) throws BaseException {
         User user = userRepository.findById(postJoinApplyReq.getUserId())
-                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+                .orElseThrow(() -> new BaseException(INVALID_USER));
         Party party = partyRepository.findById(postJoinApplyReq.getPartyId())
-                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+                .orElseThrow(() -> new BaseException(INVALID_PARTY));
         PartyJoinApplication partyJoinApplication = new PartyJoinApplication(user, party);
         partyJoinApplicationRepository.save(partyJoinApplication);
         return new PostJoinApplicationRes(partyJoinApplication.getId());
@@ -120,21 +120,21 @@ public class PartyService {
 
     public PostApproveJoinRes approveJoin(PostApproveJoinReq postApproveJoinReq) throws BaseException {
         User user = userRepository.findById(postApproveJoinReq.getUserId())
-                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+                .orElseThrow(() -> new BaseException(INVALID_USER));
         Party party = partyRepository.findById(postApproveJoinReq.getPartyId())
-                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+                .orElseThrow(() -> new BaseException(INVALID_PARTY));
         UserParty userParty = new UserParty(party, user);
         userParty.setParty(party);
         userParty.setUser(user);
         userPartyRepository.save(userParty);
         partyJoinApplicationRepository.delete(partyJoinApplicationRepository.findById(postApproveJoinReq.getPartyJoinApplyId())
-                .orElseThrow(() -> new BaseException(REQUEST_ERROR)));
+                .orElseThrow(() -> new BaseException(INVALID_JOIN_APPLICATION)));
         return new PostApproveJoinRes(postApproveJoinReq.getPartyJoinApplyId());
     }
 
     public PostDenyJoinRes denyJoin(PostDenyJoinReq postApprovePartyJoinReq) throws BaseException {
         partyJoinApplicationRepository.delete(partyJoinApplicationRepository.findById(postApprovePartyJoinReq.getPartyJoinApplyId())
-                .orElseThrow(() -> new BaseException(REQUEST_ERROR)));
+                .orElseThrow(() -> new BaseException(INVALID_JOIN_APPLICATION)));
         return new PostDenyJoinRes(postApprovePartyJoinReq.getPartyJoinApplyId());
     }
 }
