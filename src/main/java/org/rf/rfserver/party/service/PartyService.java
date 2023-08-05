@@ -96,13 +96,13 @@ public class PartyService {
     }
 
     public void deletePartyInterests(List<PartyInterest> partyInterests) { //party를 삭제할때 partyInterest 테이블에서 연관 데이터삭제
-        for (PartyInterest partyInterest: partyInterests) {
+        for (PartyInterest partyInterest : partyInterests) {
             partyInterestRepository.delete(partyInterest);
         }
     }
 
     public void deleteUserParty(List<UserParty> userParties) {
-        for (UserParty userParty: userParties) {
+        for (UserParty userParty : userParties) {
             userParty.getUser().getUserParties().remove(userParty);
             userPartyRepository.delete(userParty);
         }
@@ -118,7 +118,7 @@ public class PartyService {
         return new PostJoinApplicationRes(partyJoinApplication.getId());
     }
 
-    public PostApproveJoinRes join(PostApproveJoinReq postApproveJoinReq) throws BaseException {
+    public PostApproveJoinRes approveJoin(PostApproveJoinReq postApproveJoinReq) throws BaseException {
         User user = userRepository.findById(postApproveJoinReq.getUserId())
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
         Party party = partyRepository.findById(postApproveJoinReq.getPartyId())
@@ -137,5 +137,4 @@ public class PartyService {
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR)));
         return new PostDenyJoinRes(postApprovePartyJoinReq.getPartyJoinApplyId());
     }
-
 }

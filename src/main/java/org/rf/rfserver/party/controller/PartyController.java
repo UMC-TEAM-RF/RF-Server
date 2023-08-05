@@ -62,12 +62,11 @@ public class PartyController {
     @PostMapping("/join/apply/approve")
     public BaseResponse<PostApproveJoinRes> approveJoin(@RequestBody PostApproveJoinReq postApproveJoinReq) {
         try {
-            return new BaseResponse<>(partyService.join(postApproveJoinReq));
+            return new BaseResponse<>(partyService.approveJoin(postApproveJoinReq));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
-
 
     @PostMapping("/join/apply/deny")
     public BaseResponse<PostDenyJoinRes> denyJoin(@RequestBody PostDenyJoinReq postDenyJoinReq) {
