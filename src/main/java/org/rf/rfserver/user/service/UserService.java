@@ -5,9 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.User;
 import org.rf.rfserver.constant.Country;
-import org.rf.rfserver.constant.Language;
 import org.rf.rfserver.user.dto.*;
-import org.rf.rfserver.user.enums.Mbti;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 

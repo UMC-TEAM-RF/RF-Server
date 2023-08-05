@@ -3,7 +3,7 @@ package org.rf.rfserver.user.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.rf.rfserver.constant.Language;
-import org.rf.rfserver.user.enums.Mbti;
+import org.rf.rfserver.constant.Mbti;
 
 import java.util.List;
 

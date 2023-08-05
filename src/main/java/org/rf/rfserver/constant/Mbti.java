@@ -1,4 +1,4 @@
-package org.rf.rfserver.user.enums;
+package org.rf.rfserver.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -2,11 +2,6 @@ package org.rf.rfserver.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.rf.rfserver.constant.Country;
-import org.rf.rfserver.constant.Interest;
-import org.rf.rfserver.constant.Language;
-import org.rf.rfserver.user.enums.Mbti;
-import org.rf.rfserver.user.enums.University;
 
 import java.util.List;
 
