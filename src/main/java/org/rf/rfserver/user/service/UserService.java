@@ -9,8 +9,6 @@ import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
-
 import static org.rf.rfserver.config.BaseResponseStatus.DATABASE_ERROR;
 
 @RequiredArgsConstructor
@@ -31,6 +29,7 @@ public class UserService {
                 .email(postUserReq.getEmail())
                 .interestCountries(postUserReq.getInterestCountries())
                 .userInterests(postUserReq.getInterests())
+                .lifeStyle(postUserReq.getLifeStyle())
                 .build();
         try {
             userRepository.save(user);
@@ -54,6 +53,7 @@ public class UserService {
                     , user.getEmail()
                     , user.getInterestCountries()
                     , user.getUserInterests()
+                    , user.getLifeStyle()
             );
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
@@ -70,6 +70,7 @@ public class UserService {
                     , patchUserReq.getInterestingLanguages()
                     , patchUserReq.getIntroduce()
                     , patchUserReq.getMbti()
+                    , patchUserReq.getLifeStyle()
             );
             return new PatchUserRes(true);
         } catch (Exception e) {

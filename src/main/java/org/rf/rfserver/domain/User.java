@@ -5,11 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.rf.rfserver.constant.Interest;
-import org.rf.rfserver.constant.Country;
-import org.rf.rfserver.constant.Language;
-import org.rf.rfserver.constant.Mbti;
-import org.rf.rfserver.constant.University;
+import org.rf.rfserver.constant.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,11 +40,13 @@ public class User {
     private List<Country> interestCountries;
     @Enumerated(EnumType.STRING)
     private List<Interest> userInterests;
+    @Enumerated(EnumType.STRING)
+    private LifeStyle lifeStyle;
 
     @Builder
     public User(String loginId, String password, int entrance, University university, String nickName
             , Country country, List<Language> interestingLanguages, String introduce, Mbti mbti
-            , String email, List<Country> interestCountries, List<Interest> userInterests) {
+            , String email, List<Country> interestCountries, List<Interest> userInterests, LifeStyle lifeStyle) {
         this.loginId= loginId;
         this.password = password;
         this.entrance = entrance;
@@ -64,14 +62,16 @@ public class User {
         this.email = email;
         this.interestCountries = interestCountries;
         this.userInterests = userInterests;
+        this.lifeStyle = lifeStyle;
     }
 
-    public User updateUser(String nickName, String password, List<Language> interestingLanguages, String introduce, Mbti mbti) {
+    public User updateUser(String nickName, String password, List<Language> interestingLanguages, String introduce, Mbti mbti, LifeStyle lifeStyle) {
         this.nickName = nickName == null ? this.nickName : nickName;
         this.password = password == null ? this.password : password;
         this.interestingLanguages = interestingLanguages == null ? this.interestingLanguages : interestingLanguages;
         this.introduce = introduce == null ? this.introduce : introduce;
         this.mbti = mbti == null ? this.mbti : mbti;
+        this.lifeStyle = lifeStyle;
         return this;
     }
 }

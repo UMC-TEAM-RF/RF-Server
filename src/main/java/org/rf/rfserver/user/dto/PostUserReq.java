@@ -2,11 +2,7 @@ package org.rf.rfserver.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.rf.rfserver.constant.Country;
-import org.rf.rfserver.constant.Interest;
-import org.rf.rfserver.constant.Language;
-import org.rf.rfserver.constant.Mbti;
-import org.rf.rfserver.constant.University;
+import org.rf.rfserver.constant.*;
 
 import java.util.List;
 @Getter
@@ -24,4 +20,5 @@ public class PostUserReq {
     private String email;
     private List<Country> interestCountries;
     private List<Interest> interests;
+    private LifeStyle lifeStyle;
 }

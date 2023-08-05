@@ -19,4 +19,5 @@ public class GetUserRes {
     private String email;
     private List<Country> interestCountries;
     private List<Interest> interests;
+    private LifeStyle lifeStyle;
 }
