@@ -233,4 +233,34 @@ public class PartyService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    /**
+     * 클라이언트가 속한 그룹 리스트를 조회 서비스
+     * @param userId
+     * @return List[GetPartyRes]
+     * @throws BaseException
+     */
+    public List<GetPartyRes> getUsersParties(Long userId) throws BaseException {
+        userRepository.findById(userId).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
+        List<UserParty> usersParties = userPartyRepository.findUserPartiesByUserId(userId);
+
+        return usersParties.stream()
+                .map(userParty -> GetPartyRes.builder()
+                        .id(userParty.getParty().getId())
+                        .name(userParty.getParty().getName())
+                        .content(userParty.getParty().getContent())
+                        .location(userParty.getParty().getLocation())
+                        .language(userParty.getParty().getLanguage())
+                        .imageFilePath(userParty.getParty().getImageFilePath())
+                        .preferAges(userParty.getParty().getPreferAges())
+                        .createdDate(userParty.getParty().getCreatedDate())
+                        .memberCount(userParty.getParty().getMemberCount())
+                        .nativeCount(userParty.getParty().getNativeCount())
+                        .ownerId(userParty.getParty().getOwnerId())
+                        .users(userParty.getParty().getUsers())
+                        .schedules(userParty.getParty().getSchedules())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }

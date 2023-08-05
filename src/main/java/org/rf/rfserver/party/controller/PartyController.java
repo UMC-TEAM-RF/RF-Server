@@ -101,4 +101,18 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    /**
+     * 클라이언트가 속한 그룹 리스트를 조회 컨트롤러
+     * @param userId
+     * @return List[GetPartyRes]
+     */
+    @GetMapping("/user/{userId}")
+    public BaseResponse<List<GetPartyRes>> getUsersParties(@PathVariable("userId") Long userId) {
+        try {
+            return new BaseResponse<>(partyService.getUsersParties(userId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }
