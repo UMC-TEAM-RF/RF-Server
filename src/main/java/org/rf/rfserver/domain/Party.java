@@ -24,6 +24,7 @@ public class Party {
     @Enumerated(EnumType.STRING)
     private Language language;
     private String imageFilePath;
+    @Enumerated(EnumType.STRING)
     private PreferAges preferAges;
     private LocalDateTime createdDate;
     private int memberCount;

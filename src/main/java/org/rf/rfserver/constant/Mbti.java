@@ -10,22 +10,21 @@ import java.util.stream.Stream;
 @Getter
 @RequiredArgsConstructor
 public enum Mbti {
-    INFP("INFP")
-    ,INFJ("INFJ")
-    ,INTP("INTP")
-    ,INTJ("INTJ")
-    ,ISFP("ISFP")
-    ,ISFJ("ISFJ")
-    ,ISTP("ISTP")
-    ,ISTJ("ISTJ")
-    ,ENFP("ENFP")
-    ,ENFJ("ENFJ")
-    ,ENTP("ENTP")
-    ,ENTJ("ENTJ")
-    ,ESFP("ESFP")
-    ,ESFJ("ESFJ")
-    ,ESTP("ESTP")
-    ,ESTJ("ESTJ")
+    INFP
+    ,INFJ
+    ,INTP
+    ,INTJ
+    ,ISFP
+    ,ISFJ
+    ,ISTP
+    ,ISTJ
+    ,ENFP
+    ,ENFJ
+    ,ENTP
+    ,ENTJ
+    ,ESFP
+    ,ESFJ
+    ,ESTP
+    ,ESTJ
     ;
-    private final String name;
 }

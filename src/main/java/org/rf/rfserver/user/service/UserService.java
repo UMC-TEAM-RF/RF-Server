@@ -45,21 +45,15 @@ public class UserService {
             User user = userRepository.getReferenceById(userId);
             return new GetUserRes(
                     user.getNickName()
-                    , user.getUniversity().getKoreanName()
-                    , user.getInterestingLanguages().stream()
-                        .map(language -> language.getKoreanName())
-                        .collect(Collectors.toList())
+                    , user.getUniversity()
+                    , user.getInterestingLanguages()
                     , user.getIntroduce()
-                    , user.getCountry().getKoreanname()
-                    , user.getMbti().getName()
+                    , user.getCountry()
+                    , user.getMbti()
                     , user.getEntrance()
                     , user.getEmail()
-                    , user.getInterestCountries().stream()
-                        .map(country -> country.getKoreanname())
-                        .collect(Collectors.toList())
-                    , user.getUserInterests().stream()
-                        .map(interest -> interest.getRealName())
-                        .collect(Collectors.toList())
+                    , user.getInterestCountries()
+                    , user.getUserInterests()
             );
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);

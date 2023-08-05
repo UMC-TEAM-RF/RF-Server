@@ -24,9 +24,9 @@ public class User {
     private String loginId;
     private String password;
     private String nickName;
+    @Enumerated(EnumType.STRING)
     private University university;
     @Enumerated(EnumType.STRING)
-//    @ElementCollection(fetch = FetchType.LAZY) -> 해당 필드의 테이블 생성하여 관리함
     private List<Language> interestingLanguages;
     private String introduce;
     @Enumerated(EnumType.STRING)
@@ -41,10 +41,8 @@ public class User {
     private Boolean isEmailVerified;
 
     @Enumerated(EnumType.STRING)
-//    @ElementCollection(fetch = FetchType.LAZY)
     private List<Country> interestCountries;
     @Enumerated(EnumType.STRING)
-//    @ElementCollection(fetch = FetchType.LAZY)
     private List<Interest> userInterests;
 
     @Builder

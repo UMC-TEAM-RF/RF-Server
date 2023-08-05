@@ -2,6 +2,7 @@ package org.rf.rfserver.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.rf.rfserver.constant.*;
 
 import java.util.List;
 
@@ -9,13 +10,13 @@ import java.util.List;
 @Getter
 public class GetUserRes {
     private String nickName;
-    private String universityName;
-    private List<String> interestingLanguageNames;
+    private University university;
+    private List<Language> interestingLanguages;
     private String introduce;
-    private String countryName;
-    private String mbtiName;
+    private Country country;
+    private Mbti mbti;
     private int entrance;
     private String email;
-    private List<String> interestCountrieNames;
-    private List<String> interestNames;
+    private List<Country> interestCountries;
+    private List<Interest> interests;
 }
