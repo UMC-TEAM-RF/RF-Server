@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.rf.rfserver.constant.*;
 
 
 import java.time.LocalDateTime;
@@ -20,32 +21,26 @@ public class Party {
     private String name;
     private String content;
     private String location;
-    private String language;
+    @Enumerated(EnumType.STRING)
+    private Language language;
     private String imageFilePath;
-    private String preferAges;
+    private PreferAges preferAges;
     private LocalDateTime createdDate;
     private int memberCount;
     private int nativeCount;
     private int ownerId;
-//    @OneToMany
-//    @JoinColumn(name = "PartyRule")
-//    private List<PartyRule> rule;
-//    @OneToMany
-//    @JoinTable(name = "Tag"
-//            , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "party"))
-//    private List<PartyTag> tags;
-
-    @OneToMany(mappedBy = "party")
-    private List<PartyInterest> interests;
+    @Enumerated(EnumType.STRING)
+    private List<Rule> rules;
+    @Enumerated(EnumType.STRING)
+    private List<Interest> interests;
     @OneToMany(mappedBy = "party")
     private List<Schedule> schedules;
     @OneToMany(mappedBy = "party")
     private List<UserParty> users;
 
     @Builder
-    public Party(Long id, String name, String content,String location, String language, String imageFilePath, String preferAges,
-                 LocalDateTime createdDate, int memberCount, int nativeCount, int ownerId) {
-        this.id = id;
+    public Party(String name, String content,String location, Language language, String imageFilePath, PreferAges preferAges,
+                 LocalDateTime createdDate, int memberCount, int nativeCount, int ownerId, List<Rule> rules, List<Interest> interests) {
         this.name = name;
         this.content = content;
         this.location = location;
@@ -56,10 +51,9 @@ public class Party {
         this.memberCount = memberCount;
         this.nativeCount = nativeCount;
         this.ownerId = ownerId;
-        this.interests = new ArrayList<>();
+        this.rules = rules;
+        this.interests = interests;
         this.schedules = new ArrayList<>();
         this.users = new ArrayList<>();
-        //this.rule = rule;
-        //this.tags = tags;
     }
 }

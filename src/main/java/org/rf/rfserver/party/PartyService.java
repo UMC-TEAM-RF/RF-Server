@@ -2,16 +2,17 @@ package org.rf.rfserver.party;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.rf.rfserver.constant.Interest;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.DeletePartyRes;
 import org.rf.rfserver.party.dto.GetPartyRes;
 import org.rf.rfserver.party.dto.PostPartyReq;
 import org.rf.rfserver.party.dto.PostPartyRes;
+import org.rf.rfserver.constant.Language;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
 
@@ -21,8 +22,6 @@ import static org.rf.rfserver.config.BaseResponseStatus.*;
 public class PartyService {
 
     private final PartyRepository partyRepository;
-    private final PartyInterestRepository partyInterestRepository;
-
     public PostPartyRes createParty(PostPartyReq postPartyReq) throws BaseException {
         try {
             Party party = partyRepository.save(Party.builder()
@@ -36,12 +35,9 @@ public class PartyService {
                     .memberCount(postPartyReq.getMemberCount())
                     .nativeCount(postPartyReq.getNativeCount())
                     .ownerId(postPartyReq.getOwnerId())
-                    //      .rule(postPartyReq.getRules())
+                    .rules(postPartyReq.getRules())
+                    .interests(postPartyReq.getInterests())
                     .build());
-            for (Interest interest : postPartyReq.getInterests()) {
-                PartyInterest partyInterest = partyInterestRepository.save(new PartyInterest(interest, party));
-                partyInterest.getParty().getInterests().add(partyInterest);
-            }
             return new PostPartyRes(party.getId());
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
@@ -56,27 +52,27 @@ public class PartyService {
                 .name(party.getName())
                 .content(party.getContent())
                 .location(party.getLocation())
-                .language(party.getLanguage())
+                .languageName(party.getLanguage().getKoreanName())
                 .imageFilePath(party.getImageFilePath())
-                .preferAges(party.getPreferAges())
+                .preferAgesName(party.getPreferAges().getContent())
                 .createdDate(party.getCreatedDate())
                 .memberCount(party.getMemberCount())
                 .nativeCount(party.getNativeCount())
                 .ownerId(party.getOwnerId())
-                .users(party.getUsers())
+                .ruleNames(party.getRules().stream()
+                        .map(rule -> rule.getComment())
+                        .collect(Collectors.toList()))
+                .interestNames(party.getInterests().stream()
+                        .map(interest -> interest.getRealName())
+                        .collect(Collectors.toList()))
                 .schedules(party.getSchedules())
-                .interests(party.getInterests())
-                //.rule(party.getRule())
-                //.tags(party.getTags())
+                .users(party.getUsers())
                 .build();
     }
 
     public DeletePartyRes deleteParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
-        for (PartyInterest partyInterest: party.getInterests() ) {
-            partyInterestRepository.delete(partyInterest);
-        }
         partyRepository.delete(party);
         return DeletePartyRes.builder()
                 .id(partyId)

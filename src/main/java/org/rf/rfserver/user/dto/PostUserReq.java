@@ -2,18 +2,27 @@ package org.rf.rfserver.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.rf.rfserver.constant.Country;
+import org.rf.rfserver.constant.Interest;
+import org.rf.rfserver.constant.Language;
+import org.rf.rfserver.user.enums.Mbti;
+import org.rf.rfserver.user.enums.University;
 
-import java.time.LocalDateTime;
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 public class PostUserReq {
     private String loginId;
     private String password;
     private int entrance;
-    private String university;
+    private University university;
     private String nickName;
-    private String country;
-    private String interestingLanguage;
+    private Long countryCode;
+    private List<Language> interestingLanguages;
     private String introduce;
-    private String mbti;
+    private Mbti mbti;
+    private String email;
+    private List<Country> interestCountries;
+    private List<Interest> interests;
 }
