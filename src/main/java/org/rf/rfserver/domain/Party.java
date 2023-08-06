@@ -57,4 +57,8 @@ public class Party {
         this.schedules = new ArrayList<>();
         this.users = new ArrayList<>();
     }
+
+    public void updateImageUrl(String imageFilePath){
+        this.imageFilePath = imageFilePath;
+    }
 }
