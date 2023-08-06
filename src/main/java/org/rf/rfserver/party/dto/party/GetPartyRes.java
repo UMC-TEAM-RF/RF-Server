@@ -22,7 +22,7 @@ public class GetPartyRes {
     private LocalDateTime createdDate;
     private int memberCount;
     private int nativeCount;
-    private int ownerId;
+    private Long ownerId;
     private List<Rule> rules;
     private List<Interest> interests;
     private List<Schedule> schedules;
@@ -31,7 +31,7 @@ public class GetPartyRes {
 
     @Builder
     public GetPartyRes(Long id, String name, String content, String location, Language language, String imageFilePath, PreferAges preferAges,
-                       LocalDateTime createdDate, int memberCount, int nativeCount, int ownerId, List<Rule> rules, List<Schedule> schedules,
+                       LocalDateTime createdDate, int memberCount, int nativeCount, Long ownerId, List<Rule> rules, List<Schedule> schedules,
                        List<GetUserProfileRes> userProfiles, List<Interest> interests) {
         this.id = id;
         this.name = name;
