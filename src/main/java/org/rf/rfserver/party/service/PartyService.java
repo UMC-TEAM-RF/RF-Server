@@ -1,5 +1,6 @@
 package org.rf.rfserver.party.service;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.rf.rfserver.constant.Interest;
@@ -114,14 +115,21 @@ public class PartyService {
     }
 
     public PostJoinApplicationRes joinApply(PostJoinApplicationReq postJoinApplyReq) throws BaseException {
+        Party party = findPartyById(postJoinApplyReq.getPartyId());
+        isFullParty(party);
         User user = userService.findUserById(postJoinApplyReq.getUserId());
         userService.isExceededPartyCount(user);
-        Party party = findPartyById(postJoinApplyReq.getPartyId());
         isJoinedUser(user, party);
-
         PartyJoinApplication partyJoinApplication = new PartyJoinApplication(user, party);
         partyJoinApplicationRepository.save(partyJoinApplication);
         return new PostJoinApplicationRes(partyJoinApplication.getId());
+    }
+
+    public void isFullParty(Party party) throws BaseException {
+        if (party.getUserParties().size() > party.getMemberCount()) {
+            throw new BaseException(EXCEEDED_PARTY_USER_COUNT);
+        }
+
     }
 
     public void isJoinedUser(User user, Party party) throws BaseException {
