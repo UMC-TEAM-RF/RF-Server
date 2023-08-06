@@ -5,10 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.blockUser.dto.*;
 import org.rf.rfserver.blockUser.repository.BlockUserRepository;
 import org.rf.rfserver.config.BaseException;
-import org.rf.rfserver.domain.BlockParty;
 import org.rf.rfserver.domain.BlockUser;
 import org.rf.rfserver.domain.User;
-import org.rf.rfserver.party.repository.BlockPartyRepository;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,6 @@ import static org.rf.rfserver.config.BaseResponseStatus.DATABASE_ERROR;
 @Service
 public class BlockUserService {
     private final BlockUserRepository blockUserRepository;
-    private final BlockPartyRepository blockPartyRepository;
     private final UserRepository userRepository;
 
     public PostBlockUserRes createBlock(PostBlockUserReq blockReq) throws BaseException {

@@ -75,17 +75,7 @@ public class PartyController {
         }
     }
 
-    // 모임 차단
-    @PostMapping("/block/{userId}/{partyId}")
-    public BaseResponse<BlockPartyRes> blockParty(@PathVariable("userId") Long userId, @PathVariable("partyId") Long partyId) {
-        try {
-            return new BaseResponse<>(partyService.blockAndLeaveParty(userId, partyId));
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
-    }
-
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user/{userId}/search")
     public BaseResponse<List<GetPartyRes>> getNonBlockedParties(@PathVariable("userId") Long userId) {
         try {
             return new BaseResponse<>(partyService.getNonBlockedParties(userId));
@@ -99,7 +89,7 @@ public class PartyController {
      * @param userId
      * @return List[GetPartyRes]
      */
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user/{userId}/belong")
     public BaseResponse<List<GetPartyRes>> getUsersParties(@PathVariable("userId") Long userId) {
         try {
             return new BaseResponse<>(partyService.getUsersParties(userId));

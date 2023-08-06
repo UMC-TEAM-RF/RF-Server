@@ -183,33 +183,6 @@ public class PartyService {
                 .build();
     }
 
-    // 모임 차단
-    public BlockPartyRes blockAndLeaveParty(Long userId, Long partyId) throws BaseException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
-        Party party = partyRepository.findById(partyId).orElseThrow(() -> new BaseException(PARTY_NOT_FOUND));
-
-        // 사용자가 참여한 모임 조회
-        UserParty userParty = userPartyRepository.findByUserAndParty(user, party)
-                .orElseThrow(() -> new BaseException(NOT_JOINED_PARTY));
-
-        // 모임 차단
-        BlockParty blockParty = new BlockParty(user, party);
-
-        // 연관관계 편의 메소드를 사용해 양방향 관계 해제
-        user.removeUserParty(userParty);
-        party.removeUserParty(userParty);
-
-        // 사용자와 모임 연결 제거 (모임에서 나가기)
-        userPartyRepository.delete(userParty);
-
-        blockPartyRepository.save(blockParty);
-
-        return BlockPartyRes.builder()
-                .userId(userId)
-                .partyId(partyId)
-                .build();
-    }
-
     // 모임 조회 (차단한 거 빼고)
     public List<GetPartyRes> getNonBlockedParties(Long userId) throws BaseException {
         userRepository.findById(userId).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
