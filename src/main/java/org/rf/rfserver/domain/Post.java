@@ -21,8 +21,4 @@ public class Post extends BaseEntity{
 
     @ManyToOne(fetch = LAZY)
     private User user;
-    @OneToMany
-    @JoinTable(name = "PostImage"
-            , joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "post"))
-    private List<PostImage> images;
 }
