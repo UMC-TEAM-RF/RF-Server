@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.rf.rfserver.constant.University;
 
 import java.util.Random;
 
@@ -14,7 +15,7 @@ import java.util.Random;
 public class Mail {
     private String code;
     private String mailAddress;
-    private String university;
+    private University university;
     private Boolean isAuth;
 
     private static final int CODE_SIZE = 6;

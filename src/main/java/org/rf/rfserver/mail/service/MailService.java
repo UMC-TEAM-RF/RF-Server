@@ -3,11 +3,15 @@ package org.rf.rfserver.mail.service;
 
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
+import org.rf.rfserver.constant.University;
+import org.rf.rfserver.constant.UniversityUrl;
 import org.rf.rfserver.domain.*;
+import org.rf.rfserver.mail.domain.MailRegex;
 import org.rf.rfserver.mail.dto.PostCheckReq;
 import org.rf.rfserver.mail.dto.PostCheckRes;
 import org.rf.rfserver.mail.dto.PostSendReq;
 import org.rf.rfserver.mail.dto.PostSendRes;
+import org.rf.rfserver.mail.domain.MailMessage;
 import org.rf.rfserver.mail.exception.InvalidMailException;
 import org.rf.rfserver.mail.exception.UnauthorizedException;
 import org.springframework.mail.SimpleMailMessage;
@@ -32,7 +36,7 @@ public class MailService {
     public PostSendRes sendMail(PostSendReq sendReq) throws BaseException {
         try {
             String mailAddress = sendReq.getMail();
-            String university = sendReq.getUniversity();
+            University university = sendReq.getUniversity();
             checkPossibleMail(mailAddress, university);
             SimpleMailMessage message = new SimpleMailMessage();
             setMessage(message, mailAddress);
@@ -77,16 +81,16 @@ public class MailService {
         String code = mail.createRandomCode();
         mail.setCode(code);
         mail.setMailAddress(mailAddress);
-        String university = parseUniversity(mailAddress);
-        String koreanUniversity = universityNameMap.get(university);
-        mail.setUniversity(koreanUniversity);
+        String universityUrl = parseUniversity(mailAddress);
+        University university = UniversityUrl.getUniversityByUrl(universityUrl);
+        mail.setUniversity(university);
         mail.setIsAuth(false);
     }
 
-    private void checkPossibleMail(String mailAddress, String userUniversity) {
-        String university = parseUniversity(mailAddress);
-        String koreanUniversity = universityNameMap.get(university);
-        if (!koreanUniversity.equals(userUniversity)) {
+    private void checkPossibleMail(String mailAddress, University givenUniversity) {
+        String universityUrl = parseUniversity(mailAddress);
+        University returnUniversity = UniversityUrl.getUniversityByUrl(universityUrl);
+        if (!returnUniversity.equals(givenUniversity)) {
             throw new InvalidMailException(INVALID_UNIVERSITY);
         }
         if (!isUniversityMail(mailAddress)) {
@@ -114,14 +118,5 @@ public class MailService {
     private boolean isUniversityMail(String mailAddress) {
         MailRegex university = MailRegex.UNIVERSITY_MAIL;
         return Pattern.matches(university.getRegex(), mailAddress);
-    }
-
-    private final Map<String, String> universityNameMap = new HashMap<>(); {
-        // 대학교 이름과 해당 변환 이름을 매핑
-        universityNameMap.put("inha.edu", "인하대학교");
-        universityNameMap.put("hanyang.ac.kr", "한양대학교");
-        universityNameMap.put("tukorea.ac.kr", "한국공학대학교");
-        universityNameMap.put("catholic.ac.kr", "가톨릭대학교");
-        // 다른 대학교에 대한 매핑도 필요하면 여기에 추가로 작성 예정
     }
 }
