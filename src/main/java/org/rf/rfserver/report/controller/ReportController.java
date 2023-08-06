@@ -62,4 +62,12 @@ public class ReportController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+    @DeleteMapping("/{reportId}")
+    public BaseResponse<DeleteReportRes> deleteReport(@PathVariable Long reportId) {
+        try {
+            return new BaseResponse<>(reportService.deleteReport(reportId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }

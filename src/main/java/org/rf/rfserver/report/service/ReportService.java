@@ -81,4 +81,9 @@ public class ReportService {
                         )
                 .collect(Collectors.toList());
     }
+
+    public DeleteReportRes deleteReport(Long reportId) throws BaseException{
+        reportRepository.deleteById(reportId);
+        return new DeleteReportRes(reportId);
+    }
 }
