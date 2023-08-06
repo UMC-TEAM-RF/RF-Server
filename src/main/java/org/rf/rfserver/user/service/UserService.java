@@ -93,11 +93,11 @@ public class UserService {
         }
     }
 
-<<<<<<< HEAD
     public User findUserById(Long userId) throws BaseException {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(INVALID_USER));
-=======
+    }
+
     public GetUserIdCheckRes checkId(String loginId) throws BaseException {
         try {
             Boolean judge = !userRepository.existsUserByLoginId(loginId);
@@ -114,6 +114,5 @@ public class UserService {
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
->>>>>>> 4105f36a37f92de774a8a83d6e0edf97ad4542f6
     }
 }
