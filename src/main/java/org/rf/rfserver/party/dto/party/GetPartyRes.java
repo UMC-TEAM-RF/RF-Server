@@ -1,8 +1,8 @@
 package org.rf.rfserver.party.dto.party;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.rf.rfserver.constant.*;
 import org.rf.rfserver.domain.*;
 
 import java.time.LocalDateTime;
@@ -14,24 +14,23 @@ public class GetPartyRes {
     private String name;
     private String content;
     private String location;
-    private String language;
+    private Language language;
     private String imageFilePath;
-    private String preferAges;
+    private PreferAges preferAges;
     private LocalDateTime createdDate;
     private int memberCount;
     private int nativeCount;
     private int ownerId;
+    private List<Rule> rules;
+    private List<Interest> interests;
     private List<Schedule> schedules;
     private List<UserParty> users;
-    private List<PartyInterest> interests;
 
-    //private List<PartyRule> rule;
-    //private List<PartyTag> tags;
 
     @Builder
-    public GetPartyRes(Long id, String name, String content, String location, String language, String imageFilePath, String preferAges,
-                       LocalDateTime createdDate, int memberCount, int nativeCount, int ownerId, List<Schedule> schedules,
-                       List<UserParty> users, List<PartyInterest> interests) {
+    public GetPartyRes(Long id, String name, String content, String location, Language language, String imageFilePath, PreferAges preferAges,
+                       LocalDateTime createdDate, int memberCount, int nativeCount, int ownerId, List<Rule> rules, List<Schedule> schedules,
+                       List<UserParty> users, List<Interest> interests) {
         this.id = id;
         this.name = name;
         this.content = content;
@@ -43,10 +42,9 @@ public class GetPartyRes {
         this.memberCount = memberCount;
         this.nativeCount = nativeCount;
         this.ownerId = ownerId;
+        this.rules = rules;
+        this.interests = interests;
         this.schedules = schedules;
         this.users = users;
-        this.interests = interests;
-        //this.rule = rule;
-        // this.tags = tags;
     }
 }

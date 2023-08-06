@@ -15,7 +15,6 @@ import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinReq;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
-import org.rf.rfserver.party.repository.PartyInterestRepository;
 import org.rf.rfserver.party.repository.PartyJoinApplicationRepository;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
@@ -37,7 +36,6 @@ public class PartyService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final UserPartyRepository userPartyRepository;
-    private final PartyInterestRepository partyInterestRepository;
     private final PartyJoinApplicationRepository partyJoinApplicationRepository;
 
     public PostPartyRes createParty(PostPartyReq postPartyReq) throws BaseException {
@@ -54,10 +52,6 @@ public class PartyService {
                     .nativeCount(postPartyReq.getNativeCount())
                     .ownerId(postPartyReq.getOwnerId())
                     .build());
-            for (Interest interest : postPartyReq.getInterests()) {
-                PartyInterest partyInterest = partyInterestRepository.save(new PartyInterest(interest, party));
-                partyInterest.getParty().getInterests().add(partyInterest);
-            }
             return new PostPartyRes(party.getId());
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
@@ -90,7 +84,6 @@ public class PartyService {
     public DeletePartyRes deleteParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(INVALID_PARTY));
-        deletePartyInterests(party.getInterests());
         deleteUserParty(party.getUserParties());
         partyRepository.delete(party);
         return new DeletePartyRes(partyId);
@@ -99,12 +92,6 @@ public class PartyService {
     Party findPartyById(Long partyId) throws BaseException {
         return partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(INVALID_PARTY));
-    }
-
-    public void deletePartyInterests(List<PartyInterest> partyInterests) { //party를 삭제할때 partyInterest 테이블에서 연관 데이터삭제
-        for (PartyInterest partyInterest : partyInterests) {
-            partyInterestRepository.delete(partyInterest);
-        }
     }
 
     public void deleteUserParty(List<UserParty> userParties) {
