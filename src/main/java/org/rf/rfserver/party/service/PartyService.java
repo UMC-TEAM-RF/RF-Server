@@ -56,10 +56,19 @@ public class PartyService {
                     .nativeCount(postPartyReq.getNativeCount())
                     .ownerId(postPartyReq.getOwnerId())
                     .build());
+            addOwnerToParty(party.getOwnerId(), party);
             return new PostPartyRes(party.getId());
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+    public void addOwnerToParty(Long ownerId, Party party) throws BaseException {
+        User user = userService.findUserById(ownerId);
+        UserParty userParty = new UserParty(party, user);
+        userPartyRepository.save(userParty);
+        userParty.setUser(user);
+        userParty.setParty(party);
     }
 
     public List<GetUserProfileRes> getUserProfiles(List<UserParty> userParties) {
