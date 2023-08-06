@@ -8,5 +8,5 @@ import lombok.Getter;
 public class PostApproveJoinReq {
     private Long userId;
     private Long partyId;
-    private Long partyJoinApplyId;
+    private Long partyJoinApplicationId;
 }

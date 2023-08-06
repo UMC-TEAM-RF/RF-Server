@@ -6,5 +6,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class PostApproveJoinRes {
-    Long groupId;
+    Long partyJoinApplicationId;
 }
