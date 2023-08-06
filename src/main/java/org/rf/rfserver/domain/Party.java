@@ -29,7 +29,7 @@ public class Party {
     private LocalDateTime createdDate;
     private int memberCount;
     private int nativeCount;
-    private int ownerId;
+    private Long ownerId;
     @Enumerated(EnumType.STRING)
     private List<Rule> rules;
     @Enumerated(EnumType.STRING)
@@ -41,7 +41,7 @@ public class Party {
 
     @Builder
     public Party(String name, String content,String location, Language language, String imageFilePath, PreferAges preferAges,
-                 LocalDateTime createdDate, int memberCount, int nativeCount, int ownerId, List<Rule> rules, List<Interest> interests) {
+                 LocalDateTime createdDate, int memberCount, int nativeCount, Long ownerId, List<Rule> rules, List<Interest> interests) {
         this.name = name;
         this.content = content;
         this.location = location;

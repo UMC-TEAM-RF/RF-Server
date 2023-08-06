@@ -20,7 +20,7 @@ public class PostPartyReq {
     private PreferAges preferAges;
     private int memberCount;
     private int nativeCount;
-    private int ownerId;
+    private Long ownerId;
     private List<Rule> rules;
     private List<Interest> interests;
 }
