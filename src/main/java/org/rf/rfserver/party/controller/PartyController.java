@@ -8,9 +8,7 @@ import org.rf.rfserver.party.dto.party.DeletePartyRes;
 import org.rf.rfserver.party.dto.party.GetPartyRes;
 import org.rf.rfserver.party.dto.party.PostPartyReq;
 import org.rf.rfserver.party.dto.party.PostPartyRes;
-import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinReq;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
-import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinReq;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
@@ -59,19 +57,19 @@ public class PartyController {
         }
     }
 
-    @PostMapping("/join/apply/approve")
-    public BaseResponse<PostApproveJoinRes> approveJoin(@RequestBody PostApproveJoinReq postApproveJoinReq) {
+    @GetMapping("/join/apply/approve")
+    public BaseResponse<PostApproveJoinRes> approveJoin(@RequestParam Long partyJoinApplicationId) {
         try {
-            return new BaseResponse<>(partyService.approveJoin(postApproveJoinReq));
+            return new BaseResponse<>(partyService.approveJoin(partyJoinApplicationId));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
 
-    @PostMapping("/join/apply/deny")
-    public BaseResponse<PostDenyJoinRes> denyJoin(@RequestBody PostDenyJoinReq postDenyJoinReq) {
+    @GetMapping("/join/apply/deny")
+    public BaseResponse<PostDenyJoinRes> denyJoin(@RequestParam Long partyJoinApplicationId) {
         try {
-            return new BaseResponse<>(partyService.denyJoin(postDenyJoinReq));
+            return new BaseResponse<>(partyService.denyJoin(partyJoinApplicationId));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

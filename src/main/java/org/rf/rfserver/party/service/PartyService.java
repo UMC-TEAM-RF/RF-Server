@@ -1,18 +1,14 @@
 package org.rf.rfserver.party.service;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.rf.rfserver.constant.Interest;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.party.DeletePartyRes;
 import org.rf.rfserver.party.dto.party.GetPartyRes;
 import org.rf.rfserver.party.dto.party.PostPartyReq;
 import org.rf.rfserver.party.dto.party.PostPartyRes;
-import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinReq;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
-import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinReq;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
@@ -20,8 +16,6 @@ import org.rf.rfserver.party.repository.PartyJoinApplicationRepository;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
 import org.rf.rfserver.user.dto.GetUserProfileRes;
-import org.rf.rfserver.user.dto.GetUserRes;
-import org.rf.rfserver.user.repository.UserRepository;
 import org.rf.rfserver.user.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -149,20 +143,22 @@ public class PartyService {
         }
     }
 
-    public PostApproveJoinRes approveJoin(PostApproveJoinReq postApproveJoinReq) throws BaseException {
-        User user = userService.findUserById(postApproveJoinReq.getUserId());
-        Party party = findPartyById(postApproveJoinReq.getPartyId());
+    public PostApproveJoinRes approveJoin(Long partyJoinApplicationId) throws BaseException {
+        PartyJoinApplication partyJoinApplication = partyJoinApplicationRepository.findById(partyJoinApplicationId)
+                .orElseThrow(() -> new BaseException(INVALID_APPLICATION));
+        User user = userService.findUserById(partyJoinApplication.getUser().getId());
+        Party party = findPartyById(partyJoinApplication.getParty().getId());
         UserParty userParty = new UserParty(party, user);
         userParty.setParty(party);
         userParty.setUser(user);
         userPartyRepository.save(userParty);
-        deletePartyJoinApplication(postApproveJoinReq.getPartyJoinApplicationId());
-        return new PostApproveJoinRes(postApproveJoinReq.getPartyJoinApplicationId());
+        deletePartyJoinApplication(partyJoinApplicationId);
+        return new PostApproveJoinRes(partyJoinApplicationId);
     }
 
-    public PostDenyJoinRes denyJoin(PostDenyJoinReq postDenyJoinReq) throws BaseException {
-        deletePartyJoinApplication(postDenyJoinReq.getPartyJoinApplicationId());
-        return new PostDenyJoinRes(postDenyJoinReq.getPartyJoinApplicationId());
+    public PostDenyJoinRes denyJoin(Long partyJoinApplicationId) throws BaseException {
+        deletePartyJoinApplication(partyJoinApplicationId);
+        return new PostDenyJoinRes(partyJoinApplicationId);
     }
 
     public void deletePartyJoinApplication(Long partyJoinApplicationId) throws BaseException {
