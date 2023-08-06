@@ -28,19 +28,19 @@ public class ReportService {
     public PostReportRes createUserReport(PostReportReq postReportReq) throws BaseException {
         User reporter = userRepository.findById(postReportReq.getReporterId())
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
-        User repotedUser = userRepository.findById(postReportReq.getRepotedUserId())
+        User actor = userRepository.findById(postReportReq.getActorId())
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
-        Report report = reportRepository.save(new Report(reporter, repotedUser, postReportReq.getContent()));
-        return new PostReportRes(report.getId(), report.getReportedUser().getNickName());
+        Report report = reportRepository.save(new Report(reporter, actor, postReportReq.getContent()));
+        return new PostReportRes(report.getId(), report.getActor().getNickName(), "USER");
     }
 
     public PostReportRes createPartyReport(PostReportReq postReportReq) throws BaseException{
         User reporter = userRepository.findById(postReportReq.getReporterId())
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
-        Party repotedParty = partyRepository.findById(postReportReq.getReportedPartyId())
+        Party actorParty = partyRepository.findById(postReportReq.getActorPartyId())
                 .orElseThrow(() -> new BaseException(NO_SUCH_PARTY));
-        Report report = reportRepository.save(new Report(reporter, repotedParty, postReportReq.getContent()));
-        return new PostReportRes(report.getId(), report.getReportedParty().getName());
+        Report report = reportRepository.save(new Report(reporter, actorParty, postReportReq.getContent()));
+        return new PostReportRes(report.getId(), report.getActorParty().getName(), "PARTY");
     }
 
     public List<GetReportActorRes> getReports(Long userId) throws BaseException{
@@ -48,9 +48,9 @@ public class ReportService {
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
         List<Report> reports = reportRepository.findReportsByReporter(user);
         return reports.stream()
-                .map(report -> report.getReportedUser()!=null ?
-                    new GetReportActorRes(report.getReportedUser().getId(), report.getReportedUser().getNickName(), "user") :
-                    new GetReportActorRes(report.getReportedParty().getId(), report.getReportedParty().getName(), "party"))
+                .map(report -> report.getActor()!=null ?
+                    new GetReportActorRes(report.getActor().getId(), report.getActor().getNickName(), "USER") :
+                    new GetReportActorRes(report.getActorParty().getId(), report.getActorParty().getName(), "PARTY"))
                 .collect(Collectors.toList());
     }
 }

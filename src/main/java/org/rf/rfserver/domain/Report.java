@@ -19,22 +19,22 @@ public class Report extends BaseEntity{
     private User reporter;
 
     @ManyToOne(fetch = LAZY)
-    private User reportedUser;
+    private User actor;
 
     @ManyToOne(fetch = LAZY)
-    private Party reportedParty;
+    private Party actorParty;
 
-    public Report(User reporter, User reportedUser, String content) {
+    public Report(User reporter, User actor, String content) {
         this.reporter = reporter;
-        this.reportedUser = reportedUser;
-        this.reportedParty = null;
+        this.actor = actor;
+        this.actorParty = null;
         this.content = content;
     }
 
-    public Report(User reporter, Party reportedParty, String content) {
+    public Report(User reporter, Party actorParty, String content) {
         this.reporter = reporter;
-        this.reportedUser = null;
-        this.reportedParty = reportedParty;
+        this.actor = null;
+        this.actorParty = actorParty;
         this.content = content;
     }
 }

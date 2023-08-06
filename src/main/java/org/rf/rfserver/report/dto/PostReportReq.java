@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PostReportReq {
     private Long reporterId;
-    private Long repotedUserId;
-    private Long reportedPartyId;
+    private Long actorId;
+    private Long actorPartyId;
     private String content;
 }
