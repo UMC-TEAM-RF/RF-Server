@@ -8,7 +8,7 @@ import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import static org.rf.rfserver.config.BaseResponseStatus.DATABASE_ERROR;
+import static org.rf.rfserver.config.BaseResponseStatus.*;
 
 @RequiredArgsConstructor
 @Service
@@ -53,6 +53,12 @@ public class UserService {
         }
     }
 
+    public void isExceededPartyCount(User user) throws BaseException {
+        if (user.isMoreThanFiveParties()) {
+            throw new BaseException(EXCEEDED_PARTY_COUNT);
+        }
+    }
+
     public DeleteUserRes deleteUser(Long userId) throws BaseException{
         try {
             userRepository.deleteById(userId);
@@ -60,5 +66,10 @@ public class UserService {
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+    public User findUserById(Long userId) throws BaseException {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(INVALID_USER));
     }
 }
