@@ -10,7 +10,7 @@ import static jakarta.persistence.FetchType.*;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FavoriteChat {
+public class FavoriteChat extends BaseEntity{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;

@@ -7,13 +7,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.rf.rfserver.constant.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +31,6 @@ public class User {
     private int entrance;
     private int love;
     private int hate;
-    private LocalDateTime createdDate;
     private String email;
     private Boolean isEmailVerified;
 
