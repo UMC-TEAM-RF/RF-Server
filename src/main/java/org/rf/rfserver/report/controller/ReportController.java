@@ -31,9 +31,9 @@ public class ReportController {
         }
     }
     @GetMapping("/reporter/{userId}")
-    public BaseResponse<List<GetReportReporterRes>> getReports(@PathVariable Long userId) {
+    public BaseResponse<List<GetReportReporterRes>> getReporterReports(@PathVariable Long userId) {
         try {
-            return new BaseResponse<>(reportService.getReports(userId));
+            return new BaseResponse<>(reportService.getReporterReports(userId));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -50,6 +50,14 @@ public class ReportController {
     public BaseResponse<List<GetReportActorRes>> getActorPartyReports(@PathVariable Long partyId) {
         try {
             return new BaseResponse<>(reportService.getActorPartyReports(partyId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+    @GetMapping()
+    public BaseResponse<List<GetReportRes>> getReports() {
+        try {
+            return new BaseResponse<>(reportService.getReports());
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

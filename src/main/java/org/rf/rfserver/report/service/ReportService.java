@@ -41,7 +41,7 @@ public class ReportService {
         return new PostReportRes(report.getId(), report.getActorParty().getName(), "PARTY");
     }
 
-    public List<GetReportReporterRes> getReports(Long userId) throws BaseException{
+    public List<GetReportReporterRes> getReporterReports(Long userId) throws BaseException{
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
         List<Report> reports = reportRepository.findReportsByReporter(user);
@@ -67,6 +67,18 @@ public class ReportService {
         List<Report> reports = reportRepository.findReportsByActorParty(actorParty);
         return reports.stream()
                 .map(report -> new GetReportActorRes(report.getReporter().getId(), report.getReporter().getNickName()))
+                .collect(Collectors.toList());
+    }
+
+    public List<GetReportRes> getReports() throws BaseException{
+        List<Report> reports = reportRepository.findAll();
+        return reports.stream()
+                .map(report -> report.getActor()!=null ?
+                        new GetReportRes(report.getReporter().getId(), report.getReporter().getNickName()
+                                , report.getActor().getId(), report.getActor().getNickName(), "USER") :
+                        new GetReportRes(report.getReporter().getId(), report.getReporter().getNickName()
+                                , report.getActorParty().getId(), report.getActorParty().getName(), "PARTY")
+                        )
                 .collect(Collectors.toList());
     }
 }
