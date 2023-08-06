@@ -61,4 +61,11 @@ public class User {
         this.mbti = mbti == null ? this.mbti : mbti;
         return this;
     }
+
+    public boolean isMoreThanFiveParties() {
+        if (userParties.size() > 5) {
+            return true;
+        }
+        return false;
+    }
 }
