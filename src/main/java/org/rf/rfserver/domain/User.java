@@ -56,7 +56,6 @@ public class User extends BaseEntity{
         this.mbti = mbti;
         this.love = 0;
         this.hate = 0;
-        this.createdDate = LocalDateTime.now();
         this.email = email;
         this.interestCountries = interestCountries;
         this.userInterests = userInterests;

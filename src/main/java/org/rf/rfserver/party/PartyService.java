@@ -12,7 +12,6 @@ import org.rf.rfserver.party.dto.PostPartyRes;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
@@ -39,7 +38,7 @@ public class PartyService {
                     .ownerId(postPartyReq.getOwnerId())
                     .rules(postPartyReq.getRules())
                     .interests(postPartyReq.getInterests())
-                    .build());
+                    .build();
           
             //file 비어있는지 체크
             if(file != null){
