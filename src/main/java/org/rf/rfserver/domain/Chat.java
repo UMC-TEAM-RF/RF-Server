@@ -13,12 +13,11 @@ import static jakarta.persistence.FetchType.*;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Chat {
+public class Chat extends BaseEntity{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
     private MessageType type;
-    private LocalDateTime sendTime;
     private boolean checked;
 
     @ManyToOne(fetch = LAZY)

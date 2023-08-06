@@ -7,14 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Party {
+public class Party extends BaseEntity{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
@@ -23,7 +22,6 @@ public class Party {
     private String language;
     private String imageFilePath;
     private String preferAges;
-    private LocalDateTime createdDate;
     private int memberCount;
     private int nativeCount;
     private int ownerId;
@@ -43,7 +41,7 @@ public class Party {
 
     @Builder
     public Party(Long id, String name, String content,String location, String language, String imageFilePath, String preferAges,
-                 LocalDateTime createdDate, int memberCount, int nativeCount, int ownerId) {
+                 int memberCount, int nativeCount, int ownerId) {
         this.id = id;
         this.name = name;
         this.content = content;
@@ -51,7 +49,6 @@ public class Party {
         this.language = language;
         this.imageFilePath = imageFilePath;
         this.preferAges = preferAges;
-        this.createdDate = createdDate;
         this.memberCount = memberCount;
         this.nativeCount = nativeCount;
         this.ownerId = ownerId;

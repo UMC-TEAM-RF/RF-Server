@@ -5,13 +5,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +26,6 @@ public class User {
     private int entrance;
     private int love;
     private int hate;
-    private LocalDateTime createdDate;
     private String email;
     private Boolean isEmailVerified;
 
@@ -49,7 +47,6 @@ public class User {
         this.mbti = mbti;
         this.love = 0;
         this.hate = 0;
-        this.createdDate = LocalDateTime.now();
     }
     public User updateUser(String nickName, String password, String interestingLanguage, String introduce, String mbti) {
         this.nickName = nickName == null ? this.nickName : nickName;
