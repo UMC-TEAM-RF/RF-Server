@@ -8,5 +8,6 @@ import lombok.Getter;
 public class PostReportRes {
     private Long reportId;
     private String actorName;
+    private String content;
     private String reportType;
 }

@@ -13,6 +13,7 @@ public class GetReportRes {
     private String reporterName;
     private Long actorId;
     private String actorName;
+    private String content;
     private String reportType;
     private LocalDateTime createdAt;
 }

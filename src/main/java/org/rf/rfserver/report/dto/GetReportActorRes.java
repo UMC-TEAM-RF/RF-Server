@@ -11,5 +11,6 @@ public class GetReportActorRes {
     private Long reportId;
     private Long reporterId;
     private String reporterName;
+    private String content;
     private LocalDateTime createdAt;
 }

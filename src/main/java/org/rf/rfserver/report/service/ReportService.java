@@ -33,7 +33,7 @@ public class ReportService {
         User actor = userRepository.findById(postReportReq.getActorId())
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
         Report report = reportRepository.save(new Report(reporter, actor, postReportReq.getContent()));
-        return new PostReportRes(report.getId(), report.getActor().getNickName(), "USER");
+        return new PostReportRes(report.getId(), report.getActor().getNickName(), report.getContent(), "USER");
     }
 
     public PostReportRes createPartyReport(PostReportReq postReportReq) throws BaseException{
@@ -42,7 +42,7 @@ public class ReportService {
         Party actorParty = partyRepository.findById(postReportReq.getActorPartyId())
                 .orElseThrow(() -> new BaseException(NO_SUCH_PARTY));
         Report report = reportRepository.save(new Report(reporter, actorParty, postReportReq.getContent()));
-        return new PostReportRes(report.getId(), report.getActorParty().getName(), "PARTY");
+        return new PostReportRes(report.getId(), report.getActorParty().getName(), report.getContent(), "PARTY");
     }
 
     public PageDto<List<GetReportReporterRes>> getReporterReports(Long userId, int page, int size) throws BaseException{
@@ -53,8 +53,8 @@ public class ReportService {
         return new PageDto<>(reports.getNumber(), reports.getTotalPages()
                 , reports.stream()
                 .map(report -> report.getActor()!=null ?
-                    new GetReportReporterRes(report.getId(), report.getActor().getId(), report.getActor().getNickName(), "USER", report.getCreatedAt()) :
-                    new GetReportReporterRes(report.getId(), report.getActorParty().getId(), report.getActorParty().getName(), "PARTY", report.getCreatedAt()))
+                    new GetReportReporterRes(report.getId(), report.getActor().getId(), report.getActor().getNickName(), report.getContent(), "USER", report.getCreatedAt()) :
+                    new GetReportReporterRes(report.getId(), report.getActorParty().getId(), report.getActorParty().getName(), report.getContent(), "PARTY", report.getCreatedAt()))
                 .toList());
     }
 
@@ -65,7 +65,7 @@ public class ReportService {
         Page<Report> reports = reportRepository.findReportsByActor(user, pageable);
         return new PageDto<>(reports.getNumber(), reports.getTotalPages()
                 , reports.stream()
-                .map(report -> new GetReportActorRes(report.getId(), report.getReporter().getId(), report.getReporter().getNickName(), report.getCreatedAt()))
+                .map(report -> new GetReportActorRes(report.getId(), report.getReporter().getId(), report.getReporter().getNickName(), report.getContent(), report.getCreatedAt()))
                 .toList());
     }
 
@@ -76,7 +76,7 @@ public class ReportService {
         Page<Report> reports = reportRepository.findReportsByActorParty(actorParty, pageable);
         return new PageDto<>(reports.getNumber(), reports.getTotalPages()
                 , reports.stream()
-                .map(report -> new GetReportActorRes(report.getId(), report.getReporter().getId(), report.getReporter().getNickName(), report.getCreatedAt()))
+                .map(report -> new GetReportActorRes(report.getId(), report.getReporter().getId(), report.getReporter().getNickName(), report.getContent(), report.getCreatedAt()))
                 .toList());
     }
 
@@ -87,9 +87,9 @@ public class ReportService {
                 , reports.stream()
                 .map(report -> report.getActor()!=null ?
                         new GetReportRes(report.getId(), report.getReporter().getId(), report.getReporter().getNickName()
-                                , report.getActor().getId(), report.getActor().getNickName(), "USER", report.getCreatedAt()) :
+                                , report.getActor().getId(), report.getActor().getNickName(), report.getContent(), "USER", report.getCreatedAt()) :
                         new GetReportRes(report.getId(), report.getReporter().getId(), report.getReporter().getNickName()
-                                , report.getActorParty().getId(), report.getActorParty().getName(), "PARTY", report.getCreatedAt())
+                                , report.getActorParty().getId(), report.getActorParty().getName(), report.getContent(), "PARTY", report.getCreatedAt())
                         )
                 .toList());
     }
