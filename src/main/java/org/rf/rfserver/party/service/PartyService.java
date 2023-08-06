@@ -18,11 +18,14 @@ import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
 import org.rf.rfserver.party.repository.PartyJoinApplicationRepository;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
+import org.rf.rfserver.user.dto.GetUserProfileRes;
+import org.rf.rfserver.user.dto.GetUserRes;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.rf.rfserver.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
@@ -33,7 +36,6 @@ import static org.rf.rfserver.config.BaseResponseStatus.*;
 public class PartyService {
 
     private final PartyRepository partyRepository;
-    private final UserRepository userRepository;
     private final UserService userService;
     private final UserPartyRepository userPartyRepository;
     private final PartyJoinApplicationRepository partyJoinApplicationRepository;
@@ -58,9 +60,19 @@ public class PartyService {
         }
     }
 
+    public List<GetUserProfileRes> getUserProfiles(List<UserParty> userParties) {
+        List<GetUserProfileRes> userProfiles = new ArrayList<>();
+        for (UserParty userParty : userParties) {
+            User user = userParty.getUser();
+            userProfiles.add(new GetUserProfileRes(user.getNickName(), user.getImageFilePath(), user.getCountry()));
+        }
+        return userProfiles;
+    }
+
     public GetPartyRes getParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(INVALID_PARTY));
+        List<GetUserProfileRes> userProfiles = getUserProfiles(party.getUserParties());
         return GetPartyRes.builder()
                 .id(party.getId())
                 .name(party.getName())
@@ -73,11 +85,10 @@ public class PartyService {
                 .memberCount(party.getMemberCount())
                 .nativeCount(party.getNativeCount())
                 .ownerId(party.getOwnerId())
-                .users(party.getUserParties())
                 .schedules(party.getSchedules())
                 .interests(party.getInterests())
-                //.rule(party.getRule())
-                //.tags(party.getTags())
+                .userProfiles(userProfiles)
+                .rules(party.getRules())
                 .build();
     }
 
