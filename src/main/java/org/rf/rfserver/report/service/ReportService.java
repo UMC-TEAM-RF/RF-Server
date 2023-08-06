@@ -6,10 +6,7 @@ import org.rf.rfserver.domain.Party;
 import org.rf.rfserver.domain.Report;
 import org.rf.rfserver.domain.User;
 import org.rf.rfserver.party.PartyRepository;
-import org.rf.rfserver.report.dto.GetReportActorRes;
-import org.rf.rfserver.report.dto.GetReportReporterRes;
-import org.rf.rfserver.report.dto.PostReportReq;
-import org.rf.rfserver.report.dto.PostReportRes;
+import org.rf.rfserver.report.dto.*;
 import org.rf.rfserver.report.repository.ReportRepository;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -59,6 +56,15 @@ public class ReportService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
         List<Report> reports = reportRepository.findReportsByActor(user);
+        return reports.stream()
+                .map(report -> new GetReportActorRes(report.getReporter().getId(), report.getReporter().getNickName()))
+                .collect(Collectors.toList());
+    }
+
+    public List<GetReportActorRes> getActorPartyReports(Long partyId) throws BaseException{
+        Party actorParty = partyRepository.findById(partyId)
+                .orElseThrow(() -> new BaseException(NO_SUCH_PARTY));
+        List<Report> reports = reportRepository.findReportsByActorParty(actorParty);
         return reports.stream()
                 .map(report -> new GetReportActorRes(report.getReporter().getId(), report.getReporter().getNickName()))
                 .collect(Collectors.toList());
