@@ -61,4 +61,8 @@ public class Party {
         //this.rule = rule;
         //this.tags = tags;
     }
+
+    public void updateImageUrl(String imageFilePath){
+        this.imageFilePath = imageFilePath;
+    }
 }
