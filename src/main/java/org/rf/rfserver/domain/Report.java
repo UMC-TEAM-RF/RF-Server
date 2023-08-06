@@ -13,7 +13,26 @@ import static jakarta.persistence.FetchType.*;
 public class Report extends BaseEntity{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String content;
 
     @ManyToOne(fetch = LAZY)
-    private User user;
+    private User reporter;
+
+    @ManyToOne(fetch = LAZY)
+    private User reportedUser;
+
+    @ManyToOne(fetch = LAZY)
+    private Party reportedParty;
+
+    public Report(User reporter, User reportedUser, String content) {
+        this.reporter = reporter;
+        this.reportedUser = reportedUser;
+        this.content = content;
+    }
+
+    public Report(User reporter, Party reportedParty, String content) {
+        this.reporter = reporter;
+        this.reportedParty = reportedParty;
+        this.content = content;
+    }
 }
