@@ -127,7 +127,7 @@ public class PartyService {
     public void isJoinedUser(User user, Party party) throws BaseException {
         for (UserParty userParty : party.getUserParties() ) {
             if(userParty.getUser() == user) {
-                throw new BaseException(INVALID_PARTY);
+                throw new BaseException(INVALID_JOIN_APPLICATION);
             }
         }
     }
