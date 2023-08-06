@@ -10,7 +10,7 @@ import static jakarta.persistence.FetchType.*;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserParty {
+public class UserParty extends BaseEntity{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 

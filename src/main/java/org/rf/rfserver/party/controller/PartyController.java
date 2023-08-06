@@ -13,7 +13,9 @@ import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
 import org.rf.rfserver.party.service.PartyService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,10 +23,10 @@ import org.springframework.web.bind.annotation.*;
 public class PartyController {
     private final PartyService partyService;
 
-    @PostMapping
-    public BaseResponse<PostPartyRes> createParty(@RequestBody PostPartyReq postPartyReq) {
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public BaseResponse<PostPartyRes> createParty(@RequestPart("postPartyReq") PostPartyReq postPartyReq, @RequestPart("file") MultipartFile file) {
         try {
-            return new BaseResponse<>(partyService.createParty(postPartyReq));
+            return new BaseResponse<>(partyService.createParty(postPartyReq,file));
         } catch (BaseException e) {
             return new BaseResponse<>((e.getStatus()));
         }

@@ -8,14 +8,13 @@ import lombok.NoArgsConstructor;
 import org.rf.rfserver.constant.*;
 
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Party {
+public class Party extends BaseEntity{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
@@ -26,7 +25,6 @@ public class Party {
     private String imageFilePath;
     @Enumerated(EnumType.STRING)
     private PreferAges preferAges;
-    private LocalDateTime createdDate;
     private int memberCount;
     private int nativeCount;
     private Long ownerId;
@@ -41,14 +39,13 @@ public class Party {
 
     @Builder
     public Party(String name, String content,String location, Language language, String imageFilePath, PreferAges preferAges,
-                 LocalDateTime createdDate, int memberCount, int nativeCount, Long ownerId, List<Rule> rules, List<Interest> interests) {
+                 int memberCount, int nativeCount, Long ownerId, List<Rule> rules, List<Interest> interests) {
         this.name = name;
         this.content = content;
         this.location = location;
         this.language = language;
         this.imageFilePath = imageFilePath;
         this.preferAges = preferAges;
-        this.createdDate = createdDate;
         this.memberCount = memberCount;
         this.nativeCount = nativeCount;
         this.ownerId = ownerId;

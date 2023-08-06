@@ -3,6 +3,7 @@ package org.rf.rfserver.party.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.rf.rfserver.config.BaseException;
+import org.rf.rfserver.config.s3.S3Uploader;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.party.DeletePartyRes;
 import org.rf.rfserver.party.dto.party.GetPartyRes;
@@ -18,6 +19,7 @@ import org.rf.rfserver.party.repository.UserPartyRepository;
 import org.rf.rfserver.user.dto.GetUserProfileRes;
 import org.rf.rfserver.user.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,8 +36,9 @@ public class PartyService {
     private final UserService userService;
     private final UserPartyRepository userPartyRepository;
     private final PartyJoinApplicationRepository partyJoinApplicationRepository;
+    private final S3Uploader s3Uploader;
 
-    public PostPartyRes createParty(PostPartyReq postPartyReq) throws BaseException {
+    public PostPartyRes createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
         try {
             Party party = partyRepository.save(Party.builder()
                     .name(postPartyReq.getName())
@@ -45,12 +48,16 @@ public class PartyService {
                     .imageFilePath(postPartyReq.getImageFilePath())
                     .interests(postPartyReq.getInterests())
                     .preferAges(postPartyReq.getPreferAges())
-                    .createdDate(LocalDateTime.now())
                     .memberCount(postPartyReq.getMemberCount())
                     .nativeCount(postPartyReq.getNativeCount())
                     .ownerId(postPartyReq.getOwnerId())
                     .build());
             addOwnerToParty(party.getOwnerId(), party);
+            partyRepository.save(party);
+            if(file != null){
+                String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
+                party.updateImageUrl(imageFilePath);
+            }
             return new PostPartyRes(party.getId());
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
@@ -86,7 +93,6 @@ public class PartyService {
                 .language(party.getLanguage())
                 .imageFilePath(party.getImageFilePath())
                 .preferAges(party.getPreferAges())
-                .createdDate(party.getCreatedDate())
                 .memberCount(party.getMemberCount())
                 .nativeCount(party.getNativeCount())
                 .ownerId(party.getOwnerId())
