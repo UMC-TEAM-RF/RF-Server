@@ -9,5 +9,5 @@ import org.rf.rfserver.constant.Country;
 public class GetUserProfileRes {
     private String nickName;
     private String imageFilePath;
-    private Country country;
+    private String country;
 }
