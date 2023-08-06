@@ -35,6 +35,7 @@ public class User {
     private LocalDateTime createdDate;
     private String email;
     private Boolean isEmailVerified;
+    private String imageFilePath;
 
     @Enumerated(EnumType.STRING)
     private List<Country> interestCountries;
