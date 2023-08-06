@@ -5,7 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class GetReportActorRes {
-    private Long reporterId;
-    private String reporterName;
+public class GetReportReporterRes {
+    private Long actorId;
+    private String actorName;
+    private String reportType;
 }

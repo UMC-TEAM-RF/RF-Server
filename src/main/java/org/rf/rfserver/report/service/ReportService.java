@@ -7,6 +7,7 @@ import org.rf.rfserver.domain.Report;
 import org.rf.rfserver.domain.User;
 import org.rf.rfserver.party.PartyRepository;
 import org.rf.rfserver.report.dto.GetReportActorRes;
+import org.rf.rfserver.report.dto.GetReportReporterRes;
 import org.rf.rfserver.report.dto.PostReportReq;
 import org.rf.rfserver.report.dto.PostReportRes;
 import org.rf.rfserver.report.repository.ReportRepository;
@@ -43,14 +44,23 @@ public class ReportService {
         return new PostReportRes(report.getId(), report.getActorParty().getName(), "PARTY");
     }
 
-    public List<GetReportActorRes> getReports(Long userId) throws BaseException{
+    public List<GetReportReporterRes> getReports(Long userId) throws BaseException{
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
         List<Report> reports = reportRepository.findReportsByReporter(user);
         return reports.stream()
                 .map(report -> report.getActor()!=null ?
-                    new GetReportActorRes(report.getActor().getId(), report.getActor().getNickName(), "USER") :
-                    new GetReportActorRes(report.getActorParty().getId(), report.getActorParty().getName(), "PARTY"))
+                    new GetReportReporterRes(report.getActor().getId(), report.getActor().getNickName(), "USER") :
+                    new GetReportReporterRes(report.getActorParty().getId(), report.getActorParty().getName(), "PARTY"))
+                .collect(Collectors.toList());
+    }
+
+    public List<GetReportActorRes> getActorReports(Long userId) throws BaseException{
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(NO_SUCH_USER));
+        List<Report> reports = reportRepository.findReportsByActor(user);
+        return reports.stream()
+                .map(report -> new GetReportActorRes(report.getReporter().getId(), report.getReporter().getNickName()))
                 .collect(Collectors.toList());
     }
 }
