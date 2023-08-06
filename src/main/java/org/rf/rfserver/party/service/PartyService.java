@@ -48,6 +48,7 @@ public class PartyService {
                     .location(postPartyReq.getLocation())
                     .language(postPartyReq.getLanguage())
                     .imageFilePath(postPartyReq.getImageFilePath())
+                    .interests(postPartyReq.getInterests())
                     .preferAges(postPartyReq.getPreferAges())
                     .createdDate(LocalDateTime.now())
                     .memberCount(postPartyReq.getMemberCount())
@@ -64,7 +65,7 @@ public class PartyService {
         List<GetUserProfileRes> userProfiles = new ArrayList<>();
         for (UserParty userParty : userParties) {
             User user = userParty.getUser();
-            userProfiles.add(new GetUserProfileRes(user.getNickName(), user.getImageFilePath(), user.getCountry()));
+            userProfiles.add(new GetUserProfileRes(user.getNickName(), user.getImageFilePath(), user.getCountry().name()));
         }
         return userProfiles;
     }
