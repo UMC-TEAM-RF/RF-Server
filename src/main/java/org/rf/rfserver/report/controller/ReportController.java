@@ -3,6 +3,7 @@ package org.rf.rfserver.report.controller;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
+import org.rf.rfserver.config.PageDto;
 import org.rf.rfserver.report.dto.*;
 import org.rf.rfserver.report.service.ReportService;
 import org.springframework.web.bind.annotation.*;
@@ -31,33 +32,33 @@ public class ReportController {
         }
     }
     @GetMapping("/reporter/{userId}")
-    public BaseResponse<List<GetReportReporterRes>> getReporterReports(@PathVariable Long userId) {
+    public BaseResponse<PageDto<List<GetReportReporterRes>>> getReporterReports(@PathVariable Long userId, @RequestParam int page, @RequestParam int size) {
         try {
-            return new BaseResponse<>(reportService.getReporterReports(userId));
+            return new BaseResponse<>(reportService.getReporterReports(userId, page, size));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
     @GetMapping("/actor/{userId}")
-    public BaseResponse<List<GetReportActorRes>> getActorReports(@PathVariable Long userId) {
+    public BaseResponse<PageDto<List<GetReportActorRes>>> getActorReports(@PathVariable Long userId, @RequestParam int page, @RequestParam int size) {
         try {
-            return new BaseResponse<>(reportService.getActorReports(userId));
+            return new BaseResponse<>(reportService.getActorReports(userId, page, size));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
     @GetMapping("/actorParty/{partyId}")
-    public BaseResponse<List<GetReportActorRes>> getActorPartyReports(@PathVariable Long partyId) {
+    public BaseResponse<PageDto<List<GetReportActorRes>>> getActorPartyReports(@PathVariable Long partyId, @RequestParam int page, @RequestParam int size) {
         try {
-            return new BaseResponse<>(reportService.getActorPartyReports(partyId));
+            return new BaseResponse<>(reportService.getActorPartyReports(partyId, page, size));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
     @GetMapping()
-    public BaseResponse<List<GetReportRes>> getReports() {
+    public BaseResponse<PageDto<List<GetReportRes>>> getReports(@RequestParam int page, @RequestParam int size) {
         try {
-            return new BaseResponse<>(reportService.getReports());
+            return new BaseResponse<>(reportService.getReports(page, size));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
