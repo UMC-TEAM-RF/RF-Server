@@ -64,6 +64,7 @@ public class User {
         this.hate = 0;
         this.createdDate = LocalDateTime.now();
         this.email = email;
+        this.imageFilePath = "default";
         this.interestCountries = interestCountries;
         this.userInterests = userInterests;
         this.lifeStyle = lifeStyle;
