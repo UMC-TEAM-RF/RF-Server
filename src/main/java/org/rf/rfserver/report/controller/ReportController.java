@@ -3,13 +3,13 @@ package org.rf.rfserver.report.controller;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
+import org.rf.rfserver.report.dto.GetReportActorRes;
 import org.rf.rfserver.report.dto.PostReportReq;
 import org.rf.rfserver.report.dto.PostReportRes;
 import org.rf.rfserver.report.service.ReportService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -28,6 +28,14 @@ public class ReportController {
     public BaseResponse<PostReportRes> createPartyReport(@RequestBody PostReportReq postReportReq) {
         try {
             return new BaseResponse<>(reportService.createPartyReport(postReportReq));
+        } catch(BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+    @GetMapping("/reporter/{userId}")
+    public BaseResponse<List<GetReportActorRes>> getReports(@PathVariable Long userId) {
+        try {
+            return new BaseResponse<>(reportService.getReports(userId));
         } catch(BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

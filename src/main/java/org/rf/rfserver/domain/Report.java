@@ -27,11 +27,13 @@ public class Report extends BaseEntity{
     public Report(User reporter, User reportedUser, String content) {
         this.reporter = reporter;
         this.reportedUser = reportedUser;
+        this.reportedParty = null;
         this.content = content;
     }
 
     public Report(User reporter, Party reportedParty, String content) {
         this.reporter = reporter;
+        this.reportedUser = null;
         this.reportedParty = reportedParty;
         this.content = content;
     }
