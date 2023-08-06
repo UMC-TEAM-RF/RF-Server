@@ -24,4 +24,12 @@ public class ReportController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+    @PostMapping("/party")
+    public BaseResponse<PostReportRes> createPartyReport(@RequestBody PostReportReq postReportReq) {
+        try {
+            return new BaseResponse<>(reportService.createPartyReport(postReportReq));
+        } catch(BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }

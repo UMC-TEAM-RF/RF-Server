@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PostReportRes {
     private Long reportId;
-    private String reportedUserName;
+    private String reportedName;
 }
