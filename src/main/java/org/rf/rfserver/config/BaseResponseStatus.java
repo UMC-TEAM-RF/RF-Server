@@ -19,7 +19,7 @@ public enum BaseResponseStatus {
     INVALID_USER_JWT(false,2003,"권한이 없는 유저의 접근입니다."),
     INVALID_USER(false, 2004, "해당 유저가 존재하지 않습니다"),
     INVALID_PARTY(false, 2005, "해당 모임이 존재하지 않습니다"),
-    INVALID_JOIN_APPLICATION(false, 2006, "해당하는 요청이 존재하지 않습니다"),
+    INVALID_JOIN_APPLICATION(false, 2006, "이미 가입한 모임입니다"),
     EXCEEDED_PARTY_COUNT(false, 2007, "모임은 5개를 초과할 수 없습니다"),
 
     /**
