@@ -20,6 +20,7 @@ import org.rf.rfserver.party.repository.PartyJoinApplicationRepository;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
 import org.rf.rfserver.user.repository.UserRepository;
+import org.rf.rfserver.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,6 +35,7 @@ public class PartyService {
 
     private final PartyRepository partyRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final UserPartyRepository userPartyRepository;
     private final PartyInterestRepository partyInterestRepository;
     private final PartyJoinApplicationRepository partyJoinApplicationRepository;
@@ -51,7 +53,6 @@ public class PartyService {
                     .memberCount(postPartyReq.getMemberCount())
                     .nativeCount(postPartyReq.getNativeCount())
                     .ownerId(postPartyReq.getOwnerId())
-                    //      .rule(postPartyReq.getRules())
                     .build());
             for (Interest interest : postPartyReq.getInterests()) {
                 PartyInterest partyInterest = partyInterestRepository.save(new PartyInterest(interest, party));
@@ -95,6 +96,11 @@ public class PartyService {
         return new DeletePartyRes(partyId);
     }
 
+    Party findPartyById(Long partyId) throws BaseException {
+        return partyRepository.findById(partyId)
+                .orElseThrow(() -> new BaseException(INVALID_PARTY));
+    }
+
     public void deletePartyInterests(List<PartyInterest> partyInterests) { //party를 삭제할때 partyInterest 테이블에서 연관 데이터삭제
         for (PartyInterest partyInterest : partyInterests) {
             partyInterestRepository.delete(partyInterest);
@@ -109,32 +115,43 @@ public class PartyService {
     }
 
     public PostJoinApplicationRes joinApply(PostJoinApplicationReq postJoinApplyReq) throws BaseException {
-        User user = userRepository.findById(postJoinApplyReq.getUserId())
-                .orElseThrow(() -> new BaseException(INVALID_USER));
-        Party party = partyRepository.findById(postJoinApplyReq.getPartyId())
-                .orElseThrow(() -> new BaseException(INVALID_PARTY));
+        User user = userService.findUserById(postJoinApplyReq.getUserId());
+        userService.isExceededPartyCount(user);
+        Party party = findPartyById(postJoinApplyReq.getPartyId());
+        isJoinedUser(user, party);
+
         PartyJoinApplication partyJoinApplication = new PartyJoinApplication(user, party);
         partyJoinApplicationRepository.save(partyJoinApplication);
         return new PostJoinApplicationRes(partyJoinApplication.getId());
     }
 
+    public void isJoinedUser(User user, Party party) throws BaseException {
+        for (UserParty userParty : party.getUserParties() ) {
+            if(userParty.getUser() == user) {
+                throw new BaseException(INVALID_PARTY);
+            }
+        }
+    }
+
     public PostApproveJoinRes approveJoin(PostApproveJoinReq postApproveJoinReq) throws BaseException {
-        User user = userRepository.findById(postApproveJoinReq.getUserId())
-                .orElseThrow(() -> new BaseException(INVALID_USER));
-        Party party = partyRepository.findById(postApproveJoinReq.getPartyId())
-                .orElseThrow(() -> new BaseException(INVALID_PARTY));
+        User user = userService.findUserById(postApproveJoinReq.getUserId());
+        Party party = findPartyById(postApproveJoinReq.getPartyId());
         UserParty userParty = new UserParty(party, user);
         userParty.setParty(party);
         userParty.setUser(user);
         userPartyRepository.save(userParty);
-        partyJoinApplicationRepository.delete(partyJoinApplicationRepository.findById(postApproveJoinReq.getPartyJoinApplyId())
-                .orElseThrow(() -> new BaseException(INVALID_JOIN_APPLICATION)));
-        return new PostApproveJoinRes(postApproveJoinReq.getPartyJoinApplyId());
+        deletePartyJoinApplication(postApproveJoinReq.getPartyJoinApplicationId());
+        return new PostApproveJoinRes(postApproveJoinReq.getPartyJoinApplicationId());
     }
 
-    public PostDenyJoinRes denyJoin(PostDenyJoinReq postApprovePartyJoinReq) throws BaseException {
-        partyJoinApplicationRepository.delete(partyJoinApplicationRepository.findById(postApprovePartyJoinReq.getPartyJoinApplyId())
-                .orElseThrow(() -> new BaseException(INVALID_JOIN_APPLICATION)));
-        return new PostDenyJoinRes(postApprovePartyJoinReq.getPartyJoinApplyId());
+    public PostDenyJoinRes denyJoin(PostDenyJoinReq postDenyJoinReq) throws BaseException {
+        deletePartyJoinApplication(postDenyJoinReq.getPartyJoinApplicationId());
+        return new PostDenyJoinRes(postDenyJoinReq.getPartyJoinApplicationId());
     }
+
+    public void deletePartyJoinApplication(Long partyJoinApplicationId) throws BaseException {
+        partyJoinApplicationRepository.delete(partyJoinApplicationRepository.findById(partyJoinApplicationId)
+                .orElseThrow(() -> new BaseException(INVALID_JOIN_APPLICATION)));
+    }
+
 }
