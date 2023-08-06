@@ -56,9 +56,6 @@ public class Party {
         this.interests = interests;
         this.schedules = new ArrayList<>();
         this.userParties = new ArrayList<>();
-        //this.rule = rule;
-        //this.tags = tags;
-        this.userParties = new ArrayList<>();
     }
 
     public void updateImageUrl(String imageFilePath){
