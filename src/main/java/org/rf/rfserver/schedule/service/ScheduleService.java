@@ -8,6 +8,7 @@ import org.rf.rfserver.domain.Schedule;
 import org.rf.rfserver.domain.User;
 import org.rf.rfserver.domain.UserParty;
 import org.rf.rfserver.party.PartyRepository;
+import org.rf.rfserver.party.UserPartyRepository;
 import org.rf.rfserver.schedule.dto.*;
 import org.rf.rfserver.schedule.repository.ScheduleRepository;
 import org.rf.rfserver.user.repository.UserRepository;
@@ -29,6 +30,7 @@ public class ScheduleService {
     private final PartyRepository partyRepository;
 
     private final UserRepository userRepository;
+    private final UserPartyRepository userPartyRepository;
 
     //일정 생성
     public PostScheduleRes createSchedule(PostScheduleReq postScheduleReq) throws BaseException {
@@ -74,7 +76,7 @@ public class ScheduleService {
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
 
         //유저가 가입한 모임 목록을 가져옴
-        List<UserParty> userParties = userPartyRepository.findByUser(userId);
+        List<UserParty> userParties = userPartyRepository.findByUser(user);
 
         List<Schedule> schedules = new ArrayList<>();
 
