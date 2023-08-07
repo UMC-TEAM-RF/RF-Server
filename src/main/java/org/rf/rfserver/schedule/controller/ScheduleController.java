@@ -26,7 +26,7 @@ public class ScheduleController {
     }
 
     //해당 모임의 일정 조회
-    @GetMapping("/{partyId}")
+    @GetMapping("/party/{partyId}")
     public BaseResponse<List<GetScheduleRes>> getScheduleByParty(@PathVariable ("partyId") Long partyId){
         try{
             return new BaseResponse<>(scheduleService.getScheduleByParty(partyId));
@@ -36,7 +36,7 @@ public class ScheduleController {
     }
 
     //유저 일정 조회
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     public BaseResponse<List<GetScheduleRes>> getScheduleByUser(@PathVariable ("userId") Long userId){
         try{
             return new BaseResponse<>(scheduleService.getScheduleByUser(userId));
