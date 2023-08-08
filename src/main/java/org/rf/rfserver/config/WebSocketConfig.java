@@ -19,7 +19,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry endpointRegistry) {
-        endpointRegistry.addEndpoint("/ws") // /chat 경로로 들어오는 WebSocket을 설정 (endPoint)
+        endpointRegistry.addEndpoint("/ws") // /ws 경로로 들어오는 WebSocket을 설정 (endPoint)
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }

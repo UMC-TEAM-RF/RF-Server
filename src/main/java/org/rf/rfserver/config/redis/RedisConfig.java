@@ -1,6 +1,6 @@
 package org.rf.rfserver.config.redis;
 
-import org.rf.rfserver.chat.dto.ChatReq;
+import org.rf.rfserver.chat.dto.ChatDto;
 import org.rf.rfserver.chat.service.ChatSubscriber;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +34,7 @@ public class RedisConfig {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(connectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatReq.class));
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatDto.class));
         return redisTemplate;
     }
     @Bean

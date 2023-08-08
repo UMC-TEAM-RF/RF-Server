@@ -15,18 +15,31 @@ public class Chat extends BaseEntity{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
+    @Enumerated(EnumType.STRING)
     private MessageType type;
-    private boolean checked;
+//    private boolean checked;
 
     @ManyToOne(fetch = LAZY)
-    private User user;
+    private User speaker;
 
     @ManyToOne(fetch = LAZY)
     private Party party;
-    public Chat(String content, MessageType type, User user, Party party) {
+
+    private Long replyAtChatId;
+    @ManyToOne(fetch = LAZY)
+    private Schedule schedule;
+    public Chat(String content, MessageType type, User speaker, Party party) {
         this.content = content;
         this.type = type;
-        this.user = user;
+        this.speaker = speaker;
         this.party = party;
+    }
+    public Chat setReplyAtChatId(Long replyAtChatId) {
+        this.replyAtChatId = replyAtChatId;
+        return this;
+    }
+    public Chat setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+        return this;
     }
 }

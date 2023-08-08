@@ -2,7 +2,7 @@ package org.rf.rfserver.chat.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.rf.rfserver.chat.dto.ChatRes;
+import org.rf.rfserver.chat.dto.ChatDto;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,12 +19,12 @@ public class ChatSubscriber implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
-        ChatRes chatRes = new ChatRes();
+        ChatDto chatDto = new ChatDto();
         try {
-            chatRes = objectMapper.readValue(publishMessage, ChatRes.class);
+            chatDto = objectMapper.readValue(publishMessage, ChatDto.class);
         } catch(Exception e) {
 
         }
-        messagingTemplate.convertAndSend("/sub/channel/"+chatRes.getPartyId(), chatRes);
+        messagingTemplate.convertAndSend("/sub/channel/"+chatDto.getPartyId(), chatDto);
     }
 }
