@@ -54,7 +54,7 @@ public class PartyService {
                     .ownerId(postPartyReq.getOwnerId())
                     .build());
             addOwnerToParty(party.getOwnerId(), party);
-            if(isKorean(party.getOwnerId())) {
+            if(userService.isKorean(userService.findUserById(party.getOwnerId()))) {
                 party.plusCurrentNativeCount();
             }
             if(file != null){
@@ -65,14 +65,6 @@ public class PartyService {
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
-    }
-
-    public boolean isKorean(Long userId) throws BaseException {
-        User user = userService.findUserById(userId);
-        if (user.getCountry() == Country.KOREA) {
-            return true;
-        }
-        return false;
     }
 
     public void addOwnerToParty(Long ownerId, Party party) throws BaseException {
@@ -136,29 +128,26 @@ public class PartyService {
 
     public PostJoinApplicationRes joinApply(PostJoinApplicationReq postJoinApplyReq) throws BaseException {
         Party party = findPartyById(postJoinApplyReq.getPartyId());
-        isFullParty(party); // 파티 정원이 가득 찼는지
         User user = userService.findUserById(postJoinApplyReq.getUserId());
-        if (isKorean(user)) {
-            isFullOfKorean(party); //한국인 정원이 가득 찼는지
-        }
-        userService.isExceededPartyCount(user); // user의 모임이 5개 미만인지
-        isJoinedUser(user, party); //user가 이전에 가입한 파티인지
+        joinApplyValidation(party, user);
         PartyJoinApplication partyJoinApplication = new PartyJoinApplication(user, party);
         partyJoinApplicationRepository.save(partyJoinApplication);
         return new PostJoinApplicationRes(partyJoinApplication.getId());
+    }
+
+    public void joinApplyValidation(Party party, User user) throws BaseException {
+        isFullParty(party);
+        if(userService.isKorean(user)) {
+            isFullOfKorean(party);
+        }
+        userService.isExceededPartyCount(user);
+        isJoinedUser(user, party);
     }
 
     public void isFullParty(Party party) throws BaseException {
         if (party.getUserParties().size() > party.getMemberCount()) {
             throw new BaseException(EXCEEDED_PARTY_USER_COUNT);
         }
-    }
-
-    public boolean isKorean(User user) {
-        if (user.getCountry() == Country.KOREA) {
-            return true;
-        }
-        return false;
     }
 
     public void isFullOfKorean(Party party) throws BaseException {
@@ -180,15 +169,19 @@ public class PartyService {
                 .orElseThrow(() -> new BaseException(INVALID_APPLICATION));
         User user = userService.findUserById(partyJoinApplication.getUser().getId());
         Party party = findPartyById(partyJoinApplication.getParty().getId());
-        UserParty userParty = new UserParty(party, user);
-        userParty.setParty(party);
-        userParty.setUser(user);
-        userPartyRepository.save(userParty);
-        if (isKorean(user.getId())) {
+        makeUserParty(user, party);
+        if (userService.isKorean(user)) {
             party.plusCurrentNativeCount();
         }
         deletePartyJoinApplication(partyJoinApplicationId);
         return new PostApproveJoinRes(partyJoinApplicationId);
+    }
+
+    public void makeUserParty(User user, Party party) {
+        UserParty userParty = new UserParty(party, user);
+        userParty.setParty(party);
+        userParty.setUser(user);
+        userPartyRepository.save(userParty);
     }
 
     public PostDenyJoinRes denyJoin(Long partyJoinApplicationId) throws BaseException {

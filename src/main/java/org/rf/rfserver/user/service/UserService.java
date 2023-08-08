@@ -3,6 +3,7 @@ package org.rf.rfserver.user.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
+import org.rf.rfserver.constant.Country;
 import org.rf.rfserver.domain.User;
 import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.repository.UserRepository;
@@ -113,5 +114,12 @@ public class UserService {
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+    public boolean isKorean(User user) {
+        if (user.getCountry() == Country.KOREA) {
+            return true;
+        }
+        return false;
     }
 }
