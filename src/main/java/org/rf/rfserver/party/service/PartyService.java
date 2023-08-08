@@ -53,7 +53,6 @@ public class PartyService {
                     .ownerId(postPartyReq.getOwnerId())
                     .build());
             addOwnerToParty(party.getOwnerId(), party);
-            partyRepository.save(party);
             if(file != null){
                 String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
                 party.updateImageUrl(imageFilePath);
