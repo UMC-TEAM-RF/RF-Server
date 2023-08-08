@@ -29,4 +29,8 @@ public class ChatService {
                 .map(chat -> new ChatDto(chat))
                 .collect(Collectors.toList());
     }
+    @Scheduled(cron = "0 0 0/6 * * *")
+    public void expireChats() {
+        chatRepository.deleteChatsByCreatedAtBefore(LocalDateTime.now().minusDays(3));
+    }
 }
