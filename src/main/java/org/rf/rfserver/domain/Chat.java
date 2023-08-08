@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.rf.rfserver.chat.MessageType;
-
-import java.time.LocalDateTime;
+import org.rf.rfserver.constant.MessageType;
 
 import static jakarta.persistence.FetchType.*;
 

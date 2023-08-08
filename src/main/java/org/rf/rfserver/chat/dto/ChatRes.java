@@ -3,7 +3,7 @@ package org.rf.rfserver.chat.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.rf.rfserver.chat.MessageType;
+import org.rf.rfserver.constant.MessageType;
 
 @Getter
 @Setter
