@@ -27,6 +27,7 @@ public class Party extends BaseEntity{
     private PreferAges preferAges;
     private int memberCount;
     private int nativeCount;
+    private int currentNativeCount;
     private Long ownerId;
     @Enumerated(EnumType.STRING)
     private List<Rule> rules;
@@ -50,6 +51,7 @@ public class Party extends BaseEntity{
         this.nativeCount = nativeCount;
         this.ownerId = ownerId;
         this.rules = rules;
+        this.currentNativeCount = 0;
         this.interests = interests;
         this.schedules = new ArrayList<>();
         this.userParties = new ArrayList<>();
@@ -57,5 +59,13 @@ public class Party extends BaseEntity{
 
     public void updateImageUrl(String imageFilePath){
         this.imageFilePath = imageFilePath;
+    }
+
+    public void plusCurrentNativeCount() {
+        this.currentNativeCount++;
+    }
+
+    public void minusCurrentNativeCount() {
+        this.currentNativeCount--;
     }
 }
