@@ -32,6 +32,7 @@ public class User extends BaseEntity{
     private int love;
     private int hate;
     private String email;
+    private String imageUrl;
     private Boolean isEmailVerified;
 
     @Enumerated(EnumType.STRING)
