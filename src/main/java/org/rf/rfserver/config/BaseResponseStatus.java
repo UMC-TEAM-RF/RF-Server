@@ -28,9 +28,12 @@ public enum BaseResponseStatus {
      * 4000 : Database, Server 오류
      */
     DATABASE_ERROR(false, 4000, "데이터베이스 연결에 실패하였습니다."),
-    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다.")
+    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
 
     // 5000 : 필요시 만들어서 쓰세요
+    PARTY_NOT_FOUND(false, 5000, "존재하지 않는 모임입니다."),
+    USER_NOT_FOUND(false, 5001, "존재하지 않는 사용자입니다."),
+    SCHEDULE_NOT_FOUND(false, 5001, "존재하지 않는 일정입니다."),
     // 6000 : 필요시 만들어서 쓰세요
 
     ;
