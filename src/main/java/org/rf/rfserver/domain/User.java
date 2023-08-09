@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.rf.rfserver.constant.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -65,6 +66,7 @@ public class User extends BaseEntity{
         this.interestCountries = interestCountries;
         this.userInterests = userInterests;
         this.lifeStyle = lifeStyle;
+        this.userParties = new ArrayList<>();
     }
 
     public User updateUser(String nickName, String password, List<Language> interestingLanguages, String introduce, Mbti mbti, LifeStyle lifeStyle) {
