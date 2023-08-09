@@ -25,6 +25,7 @@ public class ScheduleController {
         }
     }
 
+    /*
     //해당 모임의 일정 조회
     @GetMapping("/party/{partyId}")
     public BaseResponse<List<GetScheduleRes>> getScheduleByParty(@PathVariable ("partyId") Long partyId){
@@ -34,6 +35,8 @@ public class ScheduleController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    */
 
     //유저 일정 조회
     @GetMapping("/user/{userId}")
