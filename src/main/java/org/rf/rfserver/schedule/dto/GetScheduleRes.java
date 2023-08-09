@@ -23,6 +23,6 @@ public class GetScheduleRes {
         this.scheduleName = schedule.getScheduleName();
         this.localDateTime = schedule.getDatetime();
         this.location = schedule.getLocation();
-        this.participantCount = schedule.getParticipantCount();
+        this.participantCount = Long.valueOf(schedule.getParty().getMemberCount());
     }
 }
