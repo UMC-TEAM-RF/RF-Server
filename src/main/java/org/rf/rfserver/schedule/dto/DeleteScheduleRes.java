@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class DeleteScheduleRes {
-    private Boolean done;
+    private boolean done;
 }

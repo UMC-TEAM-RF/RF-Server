@@ -10,11 +10,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostScheduleReq {
-    private Long id;
     private Long partyId;
     private String scheduleName;
     private String location;
     private LocalDateTime localDateTime;
-    private Integer alert;
-    private Integer memberCount;
+    private Long alert;
+    private Long participantCount;
 }

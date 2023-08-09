@@ -6,7 +6,6 @@ import org.rf.rfserver.domain.Schedule;
 import java.time.LocalDateTime;
 
 @Getter
-@Data
 @AllArgsConstructor
 public class GetScheduleRes {
     private Long id;
@@ -15,7 +14,7 @@ public class GetScheduleRes {
     private String scheduleName;
     private LocalDateTime localDateTime;
     private String location;
-    private Integer participantCount;
+    private Long participantCount;
 
     public GetScheduleRes(Schedule schedule){
         this.id = schedule.getId();

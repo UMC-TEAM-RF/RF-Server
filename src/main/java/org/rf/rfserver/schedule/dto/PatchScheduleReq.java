@@ -14,5 +14,5 @@ public class PatchScheduleReq {
     private String scheduleName = null;
     private String location = null;
     private LocalDateTime localDateTime = null;
-    private Integer alert = null;
+    private Long alert = null;
 }
