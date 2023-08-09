@@ -9,6 +9,7 @@ import org.rf.rfserver.party.dto.*;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
 import org.rf.rfserver.user.repository.UserRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -179,10 +180,10 @@ public class PartyService {
     }
 
     // 모임 조회 (차단한 거 빼고)
-    public List<GetPartyRes> getNonBlockedParties(Long userId) throws BaseException {
+    public List<GetPartyRes> getNonBlockedParties(Long userId, Pageable pageable) throws BaseException {
         userRepository.findById(userId).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 
-        List<Party> nonBlockedParties = partyRepository.findNonBlockedPartiesByUserId(userId);
+        List<Party> nonBlockedParties = partyRepository.findNonBlockedPartiesByUserId(userId, pageable);
 
         return nonBlockedParties.stream()
                 .map(party -> GetPartyRes.builder()

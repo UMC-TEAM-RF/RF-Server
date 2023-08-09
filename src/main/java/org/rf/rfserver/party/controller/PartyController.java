@@ -1,13 +1,13 @@
 package org.rf.rfserver.party.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.rf.rfserver.blockParty.dto.BlockPartyRes;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
 
 import org.rf.rfserver.domain.Party;
 import org.rf.rfserver.party.service.PartyService;
 import org.rf.rfserver.party.dto.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,10 +68,11 @@ public class PartyController {
         }
     }
 
+    // 모임 조회 (해당 사용자가 차단한 모임 빼고)
     @GetMapping("/user/{userId}/search")
-    public BaseResponse<List<GetPartyRes>> getNonBlockedParties(@PathVariable("userId") Long userId) {
+    public BaseResponse<List<GetPartyRes>> getNonBlockedParties(@PathVariable("userId") Long userId, Pageable pageable) {
         try {
-            return new BaseResponse<>(partyService.getNonBlockedParties(userId));
+            return new BaseResponse<>(partyService.getNonBlockedParties(userId, pageable));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
