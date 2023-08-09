@@ -35,7 +35,7 @@ public class ReportController {
         }
     }
     @GetMapping("/reporter/{userId}")
-    public BaseResponse<PageDto<List<GetReportReporterRes>>> getReporterReports(@PathVariable Long userId, @PageableDefault(size=100, sort="id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public BaseResponse<PageDto<List<GetReportReporterRes>>> getReporterReports(@PathVariable Long userId, Pageable pageable) {
         try {
             return new BaseResponse<>(reportService.getReporterReports(userId, pageable));
         } catch (BaseException e) {
@@ -43,7 +43,7 @@ public class ReportController {
         }
     }
     @GetMapping("/actor/{userId}")
-    public BaseResponse<PageDto<List<GetReportActorRes>>> getActorReports(@PathVariable Long userId, @PageableDefault(size=100, sort="id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public BaseResponse<PageDto<List<GetReportActorRes>>> getActorReports(@PathVariable Long userId, Pageable pageable) {
         try {
             return new BaseResponse<>(reportService.getActorReports(userId, pageable));
         } catch (BaseException e) {
@@ -51,7 +51,7 @@ public class ReportController {
         }
     }
     @GetMapping("/actorParty/{partyId}")
-    public BaseResponse<PageDto<List<GetReportActorRes>>> getActorPartyReports(@PathVariable Long partyId, @PageableDefault(size=100, sort="id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public BaseResponse<PageDto<List<GetReportActorRes>>> getActorPartyReports(@PathVariable Long partyId, Pageable pageable) {
         try {
             return new BaseResponse<>(reportService.getActorPartyReports(partyId, pageable));
         } catch (BaseException e) {
@@ -59,7 +59,7 @@ public class ReportController {
         }
     }
     @GetMapping()
-    public BaseResponse<PageDto<List<GetReportRes>>> getReports(@PageableDefault(size=100, sort="id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public BaseResponse<PageDto<List<GetReportRes>>> getReports( Pageable pageable) {
         try {
             return new BaseResponse<>(reportService.getReports(pageable));
         } catch (BaseException e) {
