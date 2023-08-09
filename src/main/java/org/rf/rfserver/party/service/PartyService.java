@@ -20,6 +20,7 @@ import org.rf.rfserver.party.repository.UserPartyRepository;
 import org.rf.rfserver.user.dto.GetUserProfileRes;
 import org.rf.rfserver.user.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ import java.util.List;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
 
+@Transactional
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -54,9 +56,6 @@ public class PartyService {
                     .ownerId(postPartyReq.getOwnerId())
                     .build());
             addOwnerToParty(party.getOwnerId(), party);
-            if(userService.isKorean(userService.findUserById(party.getOwnerId()))) {
-                party.plusCurrentNativeCount();
-            }
             if(file != null){
                 String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
                 party.updateImageUrl(imageFilePath);
@@ -73,6 +72,9 @@ public class PartyService {
         userPartyRepository.save(userParty);
         userParty.setUser(user);
         userParty.setParty(party);
+        if(userService.isKorean(user)) {
+            party.plusCurrentNativeCount();
+        }
     }
 
     public List<GetUserProfileRes> getUserProfiles(List<UserParty> userParties) {
@@ -145,7 +147,7 @@ public class PartyService {
     }
 
     public void isFullParty(Party party) throws BaseException {
-        if (party.getUserParties().size() > party.getMemberCount()) {
+        if (party.getUserParties().size() >= party.getMemberCount()) {
             throw new BaseException(EXCEEDED_PARTY_USER_COUNT);
         }
     }
@@ -155,6 +157,7 @@ public class PartyService {
             throw new BaseException(FULL_OF_KOREAN);
         }
     }
+
 
     public void isJoinedUser(User user, Party party) throws BaseException {
         for (UserParty userParty : party.getUserParties() ) {
