@@ -2,15 +2,15 @@ package org.rf.rfserver.party.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.rf.rfserver.blockParty.dto.BlockPartyRes;
-import org.rf.rfserver.blockParty.repository.BlockPartyRepository;
 import org.rf.rfserver.config.BaseException;
+import org.rf.rfserver.config.s3.S3Uploader;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.*;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,9 +26,9 @@ public class PartyService {
     private final PartyRepository partyRepository;
     private final UserRepository userRepository;
     private final UserPartyRepository userPartyRepository;
-    private final BlockPartyRepository blockPartyRepository;
+    private final S3Uploader s3Uploader;
 
-    public Party createParty(PostPartyReq postPartyReq) throws BaseException {
+    public Party createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
         try {
             Party party = partyRepository.save(Party.builder()
                     .name(postPartyReq.getName())
@@ -37,16 +37,19 @@ public class PartyService {
                     .language(postPartyReq.getLanguage())
                     .imageFilePath(postPartyReq.getImageFilePath())
                     .preferAges(postPartyReq.getPreferAges())
-                    .createdDate(LocalDateTime.now())
                     .memberCount(postPartyReq.getMemberCount())
                     .nativeCount(postPartyReq.getNativeCount())
                     .ownerId(postPartyReq.getOwnerId())
-                    //      .rule(postPartyReq.getRules())
+                    .rules(postPartyReq.getRules())
+                    .interests(postPartyReq.getInterests())
                     .build());
-            /*for (Interest interest : postPartyReq.getInterests()) {
-                PartyInterest partyInterest = partyInterestRepository.save(new PartyInterest(interest, party));
-                partyInterest.getParty().getInterests().add(partyInterest);
-            }*/
+
+            //file 비어있는지 체크
+            if(file != null){
+                String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
+                party.updateImageUrl(imageFilePath);
+            }
+            partyRepository.save(party);
             return party;
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
@@ -64,26 +67,19 @@ public class PartyService {
                 .language(party.getLanguage())
                 .imageFilePath(party.getImageFilePath())
                 .preferAges(party.getPreferAges())
-                .createdDate(party.getCreatedDate())
                 .memberCount(party.getMemberCount())
                 .nativeCount(party.getNativeCount())
                 .ownerId(party.getOwnerId())
                 .users(party.getUsers())
                 .schedules(party.getSchedules())
-/*
                 .interests(party.getInterests())
-*/
-                //.rule(party.getRule())
-                //.tags(party.getTags())
+                .rules(party.getRules())
                 .build();
     }
 
     public DeletePartyRes deleteParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
-        /*for (PartyInterest partyInterest: party.getInterests() ) {
-            partyInterestRepository.delete(partyInterest);
-        }*/
         partyRepository.delete(party);
         return DeletePartyRes.builder()
                 .id(partyId)
@@ -91,7 +87,7 @@ public class PartyService {
     }
 
     // 사용자가 모임 생성
-    public Party userCreateParty(Long userId, UserCreatePartyReq userCreatePartyReq) throws BaseException {
+    public Party userCreateParty(Long userId, PostPartyReq userCreatePartyReq, MultipartFile file) throws BaseException {
         PostPartyReq postPartyReq = new PostPartyReq(
                 userCreatePartyReq.getName(),
                 userCreatePartyReq.getContent(),
@@ -101,13 +97,12 @@ public class PartyService {
                 userCreatePartyReq.getPreferAges(),
                 userCreatePartyReq.getMemberCount(),
                 userCreatePartyReq.getNativeCount(),
-                userCreatePartyReq.getOwnerId()
-/*
+                userCreatePartyReq.getOwnerId(),
+                userCreatePartyReq.getRules(),
                 userCreatePartyReq.getInterests()
-*/
         );
         // 모임 생성
-        Party party = createParty(postPartyReq);
+        Party party = createParty(postPartyReq, file);
         // 사용자 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
@@ -189,7 +184,8 @@ public class PartyService {
 
         List<Party> nonBlockedParties = partyRepository.findNonBlockedPartiesByUserId(userId);
 
-        return nonBlockedParties.stream().map(party -> GetPartyRes.builder()
+        return nonBlockedParties.stream()
+                .map(party -> GetPartyRes.builder()
                         .id(party.getId())
                         .name(party.getName())
                         .content(party.getContent())
@@ -197,7 +193,6 @@ public class PartyService {
                         .language(party.getLanguage())
                         .imageFilePath(party.getImageFilePath())
                         .preferAges(party.getPreferAges())
-                        .createdDate(party.getCreatedDate())
                         .memberCount(party.getMemberCount())
                         .nativeCount(party.getNativeCount())
                         .ownerId(party.getOwnerId())
@@ -227,7 +222,6 @@ public class PartyService {
                         .language(userParty.getParty().getLanguage())
                         .imageFilePath(userParty.getParty().getImageFilePath())
                         .preferAges(userParty.getParty().getPreferAges())
-                        .createdDate(userParty.getParty().getCreatedDate())
                         .memberCount(userParty.getParty().getMemberCount())
                         .nativeCount(userParty.getParty().getNativeCount())
                         .ownerId(userParty.getParty().getOwnerId())

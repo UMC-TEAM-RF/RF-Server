@@ -8,7 +8,9 @@ import org.rf.rfserver.config.BaseResponse;
 import org.rf.rfserver.domain.Party;
 import org.rf.rfserver.party.service.PartyService;
 import org.rf.rfserver.party.dto.*;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,15 +19,6 @@ import java.util.List;
 @RequestMapping("/party")
 public class PartyController {
     private final PartyService partyService;
-
-    /*@PostMapping
-    public BaseResponse<PostPartyRes> createParty(@RequestBody PostPartyReq postPartyReq) {
-        try {
-            return new BaseResponse<>(partyService.createParty(postPartyReq));
-        } catch (BaseException e) {
-            return new BaseResponse<>((e.getStatus()));
-        }
-    }*/
 
     @GetMapping("/{partyId}")
     public BaseResponse<GetPartyRes> getParty(@PathVariable("partyId") Long partyId ) {
@@ -46,12 +39,12 @@ public class PartyController {
     }
 
     // 모임 생성
-    @PostMapping("/create")
-    public BaseResponse<Party> userCreateParty(@RequestBody UserCreatePartyReq userCreatePartyReq) {
+    @PostMapping(value = "/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public BaseResponse<Party> createParty(@RequestParam("userId") Long userId, @RequestPart("postPartyReq") PostPartyReq postPartyReq, @RequestPart("file") MultipartFile file) {
         try {
-            return new BaseResponse<>(partyService.userCreateParty(userCreatePartyReq.getUserId(), userCreatePartyReq));
+            return new BaseResponse<>(partyService.userCreateParty(userId, postPartyReq, file));
         } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
+            return new BaseResponse<>((e.getStatus()));
         }
     }
 
