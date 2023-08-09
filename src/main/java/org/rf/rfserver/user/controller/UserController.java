@@ -46,4 +46,21 @@ public class UserController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    @GetMapping("/idCheck/{loginId}")
+    public BaseResponse<GetUserIdCheckRes> checkId(@PathVariable("loginId") String loginId) {
+        try {
+            return new BaseResponse<>(userService.checkId(loginId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+    @GetMapping("/nicknameCheck/{nickName}")
+    public BaseResponse<GetNicknameCheckRes> checkNickname(@PathVariable("nickName") String nickName) {
+        try {
+            return new BaseResponse<>(userService.checkNickname(nickName));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }

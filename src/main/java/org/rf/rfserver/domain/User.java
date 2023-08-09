@@ -3,66 +3,79 @@ package org.rf.rfserver.domain;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.rf.rfserver.constant.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String loginId;
     private String password;
     private String nickName;
-    private String university;
-    private String phoneNumber;
-    private String interestingLanguage;
+    @Enumerated(EnumType.STRING)
+    private University university;
+    @Enumerated(EnumType.STRING)
+    private List<Language> interestingLanguages;
     private String introduce;
-    private String country;
-    private String mbti;
+    @Enumerated(EnumType.STRING)
+    private Country country;
+    @Enumerated(EnumType.STRING)
+    private Mbti mbti;
     private int entrance;
     private int love;
     private int hate;
-    private LocalDateTime createdDate;
     private String email;
     private Boolean isEmailVerified;
 
-    @OneToMany(mappedBy = "user")
-    private List<InterestCountry> interestCountries;
-    @OneToMany(mappedBy = "user")
-    private List<UserInterest> userInterest;
+    @Enumerated(EnumType.STRING)
+    private List<Country> interestCountries;
+    @Enumerated(EnumType.STRING)
+    private List<Interest> userInterests;
+    @Enumerated(EnumType.STRING)
+    private LifeStyle lifeStyle;
     @OneToMany(mappedBy = "user")
     private List<UserParty> userParties;
     @OneToMany(mappedBy = "blockerUser")
     @JsonManagedReference // 이 엔티티를 직렬화 할 때 관련된 BlockParty 엔티티를 포함
     private List<BlockParty> blockedParties;
 
-    public User(String loginId, String password, int entrance, String university, String nickName
-            , String country, String interestingLanguage, String introduce, String mbti) {
+
+    @Builder
+    public User(String loginId, String password, int entrance, University university, String nickName
+            , Country country, List<Language> interestingLanguages, String introduce, Mbti mbti
+            , String email, List<Country> interestCountries, List<Interest> userInterests, LifeStyle lifeStyle) {
         this.loginId= loginId;
         this.password = password;
         this.entrance = entrance;
         this.university = university;
         this.nickName = nickName;
         this.country = country;
-        this.interestingLanguage = interestingLanguage;
+        this.interestingLanguages = interestingLanguages;
         this.introduce = introduce;
         this.mbti = mbti;
         this.love = 0;
         this.hate = 0;
-        this.createdDate = LocalDateTime.now();
+        this.email = email;
+        this.interestCountries = interestCountries;
+        this.userInterests = userInterests;
+        this.lifeStyle = lifeStyle;
     }
-    public User updateUser(String nickName, String password, String interestingLanguage, String introduce, String mbti) {
+
+    public User updateUser(String nickName, String password, List<Language> interestingLanguages, String introduce, Mbti mbti, LifeStyle lifeStyle) {
         this.nickName = nickName == null ? this.nickName : nickName;
         this.password = password == null ? this.password : password;
-        this.interestingLanguage = interestingLanguage == null ? this.interestingLanguage : interestingLanguage;
+        this.interestingLanguages = interestingLanguages == null ? this.interestingLanguages : interestingLanguages;
         this.introduce = introduce == null ? this.introduce : introduce;
         this.mbti = mbti == null ? this.mbti : mbti;
+        this.lifeStyle = lifeStyle;
         return this;
     }
 
