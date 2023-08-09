@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 @Getter
 public class PostPartyRes {
+    private Long partyId;
     private String name;
     private String content;
     private String location;
@@ -24,7 +25,8 @@ public class PostPartyRes {
     private List<Rule> rules;
     private List<Interest> interests;
 
-    public PostPartyRes(PostPartyReq postPartyReq) {
+    public PostPartyRes(Long partyId, PostPartyReq postPartyReq) {
+        this.partyId = partyId;
         this.name = postPartyReq.getName();
         this.content = postPartyReq.getContent();
         this.location = postPartyReq.getLocation();

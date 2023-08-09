@@ -60,7 +60,7 @@ public class PartyService {
                 String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
                 party.updateImageUrl(imageFilePath);
             }
-            return new PostPartyRes(postPartyReq);
+            return new PostPartyRes(party.getId(), postPartyReq);
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
