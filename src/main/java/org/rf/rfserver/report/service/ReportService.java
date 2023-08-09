@@ -45,8 +45,7 @@ public class ReportService {
         return new PostReportRes(report.getId(), report.getActorParty().getName(), report.getContent(), "PARTY");
     }
 
-    public PageDto<List<GetReportReporterRes>> getReporterReports(Long userId, int page, int size) throws BaseException{
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+    public PageDto<List<GetReportReporterRes>> getReporterReports(Long userId, Pageable pageable) throws BaseException{
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
         Page<Report> reports = reportRepository.findReportsByReporter(user, pageable);
@@ -58,8 +57,7 @@ public class ReportService {
                 .toList());
     }
 
-    public PageDto<List<GetReportActorRes>> getActorReports(Long userId, int page, int size) throws BaseException{
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+    public PageDto<List<GetReportActorRes>> getActorReports(Long userId, Pageable pageable) throws BaseException{
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
         Page<Report> reports = reportRepository.findReportsByActor(user, pageable);
@@ -69,8 +67,7 @@ public class ReportService {
                 .toList());
     }
 
-    public PageDto<List<GetReportActorRes>> getActorPartyReports(Long partyId, int page, int size) throws BaseException{
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+    public PageDto<List<GetReportActorRes>> getActorPartyReports(Long partyId, Pageable pageable) throws BaseException{
         Party actorParty = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(NO_SUCH_PARTY));
         Page<Report> reports = reportRepository.findReportsByActorParty(actorParty, pageable);
@@ -80,8 +77,7 @@ public class ReportService {
                 .toList());
     }
 
-    public PageDto<List<GetReportRes>> getReports(int page, int size) throws BaseException{
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+    public PageDto<List<GetReportRes>> getReports(Pageable pageable) throws BaseException{
         Page<Report> reports = reportRepository.findAll(pageable);
         return new PageDto<>(reports.getNumber(), reports.getTotalPages()
                 , reports.stream()
