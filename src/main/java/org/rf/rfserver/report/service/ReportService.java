@@ -6,7 +6,7 @@ import org.rf.rfserver.config.PageDto;
 import org.rf.rfserver.domain.Party;
 import org.rf.rfserver.domain.Report;
 import org.rf.rfserver.domain.User;
-import org.rf.rfserver.party.PartyRepository;
+import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.report.dto.*;
 import org.rf.rfserver.report.repository.ReportRepository;
 import org.rf.rfserver.user.repository.UserRepository;
