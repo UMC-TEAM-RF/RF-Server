@@ -12,7 +12,6 @@ import org.rf.rfserver.party.dto.PostPartyRes;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.stream.Collectors;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
 
@@ -44,6 +43,8 @@ public class PartyService {
             if(file != null){
                 String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
                 party.updateImageUrl(imageFilePath);
+            } else { //파일이 들어오지 않으면 ImageUrl에 null 할당
+                party.updateImageUrl(null);
             }
             partyRepository.save(party);
             return new PostPartyRes(party.getId());

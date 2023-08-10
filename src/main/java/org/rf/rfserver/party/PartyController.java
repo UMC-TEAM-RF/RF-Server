@@ -20,7 +20,7 @@ public class PartyController {
     private final PartyService partyService;
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public BaseResponse<PostPartyRes> createParty(@RequestPart("postPartyReq") PostPartyReq postPartyReq, @RequestPart("file") MultipartFile file) {
+    public BaseResponse<PostPartyRes> createParty(@RequestPart("postPartyReq") PostPartyReq postPartyReq, @RequestPart(value = "file", required = false) MultipartFile file) {
         try {
             return new BaseResponse<>(partyService.createParty(postPartyReq,file));
         } catch (BaseException e) {
