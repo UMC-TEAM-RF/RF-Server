@@ -5,13 +5,16 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import static jakarta.persistence.FetchType.*;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class InterestCategory {
+public class FavoriteChat extends BaseEntity{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String categoryName;
+    private String content;
+
+    @ManyToOne(fetch = LAZY)
+    private User user;
 }

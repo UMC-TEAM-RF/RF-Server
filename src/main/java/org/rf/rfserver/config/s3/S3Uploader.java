@@ -1,5 +1,6 @@
 package org.rf.rfserver.config.s3;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -22,13 +23,13 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class S3Uploader {
-    private final AmazonS3Client amazonS3Client;
+    private final AmazonS3 amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    //MultiFile 형태의 파일을 File 형태로 전환 후 저장
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException{
+    //MultiFile 형태의 파일을 File 형태로 전환 후 S3 저장
+    public String fileUpload(MultipartFile multipartFile, String dirName) throws IOException{
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile->File 전환 실패"));
         return upload(uploadFile,dirName);
@@ -36,7 +37,7 @@ public class S3Uploader {
 
     //변환된 파일 업로드
     private String upload(File uploadFile, String dirName){
-        String fileName = dirName + "/" + UUID.randomUUID() +uploadFile.getName(); //UUID 고유 식별자 추가
+        String fileName = dirName + "/" + UUID.randomUUID() + "-" +uploadFile.getName(); //UUID 고유 식별자 추가
         String uploadImageUrl = putS3(uploadFile, fileName);
         removeNewFile(uploadFile);
         return uploadImageUrl;
