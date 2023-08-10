@@ -3,12 +3,14 @@ package org.rf.rfserver.party.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.rf.rfserver.config.BaseException;
+import org.rf.rfserver.config.PageDto;
 import org.rf.rfserver.config.s3.S3Uploader;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.*;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
 import org.rf.rfserver.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -180,12 +182,12 @@ public class PartyService {
     }
 
     // 모임 조회 (차단한 거 빼고)
-    public List<GetPartyRes> getNonBlockedParties(Long userId, Pageable pageable) throws BaseException {
+    public PageDto<List<GetPartyRes>> getNonBlockedParties(Long userId, Pageable pageable) throws BaseException {
         userRepository.findById(userId).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 
-        List<Party> nonBlockedParties = partyRepository.findNonBlockedPartiesByUserId(userId, pageable);
+        Page<Party> nonBlockedParties = partyRepository.findNonBlockedPartiesByUserId(userId, pageable);
 
-        return nonBlockedParties.stream()
+        return new PageDto<>(nonBlockedParties.getNumber(), nonBlockedParties.getTotalPages(), nonBlockedParties.stream()
                 .map(party -> GetPartyRes.builder()
                         .id(party.getId())
                         .name(party.getName())
@@ -200,7 +202,7 @@ public class PartyService {
                         .users(party.getUsers())
                         .schedules(party.getSchedules())
                         .build())
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     /**
@@ -209,12 +211,12 @@ public class PartyService {
      * @return List[GetPartyRes]
      * @throws BaseException
      */
-    public List<GetPartyRes> getUsersParties(Long userId, Pageable pageable) throws BaseException {
+    public PageDto<List<GetPartyRes>> getUsersParties(Long userId, Pageable pageable) throws BaseException {
         userRepository.findById(userId).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 
-        List<UserParty> usersParties = userPartyRepository.findUserPartiesByUserId(userId, pageable);
+        Page<UserParty> usersParties = userPartyRepository.findUserPartiesByUserId(userId, pageable);
 
-        return usersParties.stream()
+        return new PageDto<>(usersParties.getNumber(), usersParties.getTotalPages(), usersParties.stream()
                 .map(userParty -> GetPartyRes.builder()
                         .id(userParty.getParty().getId())
                         .name(userParty.getParty().getName())
@@ -229,6 +231,6 @@ public class PartyService {
                         .users(userParty.getParty().getUsers())
                         .schedules(userParty.getParty().getSchedules())
                         .build())
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 }

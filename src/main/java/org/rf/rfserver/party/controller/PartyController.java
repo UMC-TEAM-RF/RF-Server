@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
 
+import org.rf.rfserver.config.PageDto;
 import org.rf.rfserver.domain.Party;
 import org.rf.rfserver.party.service.PartyService;
 import org.rf.rfserver.party.dto.*;
@@ -70,7 +71,7 @@ public class PartyController {
 
     // 모임 조회 (해당 사용자가 차단한 모임 빼고)
     @GetMapping("/user/{userId}/search")
-    public BaseResponse<List<GetPartyRes>> getNonBlockedParties(@PathVariable("userId") Long userId, Pageable pageable) {
+    public BaseResponse<PageDto<List<GetPartyRes>>> getNonBlockedParties(@PathVariable("userId") Long userId, Pageable pageable) {
         try {
             return new BaseResponse<>(partyService.getNonBlockedParties(userId, pageable));
         } catch (BaseException e) {
@@ -84,7 +85,7 @@ public class PartyController {
      * @return List[GetPartyRes]
      */
     @GetMapping("/user/{userId}/belong")
-    public BaseResponse<List<GetPartyRes>> getUsersParties(@PathVariable("userId") Long userId, Pageable pageable) {
+    public BaseResponse<PageDto<List<GetPartyRes>>> getUsersParties(@PathVariable("userId") Long userId, Pageable pageable) {
         try {
             return new BaseResponse<>(partyService.getUsersParties(userId, pageable));
         } catch (BaseException e) {
