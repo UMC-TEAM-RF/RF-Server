@@ -2,10 +2,7 @@ package org.rf.rfserver.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.rf.rfserver.constant.*;
 
 import java.util.List;
@@ -46,7 +43,6 @@ public class User extends BaseEntity{
     @OneToMany(mappedBy = "blockerUser")
     @JsonManagedReference // 이 엔티티를 직렬화 할 때 관련된 BlockParty 엔티티를 포함
     private List<BlockParty> blockedParties;
-
 
     @Builder
     public User(String loginId, String password, int entrance, University university, String nickName
