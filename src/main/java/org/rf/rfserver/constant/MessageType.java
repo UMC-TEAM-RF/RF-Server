@@ -10,6 +10,9 @@ public enum MessageType implements EnumModel {
     ,IMAGE("이미지")
     ,SCHEDULE("일정")
     ,REPLY("답장")
+    ,INVITE("초대")
+    ,LEAVE("나감")
+    ,KICK_OUT("강퇴")
     ;
     private final String value;
     @Override

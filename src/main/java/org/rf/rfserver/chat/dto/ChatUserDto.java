@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ChatUserDto {
-    private Long speakerId = null;
-    private String speakerName = null;
-    private String speakerImageUrl = null;
+    private Long userId = null;
+    private String userName = null;
+    private String userImageUrl = null;
 }

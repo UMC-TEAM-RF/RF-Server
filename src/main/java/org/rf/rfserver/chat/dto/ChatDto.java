@@ -20,6 +20,7 @@ import static org.rf.rfserver.constant.MessageType.SCHEDULE;
 public class ChatDto {
     private MessageType type = null;
     private ChatUserDto speaker;
+    private ChatUserDto victim;
     private ScheduleChatDto schedule;
     private Long partyId = null;
     private Long chatId = null;
@@ -42,8 +43,8 @@ public class ChatDto {
         DateTimeFormatter chatFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSS");
         this.partyId = partyId;
         this.chatId = chatId;
-        this.getSpeaker().setSpeakerName(speakerName);
-        this.getSpeaker().setSpeakerImageUrl(speakerImageUrl);
+        this.getSpeaker().setUserName(speakerName);
+        this.getSpeaker().setUserImageUrl(speakerImageUrl);
         this.dateTime = dateTime.format(chatFormatter);
         return this;
     }

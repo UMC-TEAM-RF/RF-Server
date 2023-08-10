@@ -23,6 +23,9 @@ public class Chat extends BaseEntity{
     private User speaker;
 
     @ManyToOne(fetch = LAZY)
+    private User victim;
+
+    @ManyToOne(fetch = LAZY)
     private Party party;
 
     private Long replyAtChatId;
@@ -40,6 +43,10 @@ public class Chat extends BaseEntity{
     }
     public Chat setSchedule(Schedule schedule) {
         this.schedule = schedule;
+        return this;
+    }
+    public Chat setVictim(User victim) {
+        this.victim = victim;
         return this;
     }
 }
