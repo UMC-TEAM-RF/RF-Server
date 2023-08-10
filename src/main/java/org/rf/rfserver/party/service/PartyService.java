@@ -209,10 +209,10 @@ public class PartyService {
      * @return List[GetPartyRes]
      * @throws BaseException
      */
-    public List<GetPartyRes> getUsersParties(Long userId) throws BaseException {
+    public List<GetPartyRes> getUsersParties(Long userId, Pageable pageable) throws BaseException {
         userRepository.findById(userId).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 
-        List<UserParty> usersParties = userPartyRepository.findUserPartiesByUserId(userId);
+        List<UserParty> usersParties = userPartyRepository.findUserPartiesByUserId(userId, pageable);
 
         return usersParties.stream()
                 .map(userParty -> GetPartyRes.builder()

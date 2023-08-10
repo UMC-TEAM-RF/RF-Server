@@ -84,9 +84,9 @@ public class PartyController {
      * @return List[GetPartyRes]
      */
     @GetMapping("/user/{userId}/belong")
-    public BaseResponse<List<GetPartyRes>> getUsersParties(@PathVariable("userId") Long userId) {
+    public BaseResponse<List<GetPartyRes>> getUsersParties(@PathVariable("userId") Long userId, Pageable pageable) {
         try {
-            return new BaseResponse<>(partyService.getUsersParties(userId));
+            return new BaseResponse<>(partyService.getUsersParties(userId, pageable));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
