@@ -41,6 +41,8 @@ public enum BaseResponseStatus {
     ALREADY_JOINED_PARTY(false, 7004, "이미 가입한 모임입니다."),
     NOT_JOINED_PARTY(false, 7005, "가입한 모입이 아닙니다.")
     // 5000 : 필요시 만들어서 쓰세요
+    ,NO_SUCH_USER(false, 5000, "존재하지 않는 사용자 입니다.")
+    ,NO_SUCH_PARTY(false, 5001, "존재하지 않는 그룹 입니다.")
     // 6000 : 필요시 만들어서 쓰세요
 
     ;
