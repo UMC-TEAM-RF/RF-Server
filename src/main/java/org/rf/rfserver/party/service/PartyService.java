@@ -48,7 +48,6 @@ public class PartyService {
                     .content(postPartyReq.getContent())
                     .location(postPartyReq.getLocation())
                     .language(postPartyReq.getLanguage())
-                    .imageFilePath(postPartyReq.getImageFilePath())
                     .interests(postPartyReq.getInterests())
                     .preferAges(postPartyReq.getPreferAges())
                     .memberCount(postPartyReq.getMemberCount())

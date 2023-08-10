@@ -1,5 +1,6 @@
 package org.rf.rfserver.party.dto.party;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.rf.rfserver.constant.Interest;
@@ -9,7 +10,7 @@ import org.rf.rfserver.constant.Rule;
 
 import java.util.List;
 
-@Builder
+@AllArgsConstructor
 @Getter
 public class PostPartyRes {
     private Long partyId;
