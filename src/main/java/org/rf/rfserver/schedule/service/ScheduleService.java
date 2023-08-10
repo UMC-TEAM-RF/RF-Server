@@ -52,7 +52,7 @@ public class ScheduleService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-    /*
+    /**
 
     //모임별 일정 조회
     public List<GetScheduleRes> getScheduleByParty(Long partyId) throws BaseException{
@@ -68,7 +68,7 @@ public class ScheduleService {
                 .map(GetScheduleRes::new)
                 .collect(Collectors.toList());
     }
-    */
+    **/
 
     //유저별 일정 조회
     public List<GetScheduleRes> getScheduleByUser(Long userId) throws BaseException{
