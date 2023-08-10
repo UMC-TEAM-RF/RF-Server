@@ -39,13 +39,12 @@ public class Party extends BaseEntity{
     private List<UserParty> userParties;
 
     @Builder
-    public Party(String name, String content,String location, Language language, String imageFilePath, PreferAges preferAges,
+    public Party(String name, String content,String location, Language language, PreferAges preferAges,
                  int memberCount, int nativeCount, Long ownerId, List<Rule> rules, List<Interest> interests) {
         this.name = name;
         this.content = content;
         this.location = location;
         this.language = language;
-        this.imageFilePath = imageFilePath;
         this.preferAges = preferAges;
         this.memberCount = memberCount;
         this.nativeCount = nativeCount;
