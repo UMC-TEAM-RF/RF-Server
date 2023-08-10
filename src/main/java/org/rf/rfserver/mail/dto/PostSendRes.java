@@ -8,6 +8,6 @@ import org.rf.rfserver.domain.Mail;
 @Getter
 @AllArgsConstructor
 public class PostSendRes {
-    private String mailAddress;
+    private String mail;
     private University university;
 }
