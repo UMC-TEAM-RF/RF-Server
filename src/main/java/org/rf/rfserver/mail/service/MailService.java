@@ -18,9 +18,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
@@ -41,7 +39,7 @@ public class MailService {
             SimpleMailMessage message = new SimpleMailMessage();
             setMessage(message, mailAddress);
             javaMailSender.send(message);
-            return new PostSendRes(mail);
+            return new PostSendRes(mail.getMailAddress(), mail.getUniversity());
         } catch (InvalidMailException e) {
             throw new BaseException(INVALID_UNIVERSITY);
         } catch (Exception e) {
