@@ -96,9 +96,9 @@ public class ScheduleService {
     //일정 수정
     @Transactional
     public PatchScheduleRes updateSchedule(Long scheduleId, PatchScheduleReq patchScheduleReq) throws BaseException{
-        try{
-            Schedule schedule = scheduleRepository.findById(scheduleId)
-                    .orElseThrow(()-> new BaseException(SCHEDULE_NOT_FOUND));
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(()-> new BaseException(SCHEDULE_NOT_FOUND));
+        try {
             schedule.updateSchedule(patchScheduleReq.getScheduleName(), patchScheduleReq.getLocalDateTime(), patchScheduleReq.getLocation(),
                     patchScheduleReq.getAlert());
             return new PatchScheduleRes(true);
