@@ -10,6 +10,8 @@ import org.rf.rfserver.constant.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.rf.rfserver.constant.RfRule.*;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -80,7 +82,7 @@ public class User extends BaseEntity{
     }
 
     public boolean isMoreThanFiveParties() {
-        if (userParties.size() > 5) {
+        if (userParties.size() > maxPartyNumber) {
             return true;
         }
         return false;
