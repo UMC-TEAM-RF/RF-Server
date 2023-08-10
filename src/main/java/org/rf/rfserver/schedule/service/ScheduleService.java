@@ -14,8 +14,6 @@ import org.rf.rfserver.schedule.repository.ScheduleRepository;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,14 +77,12 @@ public class ScheduleService {
         //유저가 가입한 모임 목록을 가져옴
         List<UserParty> userParties = userPartyRepository.findByUser(user);
 
-        List<Schedule> schedules = new ArrayList<>();
-
-        //각 모임들의 일정을 모두 schedule list에 추가
-        for(UserParty userParty : userParties){
-            Party party = userParty.getParty();
-            List<Schedule> partySchedules = scheduleRepository.findByParty(party);
-            schedules.addAll(partySchedules);
-        }
+        //userParties에서 모임 정보만 리스트로 가져옴
+        List<Party> parties = userParties.stream()
+                .map(UserParty::getParty)
+                .collect(Collectors.toList());
+        //모임별 스케줄을 불러옴
+        List<Schedule> schedules = scheduleRepository.findByParties(parties);
 
         return schedules.stream()
                 .map(GetScheduleRes::new)
