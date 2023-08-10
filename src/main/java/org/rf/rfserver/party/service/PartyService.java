@@ -43,6 +43,7 @@ public class PartyService {
 
     public PostPartyRes createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
         try {
+            User user = userService.findUserById(postPartyReq.getOwnerId());
             Party party = partyRepository.save(Party.builder()
                     .name(postPartyReq.getName())
                     .content(postPartyReq.getContent())
@@ -54,7 +55,7 @@ public class PartyService {
                     .nativeCount(postPartyReq.getNativeCount())
                     .ownerId(postPartyReq.getOwnerId())
                     .build());
-            addOwnerToParty(party.getOwnerId(), party);
+            addOwnerToParty(user, party);
             if(file != null){
                 String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
                 party.updateImageUrl(imageFilePath);
@@ -65,8 +66,7 @@ public class PartyService {
         }
     }
 
-    public void addOwnerToParty(Long ownerId, Party party) throws BaseException {
-        User user = userService.findUserById(ownerId);
+    public void addOwnerToParty(User user, Party party) {
         UserParty userParty = new UserParty(party, user);
         userPartyRepository.save(userParty);
         userParty.setUser(user);
