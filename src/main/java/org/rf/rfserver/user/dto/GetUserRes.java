@@ -11,6 +11,7 @@ import java.util.List;
 public class GetUserRes {
     private String nickName;
     private University university;
+    private String profileImage;
     private List<Language> interestingLanguages;
     private String introduce;
     private Country country;

@@ -17,6 +17,7 @@ public class User extends BaseEntity{
     private String loginId;
     private String password;
     private String nickName;
+    private String profileImage;
     @Enumerated(EnumType.STRING)
     private University university;
     @Enumerated(EnumType.STRING)
@@ -45,12 +46,13 @@ public class User extends BaseEntity{
     private List<BlockParty> blockedParties;
 
     @Builder
-    public User(String loginId, String password, int entrance, University university, String nickName
+    public User(String loginId, String password, int entrance, String profileImage, University university, String nickName
             , Country country, List<Language> interestingLanguages, String introduce, Mbti mbti
             , String email, List<Country> interestCountries, List<Interest> userInterests, LifeStyle lifeStyle) {
         this.loginId= loginId;
         this.password = password;
         this.entrance = entrance;
+        this.profileImage = profileImage;
         this.university = university;
         this.nickName = nickName;
         this.country = country;
@@ -65,9 +67,10 @@ public class User extends BaseEntity{
         this.lifeStyle = lifeStyle;
     }
 
-    public User updateUser(String nickName, String password, List<Language> interestingLanguages, String introduce, Mbti mbti, LifeStyle lifeStyle) {
+    public User updateUser(String nickName, String password, String profileImage, List<Language> interestingLanguages, String introduce, Mbti mbti, LifeStyle lifeStyle) {
         this.nickName = nickName == null ? this.nickName : nickName;
         this.password = password == null ? this.password : password;
+        this.profileImage = profileImage;
         this.interestingLanguages = interestingLanguages == null ? this.interestingLanguages : interestingLanguages;
         this.introduce = introduce == null ? this.introduce : introduce;
         this.mbti = mbti == null ? this.mbti : mbti;

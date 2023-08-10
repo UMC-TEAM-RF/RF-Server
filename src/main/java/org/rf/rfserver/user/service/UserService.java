@@ -19,6 +19,7 @@ public class UserService {
                 .loginId(postUserReq.getLoginId())
                 .password(postUserReq.getPassword())
                 .entrance(postUserReq.getEntrance())
+                .profileImage(postUserReq.getProfileImage())
                 .university(postUserReq.getUniversity())
                 .nickName(postUserReq.getNickName())
                 .country(postUserReq.getCountry())
@@ -44,6 +45,7 @@ public class UserService {
             return new GetUserRes(
                     user.getNickName()
                     , user.getUniversity()
+                    , user.getProfileImage()
                     , user.getInterestingLanguages()
                     , user.getIntroduce()
                     , user.getCountry()
@@ -66,6 +68,7 @@ public class UserService {
             user.updateUser(
                     patchUserReq.getNickName()
                     , patchUserReq.getPassword()
+                    , patchUserReq.getProfileImage()
                     , patchUserReq.getInterestingLanguages()
                     , patchUserReq.getIntroduce()
                     , patchUserReq.getMbti()

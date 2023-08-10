@@ -13,6 +13,7 @@ import java.util.List;
 public class PatchUserReq {
     private String nickName = null;
     private String password = null;
+    private String profileImage = null;
     private List<Language> interestingLanguages = null;
     private String introduce = null;
     private Mbti mbti = null;

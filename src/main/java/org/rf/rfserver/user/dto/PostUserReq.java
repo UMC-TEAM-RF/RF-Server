@@ -10,6 +10,7 @@ import java.util.List;
 public class PostUserReq {
     private String loginId;
     private String password;
+    private String profileImage;
     private int entrance;
     private University university;
     private String nickName;
