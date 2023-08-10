@@ -43,6 +43,8 @@ public enum BaseResponseStatus {
     INVALID_CODE(false, 6003, "인증번호가 올바르지 않습니다."),
     INVALID_UNIVERSITY(false, 6004, "해당 학교의 이메일 주소가 아닙니다.")
     // 5000 : 필요시 만들어서 쓰세요
+    ,NO_SUCH_USER(false, 5000, "존재하지 않는 사용자 입니다.")
+    ,NO_SUCH_PARTY(false, 5001, "존재하지 않는 그룹 입니다.")
     // 6000 : 필요시 만들어서 쓰세요
 
     ;
