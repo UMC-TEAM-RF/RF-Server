@@ -23,14 +23,15 @@ public class GetPartyRes {
     private int ownerId;
     private List<Rule> rules;
     private List<Interest> interests;
+
     private List<Schedule> schedules;
-    private List<UserParty> users;
+    private List<GetPartyUserRes> users;
 
 
     @Builder
     public GetPartyRes(Long id, String name, String content, String location, Language language, String imageFilePath, PreferAges preferAges,
                        LocalDateTime createdDate, int memberCount, int nativeCount, int ownerId, List<Rule> rules, List<Schedule> schedules,
-                       List<UserParty> users, List<Interest> interests) {
+                       List<GetPartyUserRes> users, List<Interest> interests) {
         this.id = id;
         this.name = name;
         this.content = content;
@@ -47,4 +48,5 @@ public class GetPartyRes {
         this.schedules = schedules;
         this.users = users;
     }
+
 }

@@ -63,7 +63,33 @@ public class PartyService {
     public GetPartyRes getParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+
+        List<GetPartyUserRes> partyUsers = party.getUsers().stream()
+                .map(userParty -> GetPartyUserRes.builder()
+                        .id(userParty.getUser().getId())
+                        .profileImage(userParty.getUser().getProfileImage())
+                        .nickName(userParty.getUser().getNickName())
+                        .build())
+                .collect(Collectors.toList());
+
         return GetPartyRes.builder()
+                .id(party.getId())
+                .name(party.getName())
+                .content(party.getContent())
+                .location(party.getLocation())
+                .language(party.getLanguage())
+                .imageFilePath(party.getImageFilePath())
+                .preferAges(party.getPreferAges())
+                .memberCount(party.getMemberCount())
+                .nativeCount(party.getNativeCount())
+                .ownerId(party.getOwnerId())
+                .rules(party.getRules())
+                .interests(party.getInterests())
+                .schedules(party.getSchedules())
+                .users(partyUsers)
+                .build();
+
+        /*return GetPartyRes.builder()
                 .id(party.getId())
                 .name(party.getName())
                 .content(party.getContent())
@@ -78,7 +104,7 @@ public class PartyService {
                 .schedules(party.getSchedules())
                 .interests(party.getInterests())
                 .rules(party.getRules())
-                .build();
+                .build();*/
     }
 
     @Transactional
@@ -190,20 +216,32 @@ public class PartyService {
         Page<Party> nonBlockedParties = partyRepository.findNonBlockedPartiesByUserId(userId, pageable);
 
         return new PageDto<>(nonBlockedParties.getNumber(), nonBlockedParties.getTotalPages(), nonBlockedParties.stream()
-                .map(party -> GetPartyRes.builder()
-                        .id(party.getId())
-                        .name(party.getName())
-                        .content(party.getContent())
-                        .location(party.getLocation())
-                        .language(party.getLanguage())
-                        .imageFilePath(party.getImageFilePath())
-                        .preferAges(party.getPreferAges())
-                        .memberCount(party.getMemberCount())
-                        .nativeCount(party.getNativeCount())
-                        .ownerId(party.getOwnerId())
-                        .users(party.getUsers())
-                        .schedules(party.getSchedules())
-                        .build())
+                .map(party -> {
+                    List<GetPartyUserRes> partyUsers = party.getUsers().stream()
+                            .map(userParty -> GetPartyUserRes.builder()
+                                    .id(userParty.getUser().getId())
+                                    .profileImage(userParty.getUser().getProfileImage())
+                                    .nickName(userParty.getUser().getNickName())
+                                    .build())
+                            .collect(Collectors.toList());
+
+                    return GetPartyRes.builder()
+                            .id(party.getId())
+                            .name(party.getName())
+                            .content(party.getContent())
+                            .location(party.getLocation())
+                            .language(party.getLanguage())
+                            .imageFilePath(party.getImageFilePath())
+                            .preferAges(party.getPreferAges())
+                            .memberCount(party.getMemberCount())
+                            .nativeCount(party.getNativeCount())
+                            .ownerId(party.getOwnerId())
+                            .rules(party.getRules())
+                            .interests(party.getInterests())
+                            .schedules(party.getSchedules())
+                            .users(partyUsers)
+                            .build();
+                })
                 .collect(Collectors.toList()));
     }
 
@@ -219,20 +257,32 @@ public class PartyService {
         Page<UserParty> usersParties = userPartyRepository.findUserPartiesByUserId(userId, pageable);
 
         return new PageDto<>(usersParties.getNumber(), usersParties.getTotalPages(), usersParties.stream()
-                .map(userParty -> GetPartyRes.builder()
-                        .id(userParty.getParty().getId())
-                        .name(userParty.getParty().getName())
-                        .content(userParty.getParty().getContent())
-                        .location(userParty.getParty().getLocation())
-                        .language(userParty.getParty().getLanguage())
-                        .imageFilePath(userParty.getParty().getImageFilePath())
-                        .preferAges(userParty.getParty().getPreferAges())
-                        .memberCount(userParty.getParty().getMemberCount())
-                        .nativeCount(userParty.getParty().getNativeCount())
-                        .ownerId(userParty.getParty().getOwnerId())
-                        .users(userParty.getParty().getUsers())
-                        .schedules(userParty.getParty().getSchedules())
-                        .build())
+                .map(userParty -> {
+                    List<GetPartyUserRes> partyUsers = userParty.getParty().getUsers().stream()
+                            .map(userPartyItem -> GetPartyUserRes.builder()
+                                    .id(userPartyItem.getUser().getId())
+                                    .profileImage(userPartyItem.getUser().getProfileImage())
+                                    .nickName(userPartyItem.getUser().getNickName())
+                                    .build())
+                            .collect(Collectors.toList());
+
+                    return GetPartyRes.builder()
+                            .id(userParty.getParty().getId())
+                            .name(userParty.getParty().getName())
+                            .content(userParty.getParty().getContent())
+                            .location(userParty.getParty().getLocation())
+                            .language(userParty.getParty().getLanguage())
+                            .imageFilePath(userParty.getParty().getImageFilePath())
+                            .preferAges(userParty.getParty().getPreferAges())
+                            .memberCount(userParty.getParty().getMemberCount())
+                            .nativeCount(userParty.getParty().getNativeCount())
+                            .ownerId(userParty.getParty().getOwnerId())
+                            .rules(userParty.getParty().getRules())
+                            .interests(userParty.getParty().getInterests())
+                            .schedules(userParty.getParty().getSchedules())
+                            .users(partyUsers)
+                            .build();
+                })
                 .collect(Collectors.toList()));
     }
 }
