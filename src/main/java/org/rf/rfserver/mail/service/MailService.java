@@ -2,18 +2,17 @@ package org.rf.rfserver.mail.service;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.constant.University;
 import org.rf.rfserver.constant.UniversityUrl;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.mail.domain.MailRegex;
-import org.rf.rfserver.mail.dto.PostCheckReq;
-import org.rf.rfserver.mail.dto.PostCheckRes;
-import org.rf.rfserver.mail.dto.PostSendReq;
-import org.rf.rfserver.mail.dto.PostSendRes;
+import org.rf.rfserver.mail.dto.*;
 import org.rf.rfserver.mail.domain.MailMessage;
 import org.rf.rfserver.mail.exception.InvalidMailException;
 import org.rf.rfserver.mail.exception.UnauthorizedException;
+import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -29,6 +28,10 @@ public class MailService {
     private final JavaMailSender javaMailSender;
     private final Mail mail = new Mail();
 
+    /*@Value("${spring.mail.from}")
+    private String fromEmail;*/
+
+    private final UserRepository userRepository;
 
     // 이메일 전송
     public PostSendRes sendMail(PostSendReq sendReq) throws BaseException {
@@ -116,5 +119,27 @@ public class MailService {
     private boolean isUniversityMail(String mailAddress) {
         MailRegex university = MailRegex.UNIVERSITY_MAIL;
         return Pattern.matches(university.getRegex(), mailAddress);
+    }
+
+    /*
+    * 비밀번호 재설정을 위한 이메일 전송
+    * */
+
+
+    // 비밀번호 재설정을 위한 메일 전송
+    public void sendMailForPasswordReset(String to, String tempPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        // message.setFrom(fromEmail);
+        message.setTo(to);
+        message.setSubject("[알프] 임시 비밀번호 안내");
+        message.setText("안녕하세요, \n\n요청하신 임시 비밀번호입니다 : " + tempPassword + "\n\n임시 비밀번호로 로그인 한 후 새 비밀번호로 변경해 주세요.");
+
+        javaMailSender.send(message);
+    }
+
+    // 임시 비밀번호 생성
+    public String createTempPassword() {
+        Mail mail = new Mail();
+        return mail.createRandomCode();
     }
 }

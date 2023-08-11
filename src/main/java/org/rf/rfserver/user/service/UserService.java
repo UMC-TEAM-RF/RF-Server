@@ -4,6 +4,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.domain.*;
+import org.rf.rfserver.mail.dto.PostResetPasswordReq;
+import org.rf.rfserver.mail.dto.PostResetPasswordRes;
+import org.rf.rfserver.mail.service.MailService;
 import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import static org.rf.rfserver.config.BaseResponseStatus.*;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final MailService mailService;
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
         User user = User.builder()
                 .loginId(postUserReq.getLoginId())
@@ -102,5 +106,24 @@ public class UserService {
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+    // 비밀번호 재설정
+    public PostResetPasswordRes resetPassword(PostResetPasswordReq postPasswordReq) throws BaseException {
+        // 데이터베이스에서 사용자 찾기
+        User user = userRepository.findByEmail(postPasswordReq.getMail())
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
+        // 임시 비밀번호 생성
+        String tempPassword = mailService.createTempPassword();
+
+        // 사용자 비밀번호 업데이트 및 저장
+        user.setPassword(tempPassword);
+        userRepository.save(user);
+
+        // 이메일 전송
+        mailService.sendMailForPasswordReset(postPasswordReq.getMail(), tempPassword);
+
+        return new PostResetPasswordRes(true, "비밀번호 재설정을 위한 이메일이 발송되었습니다. 이메일을 확인해주세요.");
     }
 }
