@@ -9,6 +9,7 @@ import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.*;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
+import org.rf.rfserver.user.dto.GetUserProfileRes;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,11 +65,11 @@ public class PartyService {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
 
-        List<GetPartyUserRes> partyUsers = party.getUsers().stream()
-                .map(userParty -> GetPartyUserRes.builder()
-                        .id(userParty.getUser().getId())
-                        .profileImage(userParty.getUser().getProfileImage())
+        List<GetUserProfileRes> partyUsers = party.getUsers().stream()
+                .map(userParty -> GetUserProfileRes.builder()
+                        .imageFilePath(userParty.getUser().getProfileImage())
                         .nickName(userParty.getUser().getNickName())
+                        .country(userParty.getUser().getCountry())
                         .build())
                 .collect(Collectors.toList());
 
@@ -88,23 +89,6 @@ public class PartyService {
                 .schedules(party.getSchedules())
                 .users(partyUsers)
                 .build();
-
-        /*return GetPartyRes.builder()
-                .id(party.getId())
-                .name(party.getName())
-                .content(party.getContent())
-                .location(party.getLocation())
-                .language(party.getLanguage())
-                .imageFilePath(party.getImageFilePath())
-                .preferAges(party.getPreferAges())
-                .memberCount(party.getMemberCount())
-                .nativeCount(party.getNativeCount())
-                .ownerId(party.getOwnerId())
-                .users(party.getUsers())
-                .schedules(party.getSchedules())
-                .interests(party.getInterests())
-                .rules(party.getRules())
-                .build();*/
     }
 
     @Transactional
@@ -217,11 +201,11 @@ public class PartyService {
 
         return new PageDto<>(nonBlockedParties.getNumber(), nonBlockedParties.getTotalPages(), nonBlockedParties.stream()
                 .map(party -> {
-                    List<GetPartyUserRes> partyUsers = party.getUsers().stream()
-                            .map(userParty -> GetPartyUserRes.builder()
-                                    .id(userParty.getUser().getId())
-                                    .profileImage(userParty.getUser().getProfileImage())
+                    List<GetUserProfileRes> partyUsers = party.getUsers().stream()
+                            .map(userParty -> GetUserProfileRes.builder()
+                                    .imageFilePath(userParty.getUser().getProfileImage())
                                     .nickName(userParty.getUser().getNickName())
+                                    .country(userParty.getUser().getCountry())
                                     .build())
                             .collect(Collectors.toList());
 
@@ -258,11 +242,11 @@ public class PartyService {
 
         return new PageDto<>(usersParties.getNumber(), usersParties.getTotalPages(), usersParties.stream()
                 .map(userParty -> {
-                    List<GetPartyUserRes> partyUsers = userParty.getParty().getUsers().stream()
-                            .map(userPartyItem -> GetPartyUserRes.builder()
-                                    .id(userPartyItem.getUser().getId())
-                                    .profileImage(userPartyItem.getUser().getProfileImage())
+                    List<GetUserProfileRes> partyUsers = userParty.getParty().getUsers().stream()
+                            .map(userPartyItem -> GetUserProfileRes.builder()
+                                    .imageFilePath(userPartyItem.getUser().getProfileImage())
                                     .nickName(userPartyItem.getUser().getNickName())
+                                    .country(userPartyItem.getUser().getCountry())
                                     .build())
                             .collect(Collectors.toList());
 

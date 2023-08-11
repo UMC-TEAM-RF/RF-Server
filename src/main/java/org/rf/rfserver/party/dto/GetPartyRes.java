@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.rf.rfserver.constant.*;
 import org.rf.rfserver.domain.*;
+import org.rf.rfserver.user.dto.GetUserProfileRes;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,13 +26,13 @@ public class GetPartyRes {
     private List<Interest> interests;
 
     private List<Schedule> schedules;
-    private List<GetPartyUserRes> users;
+    private List<GetUserProfileRes> users;
 
 
     @Builder
     public GetPartyRes(Long id, String name, String content, String location, Language language, String imageFilePath, PreferAges preferAges,
                        LocalDateTime createdDate, int memberCount, int nativeCount, int ownerId, List<Rule> rules, List<Schedule> schedules,
-                       List<GetPartyUserRes> users, List<Interest> interests) {
+                       List<GetUserProfileRes> users, List<Interest> interests) {
         this.id = id;
         this.name = name;
         this.content = content;
