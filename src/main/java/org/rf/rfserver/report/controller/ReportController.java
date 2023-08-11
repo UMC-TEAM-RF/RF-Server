@@ -54,7 +54,7 @@ public class ReportController {
      * @return PageDto[List[GetReportReporterRes]]
      */
     @GetMapping("/reporter/{userId}")
-    public BaseResponse<PageDto<List<GetReportReporterRes>>> getReporterReports(@PathVariable Long userId, Pageable pageable) {
+    public BaseResponse<PageDto<List<GetReportRes>>> getReporterReports(@PathVariable Long userId, Pageable pageable) {
         try {
             return new BaseResponse<>(reportService.getReporterReports(userId, pageable));
         } catch (BaseException e) {
@@ -69,7 +69,7 @@ public class ReportController {
      * @return PageDto[List[GetReportActorRes]]
      */
     @GetMapping("/actor/{userId}")
-    public BaseResponse<PageDto<List<GetReportActorRes>>> getActorReports(@PathVariable Long userId, Pageable pageable) {
+    public BaseResponse<PageDto<List<GetReportRes>>> getActorReports(@PathVariable Long userId, Pageable pageable) {
         try {
             return new BaseResponse<>(reportService.getActorReports(userId, pageable));
         } catch (BaseException e) {
@@ -84,7 +84,7 @@ public class ReportController {
      * @return PageDto[List[GetReportActorRes]]
      */
     @GetMapping("/actorParty/{partyId}")
-    public BaseResponse<PageDto<List<GetReportActorRes>>> getActorPartyReports(@PathVariable Long partyId, Pageable pageable) {
+    public BaseResponse<PageDto<List<GetReportRes>>> getActorPartyReports(@PathVariable Long partyId, Pageable pageable) {
         try {
             return new BaseResponse<>(reportService.getActorPartyReports(partyId, pageable));
         } catch (BaseException e) {
