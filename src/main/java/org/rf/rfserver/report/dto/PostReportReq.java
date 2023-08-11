@@ -10,6 +10,7 @@ public class PostReportReq {
     private Long reporterId;
     private Long actorId;
     private Long actorPartyId;
+    private Long actorChatId;
     private String content;
     private ReportType reportType;
 }

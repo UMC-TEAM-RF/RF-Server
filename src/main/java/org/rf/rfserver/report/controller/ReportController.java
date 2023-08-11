@@ -46,6 +46,14 @@ public class ReportController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+    @PostMapping("/chat")
+    public BaseResponse<PostReportRes> createChatReport(@RequestBody PostReportReq postReportReq) {
+        try {
+            return new BaseResponse<>(reportService.createChatReport(postReportReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 
     /**
      * 사용자가 신고한 신고 리스트 조회

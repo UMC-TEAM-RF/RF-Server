@@ -1,8 +1,10 @@
 package org.rf.rfserver.report.service;
 
 import lombok.RequiredArgsConstructor;
+import org.rf.rfserver.chat.repository.ChatRepository;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.PageDto;
+import org.rf.rfserver.domain.Chat;
 import org.rf.rfserver.domain.Party;
 import org.rf.rfserver.domain.Report;
 import org.rf.rfserver.domain.User;
@@ -24,6 +26,7 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
     private final PartyRepository partyRepository;
+    private final ChatRepository chatRepository;
 
     public PostReportRes createUserReport(PostReportReq postReportReq) throws BaseException {
         User reporter = userRepository.findById(postReportReq.getReporterId())
@@ -40,6 +43,19 @@ public class ReportService {
         Party actorParty = partyRepository.findById(postReportReq.getActorPartyId())
                 .orElseThrow(() -> new BaseException(NO_SUCH_PARTY));
         Report report = reportRepository.save(new Report(reporter, actorParty, postReportReq.getContent(), postReportReq.getReportType()));
+        return new PostReportRes(report);
+    }
+
+    public PostReportRes createChatReport(PostReportReq postReportReq) throws BaseException{
+        User reporter = userRepository.findById(postReportReq.getReporterId())
+                .orElseThrow(() -> new BaseException(NO_SUCH_USER));
+        User actor = userRepository.findById(postReportReq.getActorId())
+                .orElseThrow(() -> new BaseException(NO_SUCH_USER));
+        Party actorParty = partyRepository.findById(postReportReq.getActorPartyId())
+                .orElseThrow(() -> new BaseException(NO_SUCH_PARTY));
+        Chat chat = chatRepository.findById(postReportReq.getActorChatId())
+                .orElseThrow(() -> new BaseException(NO_SUCH_CHAT));
+        Report report = reportRepository.save(new Report(reporter, actor, actorParty, chat, postReportReq.getContent(), postReportReq.getReportType()));
         return new PostReportRes(report);
     }
 
