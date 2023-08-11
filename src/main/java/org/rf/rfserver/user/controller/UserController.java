@@ -66,6 +66,17 @@ public class UserController {
         }
     }
 
+    // 아이디 찾기
+    @PostMapping("/findId")
+    public BaseResponse<PostResetPasswordRes> findId(@RequestBody PostResetPasswordReq postPasswordReq) {
+        try {
+            return new BaseResponse<>(userService.findId(postPasswordReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    // 비밀번호 재설정
     @PostMapping("/resetPassword")
     public BaseResponse<PostResetPasswordRes> resetPassword(@RequestBody PostResetPasswordReq postPasswordReq) {
         try {

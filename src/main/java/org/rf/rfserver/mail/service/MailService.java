@@ -122,6 +122,19 @@ public class MailService {
     }
 
     /*
+     * 아이디를 찾기 위한 이메일 전송
+     * */
+    public void sendMailForFindId(String to, String userId) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("[알프] 아이디 찾기 안내");
+        message.setText("안녕하세요, \n\n회원님이 가입하신 아이디입니다. : " + userId);
+
+        javaMailSender.send(message);
+    }
+
+
+    /*
     * 비밀번호 재설정을 위한 이메일 전송
     * */
 
@@ -129,7 +142,6 @@ public class MailService {
     // 비밀번호 재설정을 위한 메일 전송
     public void sendMailForPasswordReset(String to, String tempPassword) {
         SimpleMailMessage message = new SimpleMailMessage();
-        // message.setFrom(fromEmail);
         message.setTo(to);
         message.setSubject("[알프] 임시 비밀번호 안내");
         message.setText("안녕하세요, \n\n요청하신 임시 비밀번호입니다 : " + tempPassword + "\n\n임시 비밀번호로 로그인 한 후 새 비밀번호로 변경해 주세요.");

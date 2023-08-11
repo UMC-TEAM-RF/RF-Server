@@ -108,6 +108,20 @@ public class UserService {
         }
     }
 
+    // 아이디 찾기
+    public PostResetPasswordRes findId(PostResetPasswordReq postPasswordReq) throws BaseException {
+        // 데이터베이스에서 사용자 찾기
+        User user = userRepository.findByEmail(postPasswordReq.getMail())
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
+        String userId = user.getLoginId();
+
+        // 이메일 전송
+        mailService.sendMailForFindId(postPasswordReq.getMail(), userId);
+
+        return new PostResetPasswordRes(true, "아이디를 찾기 위한 이메일이 발송되었습니다. 이메일을 확인해 주세요.");
+    }
+
     // 비밀번호 재설정
     public PostResetPasswordRes resetPassword(PostResetPasswordReq postPasswordReq) throws BaseException {
         // 데이터베이스에서 사용자 찾기
@@ -124,6 +138,6 @@ public class UserService {
         // 이메일 전송
         mailService.sendMailForPasswordReset(postPasswordReq.getMail(), tempPassword);
 
-        return new PostResetPasswordRes(true, "비밀번호 재설정을 위한 이메일이 발송되었습니다. 이메일을 확인해주세요.");
+        return new PostResetPasswordRes(true, "비밀번호 재설정을 위한 이메일이 발송되었습니다. 이메일을 확인해 주세요.");
     }
 }
