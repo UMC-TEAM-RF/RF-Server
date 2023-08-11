@@ -76,19 +76,10 @@ public class PartyService {
         }
     }
 
-    public List<GetUserProfileRes> getUserProfiles(List<UserParty> userParties) {
-        List<GetUserProfileRes> userProfiles = new ArrayList<>();
-        for (UserParty userParty : userParties) {
-            User user = userParty.getUser();
-            userProfiles.add(new GetUserProfileRes(user.getNickName(), user.getImageFilePath(), user.getCountry().name()));
-        }
-        return userProfiles;
-    }
-
     public GetPartyRes getParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(INVALID_PARTY));
-        List<GetUserProfileRes> userProfiles = getUserProfiles(party.getUserParties());
+        List<GetUserProfileRes> userProfiles = userService.getUserProfiles(party.getUserParties());
         return GetPartyRes.builder()
                 .id(party.getId())
                 .name(party.getName())

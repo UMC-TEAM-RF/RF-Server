@@ -4,10 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.rf.rfserver.constant.Country;
 
-@AllArgsConstructor
 @Getter
 public class GetUserProfileRes {
     private String nickName;
     private String imageFilePath;
-    private String country;
+    private Country country;
+
+    public GetUserProfileRes(String nickName, String imageFilePath, Country country) {
+        this.nickName = nickName;
+        this.imageFilePath = imageFilePath;
+        this.country = country;
+    }
 }

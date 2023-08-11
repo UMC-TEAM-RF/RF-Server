@@ -5,9 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.constant.Country;
 import org.rf.rfserver.domain.User;
+import org.rf.rfserver.domain.UserParty;
 import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
 
@@ -121,5 +125,13 @@ public class UserService {
             return true;
         }
         return false;
+    }
+
+    public List<GetUserProfileRes> getUserProfiles(List<UserParty> userParties) {
+        List<Long> userIds = new ArrayList<>();
+        for (UserParty userParty: userParties) {
+            userIds.add(userParty.getUser().getId());
+        }
+        return userRepository.getUserProfilesByUserParties(userIds);
     }
 }
