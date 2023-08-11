@@ -69,8 +69,6 @@ public class PartyService {
     public void addOwnerToParty(User user, Party party) {
         UserParty userParty = new UserParty(party, user);
         userPartyRepository.save(userParty);
-        userParty.setUser(user);
-        userParty.setParty(party);
         if(userService.isKorean(user)) {
             party.plusCurrentNativeCount();
         }
@@ -112,10 +110,11 @@ public class PartyService {
     }
 
     public void deleteUserParty(List<UserParty> userParties) {
+        List<Long> userPartyIds = new ArrayList<>();
         for (UserParty userParty : userParties) {
             userParty.getUser().getUserParties().remove(userParty);
-            userPartyRepository.delete(userParty);
         }
+        userPartyRepository.deleteUserParties(userPartyIds);
     }
 
     public PostJoinApplicationRes joinApply(PostJoinApplicationReq postJoinApplyReq) throws BaseException {
@@ -172,8 +171,6 @@ public class PartyService {
 
     public void makeUserParty(User user, Party party) {
         UserParty userParty = new UserParty(party, user);
-        userParty.setParty(party);
-        userParty.setUser(user);
         userPartyRepository.save(userParty);
     }
 
