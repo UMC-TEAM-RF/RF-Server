@@ -7,8 +7,6 @@ import org.rf.rfserver.config.PageDto;
 import org.rf.rfserver.report.dto.*;
 import org.rf.rfserver.report.service.ReportService;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -74,12 +72,12 @@ public class ReportController {
      * 사용자가 신고 당한 신고 리스트 조회
      * @param userId
      * @param pageable
-     * @return PageDto[List[GetReportActorRes]]
+     * @return PageDto[List[GetReportRes]]
      */
-    @GetMapping("/actor/{userId}")
-    public BaseResponse<PageDto<List<GetReportRes>>> getActorReports(@PathVariable Long userId, Pageable pageable) {
+    @GetMapping("/reportedUser/{userId}")
+    public BaseResponse<PageDto<List<GetReportRes>>> getReportedUserReports(@PathVariable Long userId, Pageable pageable) {
         try {
-            return new BaseResponse<>(reportService.getActorReports(userId, pageable));
+            return new BaseResponse<>(reportService.getReportedUserReports(userId, pageable));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -89,12 +87,12 @@ public class ReportController {
      * 그룹이 신고당한 신고 리스트 조회
      * @param partyId
      * @param pageable
-     * @return PageDto[List[GetReportActorRes]]
+     * @return PageDto[List[GetReportRes]]
      */
-    @GetMapping("/actorParty/{partyId}")
-    public BaseResponse<PageDto<List<GetReportRes>>> getActorPartyReports(@PathVariable Long partyId, Pageable pageable) {
+    @GetMapping("/reportedParty/{partyId}")
+    public BaseResponse<PageDto<List<GetReportRes>>> getReportedPartyReports(@PathVariable Long partyId, Pageable pageable) {
         try {
-            return new BaseResponse<>(reportService.getActorPartyReports(partyId, pageable));
+            return new BaseResponse<>(reportService.getReportedPartyReports(partyId, pageable));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

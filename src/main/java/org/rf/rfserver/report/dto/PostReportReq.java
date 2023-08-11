@@ -8,9 +8,9 @@ import org.rf.rfserver.constant.ReportType;
 @AllArgsConstructor
 public class PostReportReq {
     private Long reporterId;
-    private Long actorId;
-    private Long actorPartyId;
-    private Long actorChatId;
+    private Long reportedUserId;
+    private Long reportedPartyId;
+    private Long reportedChatId;
     private String content;
     private ReportType reportType;
 }
