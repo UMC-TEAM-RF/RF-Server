@@ -3,12 +3,12 @@ package org.rf.rfserver.user.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
-import org.rf.rfserver.domain.User;
+import org.rf.rfserver.domain.*;
 import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import static org.rf.rfserver.config.BaseResponseStatus.DATABASE_ERROR;
+import static org.rf.rfserver.config.BaseResponseStatus.*;
 
 @RequiredArgsConstructor
 @Service

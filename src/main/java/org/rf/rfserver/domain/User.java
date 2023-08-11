@@ -1,10 +1,8 @@
 package org.rf.rfserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.rf.rfserver.constant.*;
 
 import java.util.List;
@@ -40,6 +38,11 @@ public class User extends BaseEntity{
     private List<Interest> userInterests;
     @Enumerated(EnumType.STRING)
     private LifeStyle lifeStyle;
+    @OneToMany(mappedBy = "user")
+    private List<UserParty> userParties;
+    @OneToMany(mappedBy = "blockerUser")
+    @JsonManagedReference // 이 엔티티를 직렬화 할 때 관련된 BlockParty 엔티티를 포함
+    private List<BlockParty> blockedParties;
 
     @Builder
     public User(String loginId, String password, int entrance, University university, String nickName
@@ -70,5 +73,15 @@ public class User extends BaseEntity{
         this.mbti = mbti == null ? this.mbti : mbti;
         this.lifeStyle = lifeStyle;
         return this;
+    }
+
+    public void addUserParty(UserParty userParty) {
+        this.userParties.add(userParty);
+        userParty.setUser(this);
+    }
+
+    public void removeUserParty(UserParty userParty) {
+        this.userParties.remove(userParty);
+        userParty.setUser(null);
     }
 }

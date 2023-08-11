@@ -1,5 +1,6 @@
 package org.rf.rfserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -35,6 +36,7 @@ public class Party extends BaseEntity{
     @OneToMany(mappedBy = "party")
     private List<Schedule> schedules;
     @OneToMany(mappedBy = "party")
+    @JsonBackReference
     private List<UserParty> users;
 
     @Builder
@@ -57,5 +59,15 @@ public class Party extends BaseEntity{
 
     public void updateImageUrl(String imageFilePath){
         this.imageFilePath = imageFilePath;
+    }
+
+    public void addUserParty(UserParty userParty) {
+        this.users.add(userParty);
+        userParty.setParty(this);
+    }
+
+    public void removeUserParty(UserParty userParty) {
+        this.users.remove(userParty);
+        userParty.setParty(null);
     }
 }
