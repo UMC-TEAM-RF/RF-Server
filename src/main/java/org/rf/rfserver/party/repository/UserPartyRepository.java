@@ -8,10 +8,20 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface UserPartyRepository extends JpaRepository<UserParty, Long> {
 
+import org.rf.rfserver.domain.Party;
+import org.rf.rfserver.domain.User;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
+
+public interface UserPartyRepository extends JpaRepository<UserParty, Long> {
+    Optional<UserParty> findByUserAndParty(User user, Party party);
+    Page<UserParty> findUserPartiesByUserId(Long userId, Pageable pageable);
     @Modifying
     @Query("DELETE From UserParty up " +
             "WHERE up.id in :userPartyIds")
-    void deleteUserParties(List<Long> userPartyIds);
+    void deleteUserParties(@Param("userPartyIds") List<Long> userPartyIds);
 }

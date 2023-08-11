@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
 
+
 import org.rf.rfserver.party.dto.party.DeletePartyRes;
 import org.rf.rfserver.party.dto.party.GetPartyRes;
 import org.rf.rfserver.party.dto.party.PostPartyReq;
@@ -13,15 +14,25 @@ import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
 import org.rf.rfserver.party.service.PartyService;
+
+import org.rf.rfserver.config.PageDto;
+import org.rf.rfserver.party.dto.*;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+
+import java.util.List;
+
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/party")
 public class PartyController {
     private final PartyService partyService;
+
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public BaseResponse<PostPartyRes> createParty(@RequestPart("postPartyReq") PostPartyReq postPartyReq, @RequestPart("file") MultipartFile file) {
@@ -31,6 +42,7 @@ public class PartyController {
             return new BaseResponse<>((e.getStatus()));
         }
     }
+
 
     @GetMapping("/{partyId}")
     public BaseResponse<GetPartyRes> getParty(@PathVariable("partyId") Long partyId ) {
@@ -67,11 +79,44 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+    // 모임 나가기
+    @PostMapping("/leave/{userId}/{partyId}")
+    public BaseResponse<LeavePartyRes> leaveParty(@PathVariable("userId") Long userId, @PathVariable("partyId") Long partyId) {
+        try {
+            return new BaseResponse<>(partyService.leaveParty(userId, partyId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 
     @GetMapping("/join/apply/deny")
     public BaseResponse<PostDenyJoinRes> denyJoin(@RequestParam Long partyJoinApplicationId) {
         try {
             return new BaseResponse<>(partyService.denyJoin(partyJoinApplicationId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    // 모임 조회 (해당 사용자가 차단한 모임 빼고)
+    @GetMapping("/user/{userId}/search")
+    public BaseResponse<PageDto<List<GetPartyRes>>> getNonBlockedParties(@PathVariable("userId") Long userId, Pageable pageable) {
+        try {
+            return new BaseResponse<>(partyService.getNonBlockedParties(userId, pageable));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 클라이언트가 속한 그룹 리스트를 조회 컨트롤러
+     * @param userId
+     * @return List[GetPartyRes]
+     */
+    @GetMapping("/user/{userId}/belong")
+    public BaseResponse<PageDto<List<GetPartyRes>>> getUsersParties(@PathVariable("userId") Long userId, Pageable pageable) {
+        try {
+            return new BaseResponse<>(partyService.getUsersParties(userId, pageable));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

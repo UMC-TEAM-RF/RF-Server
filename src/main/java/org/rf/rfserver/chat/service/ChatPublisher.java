@@ -8,7 +8,6 @@ import org.rf.rfserver.chat.repository.ChatRepository;
 import org.rf.rfserver.domain.Chat;
 import org.rf.rfserver.domain.Party;
 import org.rf.rfserver.domain.User;
-
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.data.redis.core.RedisTemplate;

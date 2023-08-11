@@ -41,7 +41,13 @@ public enum BaseResponseStatus {
 
     INVALID_MAIL(false, 6002, "유효하지 않은 이메일입니다."),
     INVALID_CODE(false, 6003, "인증번호가 올바르지 않습니다."),
-    INVALID_UNIVERSITY(false, 6004, "해당 학교의 이메일 주소가 아닙니다.")
+    INVALID_UNIVERSITY(false, 6004, "해당 학교의 이메일 주소가 아닙니다."),
+
+    USER_NOT_FOUND(false, 7001, "해당 사용자를 찾을 수 없습니다."),
+    PARTY_NOT_FOUND(false, 7002, "해당 모임을 찾을 수 없습니다."),
+    ALREADY_LEFT_PARTY(false, 7003, "이미 나간 모임입니다."),
+    ALREADY_JOINED_PARTY(false, 7004, "이미 가입한 모임입니다."),
+    NOT_JOINED_PARTY(false, 7005, "가입한 모입이 아닙니다.")
     // 5000 : 필요시 만들어서 쓰세요
     ,NO_SUCH_USER(false, 5000, "존재하지 않는 사용자 입니다.")
     ,NO_SUCH_PARTY(false, 5001, "존재하지 않는 그룹 입니다.")
