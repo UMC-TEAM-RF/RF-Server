@@ -21,11 +21,16 @@ public class Mail {
     private static final int CODE_SIZE = 6;
 
     public String createRandomCode() {
+        int CODE_SIZE = 6;
         Random random = new Random();
         StringBuilder buffer = new StringBuilder();
+        String characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
         while (buffer.length() < CODE_SIZE) {
-            buffer.append(random.nextInt(10));
+            int index = random.nextInt(characters.length());
+            buffer.append(characters.charAt(index));
         }
         return buffer.toString();
     }
+
 }
