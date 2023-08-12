@@ -25,6 +25,6 @@ public class ChatSubscriber implements MessageListener {
         } catch(Exception e) {
 
         }
-        messagingTemplate.convertAndSend("/sub/channel/"+chatDto.getPartyId(), chatDto);
+        messagingTemplate.convertAndSend("/listen/chat/"+chatDto.getPartyId(), chatDto);
     }
 }

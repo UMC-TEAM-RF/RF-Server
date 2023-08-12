@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class RedisChatController {
     private final ChatPublisher chatPublisher;
-    @MessageMapping("/redisChat/{partyId}")
+    @MessageMapping("/chat/{partyId}")
     public void sendMessage(@Payload ChatDto chatDto, @DestinationVariable Long partyId) {
         chatPublisher.sendMessage(chatDto, partyId);
     }
