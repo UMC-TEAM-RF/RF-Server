@@ -17,32 +17,32 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory();
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(); // redisConnectionFactory 를 LettuceConnectionFactory를 이용함
         return lettuceConnectionFactory;
     }
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(
-            MessageListenerAdapter listenerAdapter
+            MessageListenerAdapter chatListener // 스프링이 빈에 등록된 chatListener 를 자동으로 넣어줌
     ) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConnectionFactory());
-        container.addMessageListener(listenerAdapter, chattingTopic());
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer(); // 기본 redisMessageListenerContainer 불러오기
+        container.setConnectionFactory(redisConnectionFactory()); // redis 의 connectionFactory 를 지정함
+        container.addMessageListener(chatListener, chattingTopic()); // "chat" topic 으로 들어온 메세지를 chatListener 로 보낸다
         return container;
     }
     @Bean
-    public MessageListenerAdapter listenerAdapter(ChatSubscriber subscriber) {
-        return new MessageListenerAdapter(subscriber, "onMessage");
+    public MessageListenerAdapter chatListener(ChatSubscriber subscriber) {
+        return new MessageListenerAdapter(subscriber, "onMessage"); // MessageListener 를 지정함
     }
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatDto.class));
+        redisTemplate.setConnectionFactory(redisConnectionFactory()); // redis 클라이언트와 redis 서버의 연결을 가져오는 객체
+        redisTemplate.setKeySerializer(new StringRedisSerializer()); // redis 의 key 값의 직렬화 역직렬화에 사용하는 Serializer 지정
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatDto.class)); // redis 의 value 값의 직렬화 역직렬화에 사용하는 Serializer 지정
         return redisTemplate;
     }
     @Bean
     public ChannelTopic chattingTopic() {
         return new ChannelTopic("chat");
-    }
+    } // 채팅을 위한 topic 생성
 }

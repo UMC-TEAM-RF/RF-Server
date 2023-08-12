@@ -12,6 +12,14 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class RedisChatController {
     private final ChatPublisher chatPublisher;
+
+    /**
+     * 클라이언트가 "/speak/chat/{partyId}" 주소로 송신한 소켓을 수신
+     * Payload : 소켓 내의 정보
+     * DestinationVariable : PathVariable과 같은 역할
+     * @param chatDto
+     * @param partyId
+     */
     @MessageMapping("/chat/{partyId}")
     public void sendMessage(@Payload ChatDto chatDto, @DestinationVariable Long partyId) {
         chatPublisher.sendMessage(chatDto, partyId);

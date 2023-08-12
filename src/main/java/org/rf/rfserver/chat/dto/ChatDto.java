@@ -18,6 +18,9 @@ import static org.rf.rfserver.constant.MessageType.SCHEDULE;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatDto {
+    /**
+     * 프론트 측에서 송수신을 같은 형식으로 요구해 생성한 DTO
+     */
     private MessageType type = null;
     private ChatUserDto speaker;
     private ChatUserDto victim;

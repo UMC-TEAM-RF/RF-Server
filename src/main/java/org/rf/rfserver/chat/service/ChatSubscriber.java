@@ -20,12 +20,12 @@ public class ChatSubscriber implements MessageListener {
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
+        String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody()); // redisTemplate 에 등록된 StringSerializer 를 이용해 역직렬화
         ChatDto chatDto = new ChatDto();
         try {
             chatDto = objectMapper.readValue(publishMessage, ChatDto.class);
             messagingTemplate.convertAndSend("/listen/chat/"+chatDto.getPartyId(), chatDto);
-        } catch(Exception e) {
+        } catch(Exception e) { // readValue 가 실패한 경우에도 소켓 메세지를 보내도록 함
             chatDto.setType(ERROR_MASSAGE);
             messagingTemplate.convertAndSend("/listen/chat/"+chatDto.getPartyId(), chatDto);
         }
