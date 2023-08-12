@@ -8,6 +8,7 @@ import org.rf.rfserver.domain.Chat;
 import org.rf.rfserver.domain.Party;
 import org.rf.rfserver.domain.Schedule;
 import org.rf.rfserver.domain.User;
+import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.schedule.repository.ScheduleRepository;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.data.redis.core.RedisTemplate;
