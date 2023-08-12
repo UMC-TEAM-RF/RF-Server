@@ -66,6 +66,6 @@ public class ChatPublisher {
         }
         Chat newChat = chatRepository.save(chat);
         chatDto.setChatDtoForRes(partyId, newChat.getId(), user.getNickName(), user.getImageUrl(), chat.getCreatedAt());
-        redisTemplate.convertAndSend(channelTopic.getTopic(), chatDto);
+        redisTemplate.convertAndSend("chat", chatDto);
     }
 }

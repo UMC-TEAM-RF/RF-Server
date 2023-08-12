@@ -23,11 +23,10 @@ public class RedisConfig {
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(
             MessageListenerAdapter listenerAdapter
-            , ChannelTopic channelTopic
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
-        container.addMessageListener(listenerAdapter, channelTopic);
+        container.addMessageListener(listenerAdapter, chattingTopic());
         return container;
     }
     @Bean
@@ -43,7 +42,7 @@ public class RedisConfig {
         return redisTemplate;
     }
     @Bean
-    public ChannelTopic channelTopic() {
-        return new ChannelTopic("chatroom");
+    public ChannelTopic chattingTopic() {
+        return new ChannelTopic("chat");
     }
 }
