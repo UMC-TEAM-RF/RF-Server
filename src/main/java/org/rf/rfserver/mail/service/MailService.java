@@ -27,10 +27,6 @@ import static org.rf.rfserver.config.BaseResponseStatus.*;
 public class MailService {
     private final JavaMailSender javaMailSender;
     private final Mail mail = new Mail();
-
-    /*@Value("${spring.mail.from}")
-    private String fromEmail;*/
-
     private final UserRepository userRepository;
 
     // 이메일 전송
