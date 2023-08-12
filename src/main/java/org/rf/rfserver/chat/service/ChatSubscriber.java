@@ -9,6 +9,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
+import static org.rf.rfserver.constant.MessageType.ERROR_MASSAGE;
+
 @RequiredArgsConstructor
 @Service
 public class ChatSubscriber implements MessageListener {
@@ -22,9 +24,10 @@ public class ChatSubscriber implements MessageListener {
         ChatDto chatDto = new ChatDto();
         try {
             chatDto = objectMapper.readValue(publishMessage, ChatDto.class);
+            messagingTemplate.convertAndSend("/listen/chat/"+chatDto.getPartyId(), chatDto);
         } catch(Exception e) {
-
+            chatDto.setType(ERROR_MASSAGE);
+            messagingTemplate.convertAndSend("/listen/chat/"+chatDto.getPartyId(), chatDto);
         }
-        messagingTemplate.convertAndSend("/listen/chat/"+chatDto.getPartyId(), chatDto);
     }
 }

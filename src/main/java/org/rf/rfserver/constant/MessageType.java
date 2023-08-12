@@ -13,6 +13,7 @@ public enum MessageType implements EnumModel {
     ,INVITE("초대")
     ,LEAVE("나감")
     ,KICK_OUT("강퇴")
+    ,ERROR_MASSAGE("오류")
     ;
     private final String value;
     @Override
