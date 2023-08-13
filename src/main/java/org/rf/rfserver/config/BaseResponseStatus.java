@@ -17,6 +17,14 @@ public enum BaseResponseStatus {
     EMPTY_JWT(false, 2001, "JWT를 입력해주세요."),
     INVALID_JWT(false, 2002, "유효하지 않은 JWT입니다."),
     INVALID_USER_JWT(false,2003,"권한이 없는 유저의 접근입니다."),
+    INVALID_USER(false, 2004, "해당 유저가 존재하지 않습니다"),
+    INVALID_PARTY(false, 2005, "해당 모임이 존재하지 않습니다"),
+    INVALID_JOIN_APPLICATION(false, 2006, "이미 가입한 모임입니다"),
+    EXCEEDED_PARTY_COUNT(false, 2007, "모임은 5개를 초과할 수 없습니다"),
+    EXCEEDED_PARTY_USER_COUNT(false, 2008, "해당 모임에 가입할 수 있는 인원이 초과되었습니다."),
+    INVALID_APPLICATION(false, 2009, "해당하는 요청이 존재하지 않습니다"),
+    FULL_OF_KOREAN(false, 2010, "해당 모임에 가입할 수 있는 한국인 인원이 초과되었습니다."),
+
 
     /**
      * 3000 : Response 오류
