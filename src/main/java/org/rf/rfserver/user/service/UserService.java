@@ -12,6 +12,8 @@ import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
+import static org.rf.rfserver.constant.MailMessage.FIND_ID;
+import static org.rf.rfserver.constant.MailMessage.RESET_PASSWORD;
 
 @RequiredArgsConstructor
 @Service
@@ -119,7 +121,7 @@ public class UserService {
         // 이메일 전송
         mailService.sendMailForFindId(postPasswordReq.getMail(), userId);
 
-        return new PostResetPasswordRes(true, "아이디를 찾기 위한 이메일이 발송되었습니다. 이메일을 확인해 주세요.");
+        return new PostResetPasswordRes(true, FIND_ID);
     }
 
     // 비밀번호 재설정
@@ -138,6 +140,6 @@ public class UserService {
         // 이메일 전송
         mailService.sendMailForPasswordReset(postPasswordReq.getMail(), tempPassword);
 
-        return new PostResetPasswordRes(true, "비밀번호 재설정을 위한 이메일이 발송되었습니다. 이메일을 확인해 주세요.");
+        return new PostResetPasswordRes(true, RESET_PASSWORD);
     }
 }
