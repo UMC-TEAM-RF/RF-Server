@@ -29,6 +29,7 @@ public class ChatDto {
     private Long chatId = null;
     private Long replyChatId = null;
     private String content = null;
+    private String langCode; // 파파고 번역에 사용하는 언어코드
     private String dateTime = null;
     public ChatDto(Chat chat) {
         DateTimeFormatter chatFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSS");
