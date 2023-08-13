@@ -126,9 +126,15 @@ public class UserService {
 
     // 비밀번호 재설정
     public PostResetPasswordRes resetPassword(PostResetPasswordReq postPasswordReq) throws BaseException {
-        // 데이터베이스에서 사용자 찾기
-        User user = userRepository.findByEmail(postPasswordReq.getMail())
+        // 아이디로 사용자 찾기
+        User user = userRepository.findByLoginId(postPasswordReq.getLoginId())
                 .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
+
+        // 입력된 이메일이 저장된 이메일과 일치하는지 확인
+        if (!user.getEmail().equals(postPasswordReq.getMail())) {
+            throw new BaseException(NOT_USER_MAIL);
+        }
 
         // 임시 비밀번호 생성
         String tempPassword = mailService.createTempPassword();

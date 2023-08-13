@@ -34,6 +34,7 @@ public enum BaseResponseStatus {
     INVALID_MAIL(false, 6002, "유효하지 않은 이메일입니다."),
     INVALID_CODE(false, 6003, "인증번호가 올바르지 않습니다."),
     INVALID_UNIVERSITY(false, 6004, "해당 학교의 이메일 주소가 아닙니다."),
+    NOT_USER_MAIL(false,6005,"해당 아이디에 가입된 이메일과 일치하지 않습니다."),
 
     USER_NOT_FOUND(false, 7001, "해당 사용자를 찾을 수 없습니다."),
     PARTY_NOT_FOUND(false, 7002, "해당 모임을 찾을 수 없습니다."),
