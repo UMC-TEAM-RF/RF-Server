@@ -59,9 +59,9 @@ public class PartyController {
     }
 
     @PostMapping("/join/apply")
-    public BaseResponse<PostJoinApplicationRes> joinApply(@RequestBody PostJoinApplicationReq postJoinApplicationReqt) {
+    public BaseResponse<PostJoinApplicationRes> joinApply(@RequestBody PostJoinApplicationReq postJoinApplicationReq) {
         try {
-            return new BaseResponse<>(partyService.joinApply(postJoinApplicationReqt));
+            return new BaseResponse<>(partyService.joinApply(postJoinApplicationReq));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
