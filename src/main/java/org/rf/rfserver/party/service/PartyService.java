@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.s3.S3Uploader;
 import org.rf.rfserver.domain.*;
-import org.rf.rfserver.party.dto.party.DeletePartyRes;
-import org.rf.rfserver.party.dto.party.GetPartyRes;
-import org.rf.rfserver.party.dto.party.PostPartyReq;
-import org.rf.rfserver.party.dto.party.PostPartyRes;
+import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
@@ -21,8 +18,6 @@ import org.rf.rfserver.user.repository.UserRepository;
 import org.rf.rfserver.user.service.UserService;
 
 import org.rf.rfserver.config.PageDto;
-
-import org.rf.rfserver.party.dto.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -244,7 +239,7 @@ public class PartyService {
                         .memberCount(party.getMemberCount())
                         .nativeCount(party.getNativeCount())
                         .ownerId(party.getOwnerId())
-                        //.users(party.getUsers())
+                        .userProfiles(userService.getUserProfiles(party.getUsers()))
                         .schedules(party.getSchedules())
                         .build())
                 .collect(Collectors.toList()));
@@ -273,7 +268,7 @@ public class PartyService {
                         .memberCount(userParty.getParty().getMemberCount())
                         .nativeCount(userParty.getParty().getNativeCount())
                         .ownerId(userParty.getParty().getOwnerId())
-                        //.users(userParty.getParty().getUsers())
+                        .userProfiles(userService.getUserProfiles(userParty.getParty().getUsers()))
                         .schedules(userParty.getParty().getSchedules())
                         .build())
                 .collect(Collectors.toList()));
