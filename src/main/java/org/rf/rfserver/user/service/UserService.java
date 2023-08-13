@@ -3,10 +3,17 @@ package org.rf.rfserver.user.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
-import org.rf.rfserver.domain.*;
+import org.rf.rfserver.constant.Country;
+import org.rf.rfserver.domain.User;
+import org.rf.rfserver.domain.UserParty;
+
+
 import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
 
@@ -77,6 +84,12 @@ public class UserService {
         }
     }
 
+    public void isExceededPartyCount(User user) throws BaseException {
+        if (user.isMoreThanFiveParties()) {
+            throw new BaseException(EXCEEDED_PARTY_COUNT);
+        }
+    }
+
     public DeleteUserRes deleteUser(Long userId) throws BaseException{
         try {
             userRepository.deleteById(userId);
@@ -84,6 +97,11 @@ public class UserService {
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+    public User findUserById(Long userId) throws BaseException {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(INVALID_USER));
     }
 
     public GetUserIdCheckRes checkId(String loginId) throws BaseException {
@@ -103,4 +121,20 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public boolean isKorean(User user) {
+        if (user.getCountry() == Country.KOREA) {
+            return true;
+        }
+        return false;
+    }
+
+    public List<GetUserProfileRes> getUserProfiles(List<UserParty> userParties) {
+        List<Long> userIds = new ArrayList<>();
+        for (UserParty userParty: userParties) {
+            userIds.add(userParty.getUser().getId());
+        }
+        return userRepository.getUserProfilesByUserParties(userIds);
+    }
 }
+
