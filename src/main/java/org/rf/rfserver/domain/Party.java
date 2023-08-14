@@ -12,6 +12,8 @@ import org.rf.rfserver.constant.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.rf.rfserver.constant.Toggle.*;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,6 +32,7 @@ public class Party extends BaseEntity{
     private int nativeCount;
     private int currentNativeCount;
     private Long ownerId;
+    private Boolean isRecruiting;
     @Enumerated(EnumType.STRING)
     private List<Rule> rules;
     @Enumerated(EnumType.STRING)
@@ -51,6 +54,7 @@ public class Party extends BaseEntity{
         this.memberCount = memberCount;
         this.nativeCount = nativeCount;
         this.ownerId = ownerId;
+        this.isRecruiting = true;
         this.rules = rules;
         this.currentNativeCount = 0;
         this.interests = interests;
@@ -68,6 +72,14 @@ public class Party extends BaseEntity{
 
     public void minusCurrentNativeCount() {
         this.currentNativeCount--;
+    }
+
+    public void changeRecruitmentState(Toggle toggle) {
+        if(toggle == ON) {
+            isRecruiting = true;
+        } else if(toggle == OFF) {
+            isRecruiting = false;
+        }
     }
 
     public void addUserParty(UserParty userParty) {

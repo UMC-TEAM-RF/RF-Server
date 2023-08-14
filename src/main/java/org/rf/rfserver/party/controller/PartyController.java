@@ -121,4 +121,13 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    @GetMapping("/toggle/{partyId}")
+    public void togglePartyRecruitment(@PathVariable Long partyId) {
+        try {
+            partyService.togglePartyRecruitment(partyId);
+        } catch (BaseException e) {
+            e.getStatus();
+        }
+    }
 }

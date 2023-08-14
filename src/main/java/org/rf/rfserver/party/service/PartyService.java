@@ -1,9 +1,11 @@
 package org.rf.rfserver.party.service;
 
+import jakarta.mail.Part;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.s3.S3Uploader;
+import org.rf.rfserver.constant.Toggle;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.party.DeletePartyRes;
 import org.rf.rfserver.party.dto.party.GetPartyRes;
@@ -35,6 +37,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
+import static org.rf.rfserver.constant.Toggle.*;
 
 @Transactional
 @Slf4j
@@ -95,6 +98,7 @@ public class PartyService {
                 .name(party.getName())
                 .content(party.getContent())
                 .location(party.getLocation())
+                .isRecruiting(party.getIsRecruiting())
                 .language(party.getLanguage())
                 .imageFilePath(party.getImageFilePath())
                 .preferAges(party.getPreferAges())
@@ -142,26 +146,32 @@ public class PartyService {
     }
 
     public void joinApplyValidation(Party party, User user) throws BaseException {
-        isFullParty(party);
+        isRecruiting(party);
+        if (isFullParty(party)) {
+            throw new BaseException(EXCEEDED_PARTY_USER_COUNT);
+        }
         if(userService.isKorean(user)) {
-            isFullOfKorean(party);
+            if (isFullOfKorean(party)) {
+                throw new BaseException(FULL_OF_KOREAN);
+            }
         }
         userService.isExceededPartyCount(user);
         isJoinedUser(user, party);
     }
 
-    public void isFullParty(Party party) throws BaseException {
+    public boolean isFullParty(Party party) throws BaseException {
         if (party.getUsers().size() >= party.getMemberCount()) {
-            throw new BaseException(EXCEEDED_PARTY_USER_COUNT);
+            return true;
         }
+        return false;
     }
 
-    public void isFullOfKorean(Party party) throws BaseException {
+    public boolean isFullOfKorean(Party party) throws BaseException {
         if(party.getNativeCount() <= party.getCurrentNativeCount()) {
-            throw new BaseException(FULL_OF_KOREAN);
+            return true;
         }
+        return false;
     }
-
 
     public void isJoinedUser(User user, Party party) throws BaseException {
         for (UserParty userParty : party.getUsers() ) {
@@ -179,6 +189,9 @@ public class PartyService {
         makeUserParty(user, party);
         if (userService.isKorean(user)) {
             party.plusCurrentNativeCount();
+        }
+        if (isFullParty(party)) {
+            party.changeRecruitmentState(OFF);
         }
         deletePartyJoinApplication(partyJoinApplicationId);
         return new PostApproveJoinRes(partyJoinApplicationId);
@@ -278,4 +291,20 @@ public class PartyService {
                         .build())
                 .collect(Collectors.toList()));
     }
+
+    public void togglePartyRecruitment(Long partyId) throws BaseException {
+        Party party = findPartyById(partyId);
+        if (party.getIsRecruiting()) {
+            party.changeRecruitmentState(OFF);
+            return;
+        }
+        party.changeRecruitmentState(ON);
+    }
+
+    public void isRecruiting(Party party) throws BaseException {
+        if(!party.getIsRecruiting()) {
+            throw new BaseException(NOT_RECRUITING);
+        }
+    }
+
 }
