@@ -256,7 +256,7 @@ public class PartyService {
                             .rules(party.getRules())
                             .interests(party.getInterests())
                             .schedules(party.getSchedules())
-                            .users(partyUsers)
+                            .userProfiles(partyUsers)
                             .build();
                 })
                 .collect(Collectors.toList()));
@@ -297,7 +297,7 @@ public class PartyService {
                             .rules(userParty.getParty().getRules())
                             .interests(userParty.getParty().getInterests())
                             .schedules(userParty.getParty().getSchedules())
-                            .users(partyUsers)
+                            .userProfiles(partyUsers)
                             .build();
                 })
                 .collect(Collectors.toList()));
