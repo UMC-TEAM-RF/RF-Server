@@ -40,9 +40,9 @@ public class ScheduleController {
 
     //유저 일정 조회
     @GetMapping("/user/{userId}")
-    public BaseResponse<List<GetScheduleRes>> getScheduleByUser(@PathVariable ("userId") Long userId){
+    public BaseResponse<List<GetScheduleRes>> getScheduleByUser(@PathVariable ("userId") Long userId, @RequestBody GetScheduleReq getScheduleReq){
         try{
-            return new BaseResponse<>(scheduleService.getScheduleByUser(userId));
+            return new BaseResponse<>(scheduleService.getScheduleByUser(userId, getScheduleReq));
         } catch (BaseException e){
             return new BaseResponse<>(e.getStatus());
         }
