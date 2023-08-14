@@ -24,6 +24,8 @@ public enum BaseResponseStatus {
     EXCEEDED_PARTY_USER_COUNT(false, 2008, "해당 모임에 가입할 수 있는 인원이 초과되었습니다."),
     INVALID_APPLICATION(false, 2009, "해당하는 요청이 존재하지 않습니다"),
     FULL_OF_KOREAN(false, 2010, "해당 모임에 가입할 수 있는 한국인 인원이 초과되었습니다."),
+    NOT_RECRUITING(false, 2010, "해당 모임은 모집마감 상태입니다."),
+
 
 
     /**
