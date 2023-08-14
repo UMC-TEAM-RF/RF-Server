@@ -16,6 +16,11 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
+    /**
+     * 일정 생성
+     * @param postScheduleReq
+     * @return PostScheduleRes
+     */
     @PostMapping
     public BaseResponse<PostScheduleRes> createSchedule(@RequestBody PostScheduleReq postScheduleReq){
         try{
@@ -38,7 +43,12 @@ public class ScheduleController {
 
     */
 
-    //유저 일정 조회
+    /**
+     * 유저 일정 조회
+     * @param userId
+     * @param getScheduleReq
+     * @return List[GetScheduleRes]
+     **/
     @GetMapping("/user/{userId}")
     public BaseResponse<List<GetScheduleRes>> getScheduleByUser(@PathVariable ("userId") Long userId, @RequestBody GetScheduleReq getScheduleReq){
         try{
@@ -48,6 +58,12 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * 일정 수정
+     * @param scheduleId
+     * @param patchScheduleReq
+     * @return PatchScheduleRes
+     */
     @PatchMapping("/{scheduleId}")
     public BaseResponse<PatchScheduleRes> updateSchedule(@PathVariable ("scheduleId") Long scheduleId, @RequestBody PatchScheduleReq patchScheduleReq){
         try{
@@ -57,6 +73,11 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * 일정 삭제
+     * @param scheduleId
+     * @return DeleteScheduleRes
+     */
     @DeleteMapping("/{scheduleId}")
     public BaseResponse<DeleteScheduleRes> deleteSchedule(@PathVariable ("scheduleId") Long scheduleId){
         try{

@@ -31,7 +31,12 @@ public class ScheduleService {
     private final UserRepository userRepository;
     private final UserPartyRepository userPartyRepository;
 
-    //일정 생성
+    /**
+     * 일정 생성
+     * @param postScheduleReq
+     * @return PostScheduleRes
+     * @throws BaseException
+     */
     public PostScheduleRes createSchedule(PostScheduleReq postScheduleReq) throws BaseException {
             //모임이 존재하지 않으면 일정 생성 불가
             Party party = partyRepository.findById(postScheduleReq.getPartyId())
@@ -70,7 +75,13 @@ public class ScheduleService {
     }
     **/
 
-    //유저별 일정 조회
+    /**
+     * 해당 유저의 일정 조회(월별 조회)
+     * @param userId
+     * @param getScheduleReq
+     * @return List[GetScheduleRes]
+     * @throws BaseException
+     */
     public List<GetScheduleRes> getScheduleByUser(Long userId, GetScheduleReq getScheduleReq) throws BaseException{
         //해당 유저가 존재하는지 확인
         User user = userRepository.findById(userId)
@@ -100,7 +111,13 @@ public class ScheduleService {
                 .collect(Collectors.toList());
     }
 
-    //일정 수정
+    /**
+     * 일정 수정
+     * @param scheduleId
+     * @param patchScheduleReq
+     * @return PatchScheduleRes
+     * @throws BaseException
+     */
     @Transactional
     public PatchScheduleRes updateSchedule(Long scheduleId, PatchScheduleReq patchScheduleReq) throws BaseException{
         Schedule schedule = scheduleRepository.findById(scheduleId)
@@ -114,7 +131,12 @@ public class ScheduleService {
         }
     }
 
-    //일정 삭제
+    /**
+     * 일정 삭제
+     * @param scheduleId
+     * @return DeleteScheduleRes
+     * @throws BaseException
+     */
     @Transactional
     public DeleteScheduleRes deleteSchedule(Long scheduleId) throws BaseException{
         try {
