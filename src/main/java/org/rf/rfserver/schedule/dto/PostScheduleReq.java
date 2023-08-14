@@ -15,5 +15,4 @@ public class PostScheduleReq {
     private String location;
     private LocalDateTime localDateTime;
     private Long alert;
-    private Long participantCount;
 }
