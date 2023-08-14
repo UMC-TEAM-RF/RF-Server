@@ -5,7 +5,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.rf.rfserver.constant.*;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.rf.rfserver.constant.RfRule.*;
 
 @Getter
 @Entity
@@ -32,6 +35,7 @@ public class User extends BaseEntity{
     private int hate;
     private String email;
     private Boolean isEmailVerified;
+    private String imageFilePath;
 
     @Enumerated(EnumType.STRING)
     private List<Country> interestCountries;
@@ -41,9 +45,11 @@ public class User extends BaseEntity{
     private LifeStyle lifeStyle;
     @OneToMany(mappedBy = "user")
     private List<UserParty> userParties;
+
     @OneToMany(mappedBy = "blockerUser")
     @JsonManagedReference // 이 엔티티를 직렬화 할 때 관련된 BlockParty 엔티티를 포함
     private List<BlockParty> blockedParties;
+
 
     @Builder
     public User(String loginId, String password, int entrance, String profileImage, University university, String nickName
@@ -62,9 +68,11 @@ public class User extends BaseEntity{
         this.love = 0;
         this.hate = 0;
         this.email = email;
+        this.imageFilePath = "default";
         this.interestCountries = interestCountries;
         this.userInterests = userInterests;
         this.lifeStyle = lifeStyle;
+        this.userParties = new ArrayList<>();
     }
 
     public User updateUser(String nickName, String password, String profileImage, List<Language> interestingLanguages, String introduce, Mbti mbti, LifeStyle lifeStyle) {
@@ -78,6 +86,13 @@ public class User extends BaseEntity{
         return this;
     }
 
+    public boolean isMoreThanFiveParties() {
+        if (userParties.size() > maxPartyNumber) {
+            return true;
+        }
+        return false;
+    }
+
     public void addUserParty(UserParty userParty) {
         this.userParties.add(userParty);
         userParty.setUser(this);
@@ -88,3 +103,4 @@ public class User extends BaseEntity{
         userParty.setUser(null);
     }
 }
+

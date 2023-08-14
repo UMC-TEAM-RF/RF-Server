@@ -31,5 +31,7 @@ public class UserParty extends BaseEntity{
     public UserParty(Party party, User user) {
         this.party = party;
         this.user = user;
+        this.party.getUsers().add(this);
+        this.user.getUserParties().add(this);
     }
 }
