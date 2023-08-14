@@ -5,10 +5,7 @@ import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
 
 
-import org.rf.rfserver.party.dto.party.DeletePartyRes;
-import org.rf.rfserver.party.dto.party.GetPartyRes;
-import org.rf.rfserver.party.dto.party.PostPartyReq;
-import org.rf.rfserver.party.dto.party.PostPartyRes;
+import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
@@ -123,11 +120,11 @@ public class PartyController {
     }
 
     @GetMapping("/toggle/{partyId}")
-    public void togglePartyRecruitment(@PathVariable Long partyId) {
+    public BaseResponse<TogglePartyRecruitmentRes> togglePartyRecruitment(@PathVariable Long partyId) {
         try {
-            partyService.togglePartyRecruitment(partyId);
+            return new BaseResponse<>(partyService.togglePartyRecruitment(partyId));
         } catch (BaseException e) {
-            e.getStatus();
+            return new BaseResponse<>(e.getStatus());
         }
     }
 }

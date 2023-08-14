@@ -7,10 +7,7 @@ import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.s3.S3Uploader;
 import org.rf.rfserver.constant.Toggle;
 import org.rf.rfserver.domain.*;
-import org.rf.rfserver.party.dto.party.DeletePartyRes;
-import org.rf.rfserver.party.dto.party.GetPartyRes;
-import org.rf.rfserver.party.dto.party.PostPartyReq;
-import org.rf.rfserver.party.dto.party.PostPartyRes;
+import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
@@ -292,13 +289,14 @@ public class PartyService {
                 .collect(Collectors.toList()));
     }
 
-    public void togglePartyRecruitment(Long partyId) throws BaseException {
+    public TogglePartyRecruitmentRes togglePartyRecruitment(Long partyId) throws BaseException {
         Party party = findPartyById(partyId);
         if (party.getIsRecruiting()) {
             party.changeRecruitmentState(OFF);
-            return;
+        } else if(!party.getIsRecruiting()) {
+            party.changeRecruitmentState(ON);
         }
-        party.changeRecruitmentState(ON);
+        return new TogglePartyRecruitmentRes(party.getIsRecruiting());
     }
 
     public void isRecruiting(Party party) throws BaseException {
