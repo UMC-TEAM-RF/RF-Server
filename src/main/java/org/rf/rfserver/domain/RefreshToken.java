@@ -15,8 +15,6 @@ public class RefreshToken {
     private Long userId;
     private String refreshToken;
 
-
-
     public RefreshToken(Long userId, String refreshToken) {
         this.userId = userId;
         this.refreshToken = refreshToken;
