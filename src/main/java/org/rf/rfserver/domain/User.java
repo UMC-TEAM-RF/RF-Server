@@ -99,5 +99,9 @@ public class User extends BaseEntity{
         this.userParties.remove(userParty);
         userParty.setUser(null);
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
 
