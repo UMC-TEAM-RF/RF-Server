@@ -40,3 +40,6 @@ cloud:
     credentials:
       accessKey: ${S3_ACCESSKEY}
       secretKey: ${S3_SECRETKEY}
+jwt:
+  issuer: rfserver
+  secret_key: ${JWT_SECRETKEY}
