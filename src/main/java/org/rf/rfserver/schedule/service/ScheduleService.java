@@ -120,8 +120,12 @@ public class ScheduleService {
      */
     @Transactional
     public PatchScheduleRes updateSchedule(Long scheduleId, PatchScheduleReq patchScheduleReq) throws BaseException{
+        //해당 일정이 존재하는지 확인
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(()-> new BaseException(SCHEDULE_NOT_FOUND));
+        //해당 모임의 모임장이 맞는지 확인
+        if(patchScheduleReq.getOwnerId() != schedule.getParty().getOwnerId())
+            throw new BaseException(NOT_PARTY_OWNER);
         try {
             schedule.updateSchedule(patchScheduleReq.getScheduleName(), patchScheduleReq.getLocalDateTime(), patchScheduleReq.getLocation(),
                     patchScheduleReq.getAlert());
@@ -132,13 +136,20 @@ public class ScheduleService {
     }
 
     /**
-     * 일정 삭제
+     *
      * @param scheduleId
+     * @param deleteScheduleReq
      * @return DeleteScheduleRes
      * @throws BaseException
      */
     @Transactional
-    public DeleteScheduleRes deleteSchedule(Long scheduleId) throws BaseException{
+    public DeleteScheduleRes deleteSchedule(Long scheduleId, DeleteScheduleReq deleteScheduleReq) throws BaseException{
+        //일정이 존재하는지 확인
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(()-> new BaseException(SCHEDULE_NOT_FOUND));
+        //모임장이 맞는지 확인
+        if(deleteScheduleReq.getOwnerId() != schedule.getParty().getOwnerId())
+            throw new BaseException(NOT_PARTY_OWNER);
         try {
             scheduleRepository.deleteById(scheduleId);
             return new DeleteScheduleRes(true);
