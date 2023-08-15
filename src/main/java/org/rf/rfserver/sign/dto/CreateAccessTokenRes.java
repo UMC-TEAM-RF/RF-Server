@@ -1,2 +1,10 @@
-package org.rf.rfserver.sign.dto;public class CreateAccessTokenRes {
+package org.rf.rfserver.sign.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public class CreateAccessTokenRes {
+    private String accessToken;
 }
