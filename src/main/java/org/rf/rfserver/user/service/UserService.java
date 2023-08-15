@@ -80,6 +80,7 @@ public class UserService {
             user.updateUser(
                     patchUserReq.getNickName()
                     , patchUserReq.getPassword()
+                    , patchUserReq.getImageFilePath()
                     , patchUserReq.getInterestingLanguages()
                     , patchUserReq.getIntroduce()
                     , patchUserReq.getMbti()
