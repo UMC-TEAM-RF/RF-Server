@@ -3,28 +3,38 @@ package org.rf.rfserver.user.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
+import org.rf.rfserver.config.jwt.TokenProvider;
 import org.rf.rfserver.constant.Country;
+import org.rf.rfserver.constant.RfRule;
 import org.rf.rfserver.domain.User;
 import org.rf.rfserver.domain.UserParty;
 
 
 import org.rf.rfserver.user.dto.*;
+import org.rf.rfserver.user.dto.sign.LoginReq;
+import org.rf.rfserver.user.dto.sign.LoginRes;
 import org.rf.rfserver.user.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
+import static org.rf.rfserver.constant.RfRule.*;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final TokenProvider tokenProvider;
+
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
         User user = User.builder()
                 .loginId(postUserReq.getLoginId())
-                .password(postUserReq.getPassword())
+                .password(bCryptPasswordEncoder.encode(postUserReq.getPassword()))
                 .entrance(postUserReq.getEntrance())
                 .university(postUserReq.getUniversity())
                 .nickName(postUserReq.getNickName())
@@ -85,7 +95,7 @@ public class UserService {
     }
 
     public void isExceededPartyCount(User user) throws BaseException {
-        if (user.isMoreThanFiveParties()) {
+        if (user.isMoreThanLimitedPartyNumber()) {
             throw new BaseException(EXCEEDED_PARTY_COUNT);
         }
     }
@@ -136,5 +146,16 @@ public class UserService {
         }
         return userRepository.getUserProfilesByUserParties(userIds);
     }
+
+    public LoginRes login(LoginReq loginReq) throws BaseException {
+        User user = userRepository.findByLoginId(loginReq.getLoginId())
+                .filter(it -> bCryptPasswordEncoder.matches(loginReq.getPassword(), it.getPassword()))	// 암호화된 비밀번호와 비교하도록 수정
+                .orElseThrow(() -> new BaseException(INVALID_LOGIN_IR_OR_PASSWORD));
+        String accessToken = tokenProvider.generateToken(user, Duration.ofHours(ACCESS_TOKEN_EXPIRATION));
+        String refreshToken = tokenProvider.generateToken(user, Duration.ofDays(REFRESH_TOKEN_EXPIRATION));
+        user.setDeviceToken(loginReq.getDeviceToken());
+        return new LoginRes(accessToken, refreshToken);
+    }
+
 }
 
