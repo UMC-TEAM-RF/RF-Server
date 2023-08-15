@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.s3.S3Uploader;
+import org.rf.rfserver.constant.Interest;
 import org.rf.rfserver.domain.*;
-import org.rf.rfserver.party.dto.party.DeletePartyRes;
-import org.rf.rfserver.party.dto.party.GetPartyRes;
-import org.rf.rfserver.party.dto.party.PostPartyReq;
-import org.rf.rfserver.party.dto.party.PostPartyRes;
+import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
@@ -275,6 +273,28 @@ public class PartyService {
                         .ownerId(userParty.getParty().getOwnerId())
                         //.users(userParty.getParty().getUsers())
                         .schedules(userParty.getParty().getSchedules())
+                        .build())
+                .collect(Collectors.toList()));
+    }
+
+
+    // 사용자 관심사 기반 모임 목록 불러오기
+    public PageDto<List<GetInterestPartyRes>> getPartiesByUserInterests(Long userId, Pageable pageable) throws BaseException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
+        List<Interest> interests = user.getUserInterests();
+        Page<Party> parties = partyRepository.findPartiesByInterestsAndNotJoinedByUser(interests, userId, pageable);
+        System.out.println(parties);
+
+        return new PageDto<>(parties.getNumber(), parties.getTotalPages(), parties.stream()
+                .map(party -> GetInterestPartyRes.builder()
+                        .id(party.getId())
+                        .name(party.getName())
+                        .content(party.getContent())
+                        .imageFilePath(party.getImageFilePath())
+                        .memberCount(party.getMemberCount())
+                        .ownerId(party.getOwnerId())
                         .build())
                 .collect(Collectors.toList()));
     }

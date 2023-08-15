@@ -5,10 +5,7 @@ import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
 
 
-import org.rf.rfserver.party.dto.party.DeletePartyRes;
-import org.rf.rfserver.party.dto.party.GetPartyRes;
-import org.rf.rfserver.party.dto.party.PostPartyReq;
-import org.rf.rfserver.party.dto.party.PostPartyRes;
+import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
@@ -121,4 +118,15 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    // 사용자 관심사 기반 모임 목록 불러오기
+    @GetMapping("/user/{userId}/interests")
+    public BaseResponse<PageDto<List<GetInterestPartyRes>>> getPartiesByUserInterests(@PathVariable("userId") Long userId, Pageable pageable) {
+        try {
+            return new BaseResponse<>(partyService.getPartiesByUserInterests(userId, pageable));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
 }
