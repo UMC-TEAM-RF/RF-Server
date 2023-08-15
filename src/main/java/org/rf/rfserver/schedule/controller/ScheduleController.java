@@ -79,9 +79,9 @@ public class ScheduleController {
      * @return DeleteScheduleRes
      */
     @DeleteMapping("/{scheduleId}")
-    public BaseResponse<DeleteScheduleRes> deleteSchedule(@PathVariable ("scheduleId") Long scheduleId){
+    public BaseResponse<DeleteScheduleRes> deleteSchedule(@PathVariable ("scheduleId") Long scheduleId, @RequestBody DeleteScheduleReq deleteScheduleReq){
         try{
-            return new BaseResponse<>(scheduleService.deleteSchedule(scheduleId));
+            return new BaseResponse<>(scheduleService.deleteSchedule(scheduleId,deleteScheduleReq));
         } catch (BaseException e){
             return new BaseResponse<>(e.getStatus());
         }
