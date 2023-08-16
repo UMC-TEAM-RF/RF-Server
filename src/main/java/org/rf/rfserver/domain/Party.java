@@ -35,7 +35,6 @@ public class Party extends BaseEntity{
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass=Interest.class)
     @CollectionTable(name="party_interest")
-    @Column(name="interest")
     private List<Interest> interests;
     @OneToMany(mappedBy = "party")
     private List<Schedule> schedules;
