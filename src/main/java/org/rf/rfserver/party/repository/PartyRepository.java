@@ -14,9 +14,12 @@ public interface PartyRepository extends JpaRepository<Party, Long>, JpaSpecific
    @Query("SELECT p FROM Party p WHERE p.id NOT IN (SELECT bp.blockedParty.id FROM BlockParty bp WHERE bp.blockerUser.id = ?1)")
    Page<Party> findNonBlockedPartiesByUserId(Long userId, Pageable pageable);
 
+   // 사용자 관심사 기반 모임 목록 불러오기 (차단한 모임 빼고)
    @Query("SELECT p FROM Party p JOIN p.interests i " +
            "WHERE i IN :userInterests AND p.id NOT IN (" +
            "SELECT up.party.id FROM UserParty up WHERE up.user.id = :userId" +
+           ") AND p.id NOT IN (" +
+           "SELECT bp.blockedParty.id FROM BlockParty bp WHERE bp.blockerUser.id = :userId" +
            ")")
    Page<Party> findPartiesByInterestsAndNotJoinedByUser(List<Interest> userInterests, Long userId, Pageable pageable);
 
