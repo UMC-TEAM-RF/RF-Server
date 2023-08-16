@@ -4,22 +4,41 @@ import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
 
-import org.rf.rfserver.config.PageDto;
-import org.rf.rfserver.domain.Party;
+
+import org.rf.rfserver.party.dto.party.*;
+import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
+import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
+import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
+import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
 import org.rf.rfserver.party.service.PartyService;
-import org.rf.rfserver.party.dto.*;
+
+import org.rf.rfserver.config.PageDto;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import java.util.List;
+
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/party")
 public class PartyController {
     private final PartyService partyService;
+
+
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public BaseResponse<PostPartyRes> createParty(@RequestPart("postPartyReq") PostPartyReq postPartyReq, @RequestPart("file") MultipartFile file) {
+        try {
+            return new BaseResponse<>(partyService.createParty(postPartyReq,file));
+        } catch (BaseException e) {
+            return new BaseResponse<>((e.getStatus()));
+        }
+    }
+
 
     @GetMapping("/{partyId}")
     public BaseResponse<GetPartyRes> getParty(@PathVariable("partyId") Long partyId ) {
@@ -39,31 +58,37 @@ public class PartyController {
         }
     }
 
-    // 모임 생성
-    @PostMapping(value = "/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public BaseResponse<Party> createParty(@RequestParam("userId") Long userId, @RequestPart("postPartyReq") PostPartyReq postPartyReq, @RequestPart("file") MultipartFile file) {
+    @PostMapping("/join/apply")
+    public BaseResponse<PostJoinApplicationRes> joinApply(@RequestBody PostJoinApplicationReq postJoinApplicationReq) {
         try {
-            return new BaseResponse<>(partyService.userCreateParty(userId, postPartyReq, file));
-        } catch (BaseException e) {
-            return new BaseResponse<>((e.getStatus()));
-        }
-    }
-
-    // 모임 들어가기
-    @PostMapping("/join")
-    public BaseResponse<JoinPartyRes> joinParty(@RequestBody JoinPartyReq joinPartyReq) {
-        try {
-            return new BaseResponse<>(partyService.joinParty(joinPartyReq.getUserId(), joinPartyReq.getPartyId()));
+            return new BaseResponse<>(partyService.joinApply(postJoinApplicationReq));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
 
+    @GetMapping("/join/apply/approve")
+    public BaseResponse<PostApproveJoinRes> approveJoin(@RequestParam Long partyJoinApplicationId) {
+        try {
+            return new BaseResponse<>(partyService.approveJoin(partyJoinApplicationId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
     // 모임 나가기
     @PostMapping("/leave/{userId}/{partyId}")
     public BaseResponse<LeavePartyRes> leaveParty(@PathVariable("userId") Long userId, @PathVariable("partyId") Long partyId) {
         try {
             return new BaseResponse<>(partyService.leaveParty(userId, partyId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("/join/apply/deny")
+    public BaseResponse<PostDenyJoinRes> denyJoin(@RequestParam Long partyJoinApplicationId) {
+        try {
+            return new BaseResponse<>(partyService.denyJoin(partyJoinApplicationId));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

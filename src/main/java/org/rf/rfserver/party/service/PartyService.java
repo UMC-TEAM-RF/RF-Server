@@ -3,43 +3,57 @@ package org.rf.rfserver.party.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.rf.rfserver.config.BaseException;
-import org.rf.rfserver.config.PageDto;
 import org.rf.rfserver.config.s3.S3Uploader;
 import org.rf.rfserver.domain.*;
-import org.rf.rfserver.party.dto.*;
+import org.rf.rfserver.party.dto.party.*;
+import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
+import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
+import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
+import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
+import org.rf.rfserver.party.repository.PartyJoinApplicationRepository;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
+import org.rf.rfserver.user.dto.GetUserProfileRes;
 import org.rf.rfserver.user.repository.UserRepository;
+import org.rf.rfserver.user.service.UserService;
+
+import org.rf.rfserver.config.PageDto;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
 
+@Transactional
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class PartyService {
 
     private final PartyRepository partyRepository;
+    private final UserService userService;
     private final UserRepository userRepository;
     private final UserPartyRepository userPartyRepository;
+    private final PartyJoinApplicationRepository partyJoinApplicationRepository;
     private final S3Uploader s3Uploader;
 
-    public Party createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
+
+    public PostPartyRes createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
         try {
+            User user = userService.findUserById(postPartyReq.getOwnerId());
             Party party = partyRepository.save(Party.builder()
                     .name(postPartyReq.getName())
                     .content(postPartyReq.getContent())
                     .location(postPartyReq.getLocation())
                     .language(postPartyReq.getLanguage())
-                    .imageFilePath(postPartyReq.getImageFilePath())
+                    .interests(postPartyReq.getInterests())
                     .preferAges(postPartyReq.getPreferAges())
                     .memberCount(postPartyReq.getMemberCount())
                     .nativeCount(postPartyReq.getNativeCount())
@@ -47,22 +61,30 @@ public class PartyService {
                     .rules(postPartyReq.getRules())
                     .interests(postPartyReq.getInterests())
                     .build());
-
+            addOwnerToParty(user, party);
             //file 비어있는지 체크
             if(file != null){
                 String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
                 party.updateImageUrl(imageFilePath);
             }
-            partyRepository.save(party);
-            return party;
+            return new PostPartyRes(party.getId(), postPartyReq);
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void addOwnerToParty(User user, Party party) {
+        UserParty userParty = new UserParty(party, user);
+        userPartyRepository.save(userParty);
+        if(userService.isKorean(user)) {
+            party.plusCurrentNativeCount();
         }
     }
 
     public GetPartyRes getParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+        List<GetUserProfileRes> userProfiles = userService.getUserProfiles(party.getUsers());
         return GetPartyRes.builder()
                 .id(party.getId())
                 .name(party.getName())
@@ -74,86 +96,102 @@ public class PartyService {
                 .memberCount(party.getMemberCount())
                 .nativeCount(party.getNativeCount())
                 .ownerId(party.getOwnerId())
-                .users(party.getUsers())
+                .schedules(party.getSchedules())
+                .interests(party.getInterests())
+                .userProfiles(userProfiles)
                 .schedules(party.getSchedules())
                 .interests(party.getInterests())
                 .rules(party.getRules())
                 .build();
     }
 
-    @Transactional
+
     public DeletePartyRes deleteParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
-                .orElseThrow(() -> new BaseException(REQUEST_ERROR));
+                .orElseThrow(() -> new BaseException(INVALID_PARTY));
+        deleteUserParty(party.getUsers());
         partyRepository.delete(party);
-        return DeletePartyRes.builder()
-                .id(partyId)
-                .build();
+        return new DeletePartyRes(partyId);
     }
 
-    // 사용자가 모임 생성
-    public Party userCreateParty(Long userId, PostPartyReq userCreatePartyReq, MultipartFile file) throws BaseException {
-        PostPartyReq postPartyReq = new PostPartyReq(
-                userCreatePartyReq.getName(),
-                userCreatePartyReq.getContent(),
-                userCreatePartyReq.getLocation(),
-                userCreatePartyReq.getLanguage(),
-                userCreatePartyReq.getImageFilePath(),
-                userCreatePartyReq.getPreferAges(),
-                userCreatePartyReq.getMemberCount(),
-                userCreatePartyReq.getNativeCount(),
-                userCreatePartyReq.getOwnerId(),
-                userCreatePartyReq.getRules(),
-                userCreatePartyReq.getInterests()
-        );
-        // 모임 생성
-        Party party = createParty(postPartyReq, file);
-        // 사용자 조회
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
-
-        // 사용자에게 생성한 모임 추가
-        UserParty userParty = new UserParty(party, user);
-
-        // 연관관계 편의 메소드를 사용해 양방향 관계 설정
-        user.addUserParty(userParty);
-        party.addUserParty(userParty);
-
-        userPartyRepository.save(userParty);
-
-        return party;
+    Party findPartyById(Long partyId) throws BaseException {
+        return partyRepository.findById(partyId)
+                .orElseThrow(() -> new BaseException(INVALID_PARTY));
     }
 
-    // 모임 들어가기
-    public JoinPartyRes joinParty(Long userId, Long partyId) throws BaseException {
-        // 사용자 조회
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
-
-        // 모임 조회
-        Party party = partyRepository.findById(partyId)
-                .orElseThrow(() -> new BaseException(PARTY_NOT_FOUND));
-
-        // 이미 모임에 참여한 사용자인지 확인
-        UserParty userParty = userPartyRepository.findByUserAndParty(user, party)
-                .orElse(null);
-        if (userParty != null) {
-            throw new BaseException(ALREADY_JOINED_PARTY);
+    public void deleteUserParty(List<UserParty> userParties) {
+        List<Long> userPartyIds = new ArrayList<>();
+        for (UserParty userParty : userParties) {
+            userParty.getUser().getUserParties().remove(userParty);
         }
+        userPartyRepository.deleteUserParties(userPartyIds);
+    }
 
-        // 사용자에게 선택한 모임 추가
-        userParty = new UserParty(party, user);
+    public PostJoinApplicationRes joinApply(PostJoinApplicationReq postJoinApplyReq) throws BaseException {
+        Party party = findPartyById(postJoinApplyReq.getPartyId());
+        User user = userService.findUserById(postJoinApplyReq.getUserId());
+        joinApplyValidation(party, user);
+        PartyJoinApplication partyJoinApplication = new PartyJoinApplication(user, party);
+        partyJoinApplicationRepository.save(partyJoinApplication);
+        return new PostJoinApplicationRes(partyJoinApplication.getId());
+    }
 
-        // 연관관계 편의 메소드를 사용해 양방향 관계 설정
-        user.addUserParty(userParty);
-        party.addUserParty(userParty);
+    public void joinApplyValidation(Party party, User user) throws BaseException {
+        isFullParty(party);
+        if(userService.isKorean(user)) {
+            isFullOfKorean(party);
+        }
+        userService.isExceededPartyCount(user);
+        isJoinedUser(user, party);
+    }
 
+    public void isFullParty(Party party) throws BaseException {
+        if (party.getUsers().size() >= party.getMemberCount()) {
+            throw new BaseException(EXCEEDED_PARTY_USER_COUNT);
+        }
+    }
+
+    public void isFullOfKorean(Party party) throws BaseException {
+        if(party.getNativeCount() <= party.getCurrentNativeCount()) {
+            throw new BaseException(FULL_OF_KOREAN);
+        }
+    }
+
+
+    public void isJoinedUser(User user, Party party) throws BaseException {
+        for (UserParty userParty : party.getUsers() ) {
+            if(userParty.getUser() == user) {
+                throw new BaseException(INVALID_JOIN_APPLICATION);
+            }
+        }
+    }
+
+    public PostApproveJoinRes approveJoin(Long partyJoinApplicationId) throws BaseException {
+        PartyJoinApplication partyJoinApplication = partyJoinApplicationRepository.findById(partyJoinApplicationId)
+                .orElseThrow(() -> new BaseException(INVALID_APPLICATION));
+        User user = userService.findUserById(partyJoinApplication.getUser().getId());
+        Party party = findPartyById(partyJoinApplication.getParty().getId());
+        makeUserParty(user, party);
+        if (userService.isKorean(user)) {
+            party.plusCurrentNativeCount();
+        }
+        deletePartyJoinApplication(partyJoinApplicationId);
+        return new PostApproveJoinRes(partyJoinApplicationId);
+    }
+
+    public void makeUserParty(User user, Party party) {
+        UserParty userParty = new UserParty(party, user);
         userPartyRepository.save(userParty);
+    }
 
-        return JoinPartyRes.builder()
-                .userId(userId)
-                .partyId(partyId)
-                .build();
+    public PostDenyJoinRes denyJoin(Long partyJoinApplicationId) throws BaseException {
+        deletePartyJoinApplication(partyJoinApplicationId);
+        return new PostDenyJoinRes(partyJoinApplicationId);
+    }
+
+    public void deletePartyJoinApplication(Long partyJoinApplicationId) throws BaseException {
+        partyJoinApplicationRepository.delete(partyJoinApplicationRepository.findById(partyJoinApplicationId)
+                .orElseThrow(() -> new BaseException(INVALID_JOIN_APPLICATION)));
     }
 
     // 모임 나가기
@@ -201,7 +239,7 @@ public class PartyService {
                         .memberCount(party.getMemberCount())
                         .nativeCount(party.getNativeCount())
                         .ownerId(party.getOwnerId())
-                        .users(party.getUsers())
+                        .userProfiles(userService.getUserProfiles(party.getUsers()))
                         .schedules(party.getSchedules())
                         .build())
                 .collect(Collectors.toList()));
@@ -230,7 +268,7 @@ public class PartyService {
                         .memberCount(userParty.getParty().getMemberCount())
                         .nativeCount(userParty.getParty().getNativeCount())
                         .ownerId(userParty.getParty().getOwnerId())
-                        .users(userParty.getParty().getUsers())
+                        .userProfiles(userService.getUserProfiles(userParty.getParty().getUsers()))
                         .schedules(userParty.getParty().getSchedules())
                         .build())
                 .collect(Collectors.toList()));
