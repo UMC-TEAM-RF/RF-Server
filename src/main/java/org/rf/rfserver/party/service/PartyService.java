@@ -278,13 +278,13 @@ public class PartyService {
     }
 
 
-    // 사용자 관심사 기반 모임 목록 불러오기
+    // 사용자 관심사 기반 모임 목록 불러오기 (가입한 모임, 차단한 모임 제외)
     public PageDto<List<GetInterestPartyRes>> getPartiesByUserInterests(Long userId, Pageable pageable) throws BaseException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 
         List<Interest> interests = user.getUserInterests();
-        Page<Party> parties = partyRepository.findPartiesByInterestsAndNotJoinedByUser(interests, userId, pageable);
+        Page<Party> parties = partyRepository.findInterestParties(interests, userId, pageable);
         System.out.println(parties);
 
         return new PageDto<>(parties.getNumber(), parties.getTotalPages(), parties.stream()
