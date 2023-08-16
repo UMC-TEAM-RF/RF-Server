@@ -117,4 +117,15 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    // 사용자 관심사 기반 모임 목록 불러오기
+    @GetMapping("/user/{userId}/interests")
+    public BaseResponse<PageDto<List<GetInterestPartyRes>>> getPartiesByUserInterests(@PathVariable("userId") Long userId, Pageable pageable) {
+        try {
+            return new BaseResponse<>(partyService.getPartiesByUserInterests(userId, pageable));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
 }
