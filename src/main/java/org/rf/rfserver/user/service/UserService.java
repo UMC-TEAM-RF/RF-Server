@@ -29,6 +29,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final MailService mailService;
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
+        isDuplicatedLoginId(postUserReq.getLoginId());
         User user = User.builder()
                 .loginId(postUserReq.getLoginId())
                 .password(postUserReq.getPassword())
@@ -182,6 +183,12 @@ public class UserService {
             userIds.add(userParty.getUser().getId());
         }
         return userRepository.getUserProfilesByUserParties(userIds);
+    }
+
+    public void isDuplicatedLoginId(String loginId) throws BaseException {
+        if(userRepository.existsUserByLoginId(loginId)) {
+            throw new BaseException(DUPLICATED_LOGIN_ID);
+        }
     }
 }
 
