@@ -28,4 +28,6 @@ public class TokenService {
         User user = userService.findUserById(userId);
         return tokenProvider.generateToken(user, Duration.ofHours(ACCESS_TOKEN_EXPIRATION));
     }
+
+    public void setDeviceToken(Long userId, String deviceToken) {}
 }
