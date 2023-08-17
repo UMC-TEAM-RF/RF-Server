@@ -24,10 +24,10 @@ public enum BaseResponseStatus {
     EXCEEDED_PARTY_USER_COUNT(false, 2008, "해당 모임에 가입할 수 있는 인원이 초과되었습니다."),
     INVALID_APPLICATION(false, 2009, "해당하는 요청이 존재하지 않습니다"),
     FULL_OF_KOREAN(false, 2010, "해당 모임에 가입할 수 있는 한국인 인원이 초과되었습니다."),
-    NOT_RECRUITING(false, 2010, "해당 모임은 모집마감 상태입니다."),
-    INVALID_TOKEN(false, 2010, "유효하지 않은 토큰입니다."),
-    INVALID_LOGIN_IR_OR_PASSWORD(false, 2010, "아이디 또는 비밀번호가 일치하지 않습니다"),
-
+    NOT_RECRUITING(false, 2011, "해당 모임은 모집마감 상태입니다."),
+    INVALID_TOKEN(false, 2012, "유효하지 않은 토큰입니다."),
+    INVALID_LOGIN_IR_OR_PASSWORD(false, 2013, "아이디 또는 비밀번호가 일치하지 않습니다"),
+    DUPLICATED_LOGIN_ID(false, 2014, "해당 ID가 이미 존재합니다. 다른 아이디를 사용해주세요"),
 
 
     /**
@@ -46,6 +46,7 @@ public enum BaseResponseStatus {
     INVALID_MAIL(false, 6002, "유효하지 않은 이메일입니다."),
     INVALID_CODE(false, 6003, "인증번호가 올바르지 않습니다."),
     INVALID_UNIVERSITY(false, 6004, "해당 학교의 이메일 주소가 아닙니다."),
+    NOT_USER_MAIL(false,6005,"해당 아이디에 가입된 이메일과 일치하지 않습니다."),
 
     USER_NOT_FOUND(false, 7001, "해당 사용자를 찾을 수 없습니다."),
     PARTY_NOT_FOUND(false, 7002, "해당 모임을 찾을 수 없습니다."),
@@ -55,6 +56,7 @@ public enum BaseResponseStatus {
     // 5000 : 필요시 만들어서 쓰세요
     ,NO_SUCH_USER(false, 5000, "존재하지 않는 사용자 입니다.")
     ,NO_SUCH_PARTY(false, 5001, "존재하지 않는 그룹 입니다.")
+    , NO_SUCH_CHAT(false, 5002, "존재하지 않는 채팅 입니다.")
     // 6000 : 필요시 만들어서 쓰세요
 
     ;

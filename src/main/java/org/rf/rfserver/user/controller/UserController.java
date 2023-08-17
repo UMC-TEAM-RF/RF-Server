@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
+import org.rf.rfserver.mail.dto.PostResetPasswordReq;
+import org.rf.rfserver.mail.dto.PostResetPasswordRes;
 import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.dto.sign.LoginReq;
 import org.rf.rfserver.user.dto.sign.LoginRes;
@@ -79,8 +81,28 @@ public class UserController {
         }
     }
 
+    // 아이디 찾기
+    @PostMapping("/findId")
+    public BaseResponse<PostResetPasswordRes> findId(@RequestBody PostResetPasswordReq postPasswordReq) {
+        try {
+            return new BaseResponse<>(userService.findId(postPasswordReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
     @GetMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+    }
+
+    // 비밀번호 재설정
+    @PostMapping("/resetPassword")
+    public BaseResponse<PostResetPasswordRes> resetPassword(@RequestBody PostResetPasswordReq postPasswordReq) {
+        try {
+            return new BaseResponse<>(userService.resetPassword(postPasswordReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
     }
 }

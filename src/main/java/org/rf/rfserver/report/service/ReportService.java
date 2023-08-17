@@ -1,11 +1,10 @@
 package org.rf.rfserver.report.service;
 
 import lombok.RequiredArgsConstructor;
+import org.rf.rfserver.chat.repository.ChatRepository;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.PageDto;
-import org.rf.rfserver.domain.Party;
-import org.rf.rfserver.domain.Report;
-import org.rf.rfserver.domain.User;
+import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.report.dto.*;
 import org.rf.rfserver.report.repository.ReportRepository;
@@ -24,54 +23,66 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
     private final PartyRepository partyRepository;
+    private final ChatRepository chatRepository;
 
     public PostReportRes createUserReport(PostReportReq postReportReq) throws BaseException {
         User reporter = userRepository.findById(postReportReq.getReporterId())
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
-        User actor = userRepository.findById(postReportReq.getActorId())
+        User reportedUser = userRepository.findById(postReportReq.getReportedUserId())
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
-        Report report = reportRepository.save(new Report(reporter, actor, postReportReq.getContent()));
-        return new PostReportRes(report.getId(), report.getActor().getNickName(), report.getContent(), "USER");
+        Report report = reportRepository.save(new Report(reporter, reportedUser, postReportReq.getContent(), postReportReq.getReportType()));
+        return new PostReportRes(report);
     }
 
     public PostReportRes createPartyReport(PostReportReq postReportReq) throws BaseException{
         User reporter = userRepository.findById(postReportReq.getReporterId())
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
-        Party actorParty = partyRepository.findById(postReportReq.getActorPartyId())
+        Party reportedParty = partyRepository.findById(postReportReq.getReportedPartyId())
                 .orElseThrow(() -> new BaseException(NO_SUCH_PARTY));
-        Report report = reportRepository.save(new Report(reporter, actorParty, postReportReq.getContent()));
-        return new PostReportRes(report.getId(), report.getActorParty().getName(), report.getContent(), "PARTY");
+        Report report = reportRepository.save(new Report(reporter, reportedParty, postReportReq.getContent(), postReportReq.getReportType()));
+        return new PostReportRes(report);
     }
 
-    public PageDto<List<GetReportReporterRes>> getReporterReports(Long userId, Pageable pageable) throws BaseException{
+    public PostReportRes createChatReport(PostReportReq postReportReq) throws BaseException{
+        User reporter = userRepository.findById(postReportReq.getReporterId())
+                .orElseThrow(() -> new BaseException(NO_SUCH_USER));
+        User reportedUser = userRepository.findById(postReportReq.getReportedUserId())
+                .orElseThrow(() -> new BaseException(NO_SUCH_USER));
+        Party reportedParty = partyRepository.findById(postReportReq.getReportedPartyId())
+                .orElseThrow(() -> new BaseException(NO_SUCH_PARTY));
+        Chat reportedChat = chatRepository.findById(postReportReq.getReportedChatId())
+                .orElseThrow(() -> new BaseException(NO_SUCH_CHAT));
+        Report report = reportRepository.save(new Report(reporter, reportedUser, reportedParty, reportedChat, postReportReq.getContent(), postReportReq.getReportType()));
+        return new PostReportRes(report);
+    }
+
+    public PageDto<List<GetReportRes>> getReporterReports(Long userId, Pageable pageable) throws BaseException{
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
         Page<Report> reports = reportRepository.findReportsByReporter(user, pageable);
         return new PageDto<>(reports.getNumber(), reports.getTotalPages()
                 , reports.stream()
-                .map(report -> report.getActor()!=null ?
-                    new GetReportReporterRes(report.getId(), report.getActor().getId(), report.getActor().getNickName(), report.getContent(), "USER", report.getCreatedAt()) :
-                    new GetReportReporterRes(report.getId(), report.getActorParty().getId(), report.getActorParty().getName(), report.getContent(), "PARTY", report.getCreatedAt()))
+                .map(report -> new GetReportRes(report))
                 .toList());
     }
 
-    public PageDto<List<GetReportActorRes>> getActorReports(Long userId, Pageable pageable) throws BaseException{
+    public PageDto<List<GetReportRes>> getReportedUserReports(Long userId, Pageable pageable) throws BaseException{
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
-        Page<Report> reports = reportRepository.findReportsByActor(user, pageable);
+        Page<Report> reports = reportRepository.findReportsByReportedUser(user, pageable);
         return new PageDto<>(reports.getNumber(), reports.getTotalPages()
                 , reports.stream()
-                .map(report -> new GetReportActorRes(report.getId(), report.getReporter().getId(), report.getReporter().getNickName(), report.getContent(), report.getCreatedAt()))
+                .map(report -> new GetReportRes(report))
                 .toList());
     }
 
-    public PageDto<List<GetReportActorRes>> getActorPartyReports(Long partyId, Pageable pageable) throws BaseException{
-        Party actorParty = partyRepository.findById(partyId)
+    public PageDto<List<GetReportRes>> getReportedPartyReports(Long partyId, Pageable pageable) throws BaseException{
+        Party reportedParty = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(NO_SUCH_PARTY));
-        Page<Report> reports = reportRepository.findReportsByActorParty(actorParty, pageable);
+        Page<Report> reports = reportRepository.findReportsByReportedParty(reportedParty, pageable);
         return new PageDto<>(reports.getNumber(), reports.getTotalPages()
                 , reports.stream()
-                .map(report -> new GetReportActorRes(report.getId(), report.getReporter().getId(), report.getReporter().getNickName(), report.getContent(), report.getCreatedAt()))
+                .map(report -> new GetReportRes(report))
                 .toList());
     }
 
@@ -79,12 +90,7 @@ public class ReportService {
         Page<Report> reports = reportRepository.findAll(pageable);
         return new PageDto<>(reports.getNumber(), reports.getTotalPages()
                 , reports.stream()
-                .map(report -> report.getActor()!=null ?
-                        new GetReportRes(report.getId(), report.getReporter().getId(), report.getReporter().getNickName()
-                                , report.getActor().getId(), report.getActor().getNickName(), report.getContent(), "USER", report.getCreatedAt()) :
-                        new GetReportRes(report.getId(), report.getReporter().getId(), report.getReporter().getNickName()
-                                , report.getActorParty().getId(), report.getActorParty().getName(), report.getContent(), "PARTY", report.getCreatedAt())
-                        )
+                .map(report -> new GetReportRes(report))
                 .toList());
     }
 

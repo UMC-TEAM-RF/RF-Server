@@ -13,7 +13,6 @@ import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
 import org.rf.rfserver.party.service.PartyService;
 
 import org.rf.rfserver.config.PageDto;
-import org.rf.rfserver.party.dto.*;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.http.MediaType;
@@ -60,9 +59,9 @@ public class PartyController {
     }
 
     @PostMapping("/join/apply")
-    public BaseResponse<PostJoinApplicationRes> joinApply(@RequestBody PostJoinApplicationReq postJoinApplicationReqt) {
+    public BaseResponse<PostJoinApplicationRes> joinApply(@RequestBody PostJoinApplicationReq postJoinApplicationReq) {
         try {
-            return new BaseResponse<>(partyService.joinApply(postJoinApplicationReqt));
+            return new BaseResponse<>(partyService.joinApply(postJoinApplicationReq));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -127,4 +126,15 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    // 사용자 관심사 기반 모임 목록 불러오기
+    @GetMapping("/user/{userId}/interests")
+    public BaseResponse<PageDto<List<GetInterestPartyRes>>> getPartiesByUserInterests(@PathVariable("userId") Long userId, Pageable pageable) {
+        try {
+            return new BaseResponse<>(partyService.getPartiesByUserInterests(userId, pageable));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
 }
