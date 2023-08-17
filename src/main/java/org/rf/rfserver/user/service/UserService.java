@@ -154,7 +154,21 @@ public class UserService {
         String accessToken = tokenProvider.generateToken(user, Duration.ofHours(ACCESS_TOKEN_EXPIRATION));
         String refreshToken = tokenProvider.generateToken(user, Duration.ofDays(REFRESH_TOKEN_EXPIRATION));
         user.setDeviceToken(loginReq.getDeviceToken());
-        return new LoginRes(accessToken, refreshToken);
+        return LoginRes.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .nickName(user.getNickName())
+                .university(user.getUniversity())
+                .interestingLanguages(user.getInterestingLanguages())
+                .introduce(user.getIntroduce())
+                .country(user.getCountry())
+                .mbti(user.getMbti())
+                .entrance(user.getEntrance())
+                .email(user.getEmail())
+                .interestCountries(user.getInterestCountries())
+                .interests(user.getUserInterests())
+                .lifeStyle(user.getLifeStyle())
+                .build();
     }
 
 }
