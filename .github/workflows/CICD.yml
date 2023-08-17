@@ -83,4 +83,5 @@ jobs:
         username: ${{secrets.SSH_USERNAME}}
         key: ${{secrets.SSH_KEY}}
         script: |
-          sudo ${{secrets.EC2_SCRIPTS_PATH}}/deploy.sh
+          cd ${{secrets.EC2_SCRIPTS_PATH}}
+          sudo ./deploy.sh
