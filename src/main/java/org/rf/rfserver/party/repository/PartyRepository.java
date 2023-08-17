@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface PartyRepository extends JpaRepository<Party, Long>, JpaSpecificationExecutor<Party> {
+   // 모임 불러오기 (차단 제외 / 같은 대학교 유저가 생성한 모임만 조회 가능)
    @Query("SELECT p FROM Party p " +
            "JOIN User u ON p.ownerId = u.id " +
            "WHERE u.university IN " +
