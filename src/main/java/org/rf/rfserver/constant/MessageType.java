@@ -11,7 +11,7 @@ public enum MessageType implements EnumModel {
     ,SCHEDULE("일정")
     ,REPLY("답장")
     ,INVITE("초대")
-    ,LEAVE("나감")
+    ,LEAVE("퇴장")
     ,KICK_OUT("강퇴")
     ,ERROR_MASSAGE("오류")
     ;
