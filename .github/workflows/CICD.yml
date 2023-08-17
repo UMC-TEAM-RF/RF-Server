@@ -21,20 +21,22 @@ jobs:
           - 6379:6379
     
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        token: ${{secrets.TOKEN_GITHUB}}
-        submodules: true
-      
+    - uses: actions/checkout@v3
     - name: Setup Java JDK
       uses: actions/setup-java@v3
       with:
         distribution: 'corretto'
         java-version: 17
+        
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        token: ${{secrets.TOKEN_GITHUB}}
+        submodules: true
 
     - name: Git Submodule Update
-      run: git submodule update --remote --recursive
+      run: |
+        git submodule update --remote --recursive
         
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
