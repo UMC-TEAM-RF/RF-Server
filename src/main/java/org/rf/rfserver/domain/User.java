@@ -1,13 +1,14 @@
 package org.rf.rfserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.rf.rfserver.constant.*;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.rf.rfserver.constant.RfRule.*;
 
 @Getter
 @Entity
@@ -33,6 +34,7 @@ public class User extends BaseEntity{
     private int hate;
     private String email;
     private Boolean isEmailVerified;
+    private String imageFilePath;
 
     @Enumerated(EnumType.STRING)
     private List<Country> interestCountries;
@@ -40,6 +42,13 @@ public class User extends BaseEntity{
     private List<Interest> userInterests;
     @Enumerated(EnumType.STRING)
     private LifeStyle lifeStyle;
+    @OneToMany(mappedBy = "user")
+    private List<UserParty> userParties;
+
+    @OneToMany(mappedBy = "blockerUser")
+    @JsonManagedReference // 이 엔티티를 직렬화 할 때 관련된 BlockParty 엔티티를 포함
+    private List<BlockParty> blockedParties;
+
 
     @Builder
     public User(String loginId, String password, int entrance, University university, String nickName
@@ -57,18 +66,43 @@ public class User extends BaseEntity{
         this.love = 0;
         this.hate = 0;
         this.email = email;
+        this.imageFilePath = "default";
         this.interestCountries = interestCountries;
         this.userInterests = userInterests;
         this.lifeStyle = lifeStyle;
+        this.userParties = new ArrayList<>();
     }
 
-    public User updateUser(String nickName, String password, List<Language> interestingLanguages, String introduce, Mbti mbti, LifeStyle lifeStyle) {
+    public User updateUser(String nickName, String password, String imageFilePath, List<Language> interestingLanguages, String introduce, Mbti mbti, LifeStyle lifeStyle) {
         this.nickName = nickName == null ? this.nickName : nickName;
         this.password = password == null ? this.password : password;
+        this.imageFilePath = imageFilePath == null ? this.imageFilePath : imageFilePath;
         this.interestingLanguages = interestingLanguages == null ? this.interestingLanguages : interestingLanguages;
         this.introduce = introduce == null ? this.introduce : introduce;
         this.mbti = mbti == null ? this.mbti : mbti;
         this.lifeStyle = lifeStyle;
         return this;
     }
+
+    public boolean isMoreThanFiveParties() {
+        if (userParties.size() > maxPartyNumber) {
+            return true;
+        }
+        return false;
+    }
+
+    public void addUserParty(UserParty userParty) {
+        this.userParties.add(userParty);
+        userParty.setUser(this);
+    }
+
+    public void removeUserParty(UserParty userParty) {
+        this.userParties.remove(userParty);
+        userParty.setUser(null);
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
+

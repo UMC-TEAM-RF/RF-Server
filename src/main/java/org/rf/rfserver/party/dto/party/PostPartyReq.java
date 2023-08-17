@@ -1,15 +1,13 @@
-package org.rf.rfserver.party.dto;
+package org.rf.rfserver.party.dto.party;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.rf.rfserver.constant.*;
 
 import java.util.List;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostPartyReq {
@@ -21,7 +19,7 @@ public class PostPartyReq {
     private PreferAges preferAges;
     private int memberCount;
     private int nativeCount;
-    private int ownerId;
+    private Long ownerId;
     private List<Rule> rules;
     private List<Interest> interests;
 }

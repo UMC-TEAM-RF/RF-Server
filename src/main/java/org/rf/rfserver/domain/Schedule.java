@@ -1,5 +1,6 @@
 package org.rf.rfserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class Schedule extends BaseEntity{
     private Long participantCount;
     private Long alert;
 
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
     private Party party;
 

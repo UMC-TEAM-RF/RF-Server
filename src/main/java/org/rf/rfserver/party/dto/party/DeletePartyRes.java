@@ -1,4 +1,4 @@
-package org.rf.rfserver.party.dto;
+package org.rf.rfserver.party.dto.party;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +7,6 @@ import lombok.Getter;
 public class DeletePartyRes {
     Long id;
 
-    @Builder
     public DeletePartyRes(Long id) {
         this.id = id;
     }

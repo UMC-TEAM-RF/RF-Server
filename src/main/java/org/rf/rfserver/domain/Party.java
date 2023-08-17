@@ -1,5 +1,6 @@
 package org.rf.rfserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -27,29 +28,33 @@ public class Party extends BaseEntity{
     private PreferAges preferAges;
     private int memberCount;
     private int nativeCount;
-    private int ownerId;
+    private int currentNativeCount;
+    private Long ownerId;
     @Enumerated(EnumType.STRING)
     private List<Rule> rules;
     @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass=Interest.class)
+    @CollectionTable(name="party_interest")
     private List<Interest> interests;
     @OneToMany(mappedBy = "party")
     private List<Schedule> schedules;
     @OneToMany(mappedBy = "party")
+    @JsonBackReference
     private List<UserParty> users;
 
     @Builder
-    public Party(String name, String content,String location, Language language, String imageFilePath, PreferAges preferAges,
-                 int memberCount, int nativeCount, int ownerId, List<Rule> rules, List<Interest> interests) {
+    public Party(String name, String content,String location, Language language, PreferAges preferAges,
+                 int memberCount, int nativeCount, Long ownerId, List<Rule> rules, List<Interest> interests) {
         this.name = name;
         this.content = content;
         this.location = location;
         this.language = language;
-        this.imageFilePath = imageFilePath;
         this.preferAges = preferAges;
         this.memberCount = memberCount;
         this.nativeCount = nativeCount;
         this.ownerId = ownerId;
         this.rules = rules;
+        this.currentNativeCount = 0;
         this.interests = interests;
         this.schedules = new ArrayList<>();
         this.users = new ArrayList<>();
@@ -57,5 +62,23 @@ public class Party extends BaseEntity{
 
     public void updateImageUrl(String imageFilePath){
         this.imageFilePath = imageFilePath;
+    }
+
+    public void plusCurrentNativeCount() {
+        this.currentNativeCount++;
+    }
+
+    public void minusCurrentNativeCount() {
+        this.currentNativeCount--;
+    }
+
+    public void addUserParty(UserParty userParty) {
+        this.users.add(userParty);
+        userParty.setParty(this);
+    }
+
+    public void removeUserParty(UserParty userParty) {
+        this.users.remove(userParty);
+        userParty.setParty(null);
     }
 }

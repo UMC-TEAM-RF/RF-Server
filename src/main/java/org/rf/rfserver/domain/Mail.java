@@ -19,13 +19,16 @@ public class Mail {
     private Boolean isAuth;
 
     private static final int CODE_SIZE = 6;
-
+    private static final String characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public String createRandomCode() {
         Random random = new Random();
         StringBuilder buffer = new StringBuilder();
+
         while (buffer.length() < CODE_SIZE) {
-            buffer.append(random.nextInt(10));
+            int index = random.nextInt(characters.length());
+            buffer.append(characters.charAt(index));
         }
         return buffer.toString();
     }
+
 }
