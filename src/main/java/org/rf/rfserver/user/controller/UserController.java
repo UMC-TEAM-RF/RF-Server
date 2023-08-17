@@ -5,17 +5,19 @@ import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
 import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.service.UserService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
-    @PostMapping("")
-    public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public BaseResponse<PostUserRes> createUser(@RequestPart("postUserReq") PostUserReq postUserReq, @RequestPart(value = "file", required = false) MultipartFile file) {
         try {
-            return new BaseResponse<>(userService.createUser(postUserReq));
+            return new BaseResponse<>(userService.createUser(postUserReq, file));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

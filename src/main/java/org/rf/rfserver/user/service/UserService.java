@@ -3,6 +3,7 @@ package org.rf.rfserver.user.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
+import org.rf.rfserver.config.s3.S3Uploader;
 import org.rf.rfserver.constant.Country;
 import org.rf.rfserver.domain.User;
 import org.rf.rfserver.domain.UserParty;
@@ -11,6 +12,7 @@ import org.rf.rfserver.domain.UserParty;
 import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,8 @@ import static org.rf.rfserver.config.BaseResponseStatus.*;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
+    private final S3Uploader s3Uploader;
+    public PostUserRes createUser(PostUserReq postUserReq, MultipartFile file) throws BaseException {
         User user = User.builder()
                 .loginId(postUserReq.getLoginId())
                 .password(postUserReq.getPassword())
@@ -38,6 +41,10 @@ public class UserService {
                 .lifeStyle(postUserReq.getLifeStyle())
                 .build();
         try {
+            if(file != null) {
+                String imageFilePath = s3Uploader.fileUpload(file, "userImage");
+                user.updateImageUrl(imageFilePath);
+            }
             userRepository.save(user);
             return new PostUserRes(user.getId());
         } catch (Exception e) {
@@ -60,6 +67,7 @@ public class UserService {
                     , user.getInterestCountries()
                     , user.getUserInterests()
                     , user.getLifeStyle()
+                    , user.getImageFilePath()
             );
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);

@@ -83,6 +83,10 @@ public class User extends BaseEntity{
         return this;
     }
 
+    public void updateImageUrl(String imageFilePath){
+        this.imageFilePath = imageFilePath;
+    }
+
     public boolean isMoreThanFiveParties() {
         if (userParties.size() > maxPartyNumber) {
             return true;
