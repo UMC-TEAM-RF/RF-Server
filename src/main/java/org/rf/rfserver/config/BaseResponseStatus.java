@@ -35,11 +35,8 @@ public enum BaseResponseStatus {
     INVALID_CODE(false, 6003, "인증번호가 올바르지 않습니다."),
     INVALID_UNIVERSITY(false, 6004, "해당 학교의 이메일 주소가 아닙니다."),
     // 5000 : 필요시 만들어서 쓰세요
-    PARTY_NOT_FOUND(false, 5000, "존재하지 않는 모임입니다."),
-    USER_NOT_FOUND(false, 5001, "존재하지 않는 사용자입니다."),
-    SCHEDULE_NOT_FOUND(false, 5002, "존재하지 않는 일정입니다."),
     // 6000 : 필요시 만들어서 쓰세요
-    NOT_PARTY_OWNER(false,6000,"모임장이 아니면 해당 권한이 없습니다.")
+    NOT_PARTY_OWNER(false,8000,"모임장이 아니면 해당 권한이 없습니다.")
     ;
     private final boolean isSuccess;
     private final int code;
