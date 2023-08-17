@@ -25,9 +25,9 @@ public enum BaseResponseStatus {
     INVALID_APPLICATION(false, 2009, "해당하는 요청이 존재하지 않습니다"),
     FULL_OF_KOREAN(false, 2010, "해당 모임에 가입할 수 있는 한국인 인원이 초과되었습니다."),
     NOT_RECRUITING(false, 2011, "해당 모임은 모집마감 상태입니다."),
-    INVALID_TOKEN(false, 2012, "유효하지 않은 토큰입니다."),
-    INVALID_LOGIN_IR_OR_PASSWORD(false, 2013, "아이디 또는 비밀번호가 일치하지 않습니다"),
-    DUPLICATED_LOGIN_ID(false, 2014, "해당 ID가 이미 존재합니다. 다른 아이디를 사용해주세요"),
+    INVALID_TOKEN(false, 2014, "유효하지 않은 토큰입니다."),
+    INVALID_LOGIN_IR_OR_PASSWORD(false, 2015, "아이디 또는 비밀번호가 일치하지 않습니다"),
+    DUPLICATED_LOGIN_ID(false, 2016, "해당 ID가 이미 존재합니다. 다른 아이디를 사용해주세요"),
 
 
     /**
