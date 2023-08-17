@@ -32,9 +32,9 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public BaseResponse<PatchUserRes> updateUser(@PathVariable("userId") Long userId, @RequestBody PatchUserReq patchUserReq) {
+    public BaseResponse<PatchUserRes> updateUser(@PathVariable("userId") Long userId, @RequestPart PatchUserReq patchUserReq, @RequestPart(value = "file", required = false) MultipartFile file) {
         try {
-            return new BaseResponse<>(userService.updateUser(userId, patchUserReq));
+            return new BaseResponse<>(userService.updateUser(userId, patchUserReq, file));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

@@ -12,6 +12,7 @@ import org.rf.rfserver.domain.UserParty;
 import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class UserService {
     }
 
     @Transactional
-    public PatchUserRes updateUser(Long userId, PatchUserReq patchUserReq) throws BaseException{
+    public PatchUserRes updateUser(Long userId, PatchUserReq patchUserReq, MultipartFile file) throws BaseException{
         try {
             User user = userRepository.getReferenceById(userId);
             user.updateUser(
@@ -86,6 +87,10 @@ public class UserService {
                     , patchUserReq.getMbti()
                     , patchUserReq.getLifeStyle()
             );
+            if(file != null){
+                String imageFilePath = s3Uploader.fileUpload(file, "userImage");
+                user.updateImageUrl(imageFilePath);
+            }
             return new PatchUserRes(true);
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
