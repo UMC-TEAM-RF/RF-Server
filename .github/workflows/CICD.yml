@@ -5,14 +5,6 @@ on:
     branches: [ "main" ]
     
 env:
-  MYSQL_HOST: ${{secrets.MYSQL_HOST}}
-  MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
-  MYSQL_USERNAME: ${{secrets.MYSQL_USERNAME}}
-  S3_ACCESSKEY: ${{secrets.S3_ACCESSKEY}}
-  S3_SECRETKEY: ${{secrets.S3_SECRETKEY}}
-  S3_BUCKET: ${{secrets.S3_BUCKET}}
-  MAIL_USERNAME: ${{secrets.MAIL_USERNAME}}
-  MAIL_PASSWORD: ${{secrets.MAIL_PASSWORD}}
   PROJECT_NAME: cicd_folder
   BUCKET_NAME: rf-cicd-bucket
   CODE_DEPLOY_APP_NAME: rfDeploy
@@ -22,9 +14,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     
+    services:
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+    
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+      with:
+        token: ${{secrets.TOKEN_GITHUB}}
+        submodules: true
       
     - name: Setup Java JDK
       uses: actions/setup-java@v1
@@ -39,32 +40,15 @@ jobs:
     - name: Write env.sh
       run: |
         sudo chmod 777 ./scripts/env.sh
-        echo "export MYSQL_HOST=${{secrets.MYSQL_HOST}}" >> ./scripts/env.sh
-        echo "export MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}}" >> ./scripts/env.sh
-        echo "export MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}}" >> ./scripts/env.sh
-        echo "export S3_ACCESSKEY=${{secrets.S3_ACCESSKEY}}" >> ./scripts/env.sh
-        echo "export S3_SECRETKEY=${{secrets.S3_SECRETKEY}}" >> ./scripts/env.sh
-        echo "export S3_BUCKET=${{secrets.S3_BUCKET}}" >> ./scripts/env.sh
-        echo "export MAIL_USERNAME=${{secrets.MAIL_USERNAME}}" >> ./scripts/env.sh
-        echo "export MAIL_PASSWORD=${{secrets.MAIL_PASSWORD}}" >> ./scripts/env.sh
         echo "${{secrets.EC2_SCRIPTS_PATH}}/deploy.sh" >> ./scripts/env.sh
-        echo "sleep 60" >> ./scripts/env.sh
+        echo "sleep 30" >> ./scripts/env.sh
       shell: bash
       
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
       
     - name: Build with Gradle
-      run: |
-        ./gradlew build \
-          -DMYSQL_HOST=${{secrets.MYSQL_HOST}} \
-          -DMYSQL_USERNAME=${{secrets.MYSQL_USERNAME}} \
-          -DMYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}} \
-          -DS3_ACCESSKEY=${{secrets.S3_ACCESSKEY}} \
-          -DS3_SECRETKEY=${{secrets.S3_SECRETKEY}} \
-          -DS3_BUCKET=${{secrets.S3_BUCKET}} \
-          -DMAIL_USERNAME=${{secrets.MAIL_USERNAME}} \
-          -DMAIL_PASSWORD=${{secrets.MAIL_PASSWORD}}
+      run: ./gradlew build
       shell: bash
       
     - name: Make Zip File
@@ -94,18 +78,3 @@ jobs:
           --deployment-config-name CodeDeployDefault.OneAtATime \
           --deployment-group-name $DEPLOYMENT_GROUP_NAME \
           --s3-location bucket=$BUCKET_NAME,key=$PROJECT_NAME/buildFile.zip,bundleType=zip
-          
-    - name: Unset Environment Variable
-      run: |
-        unset MYSQL_HOST
-        unset MYSQL_PASSWORD
-        unset MYSQL_USERNAME
-        unset PROJECT_NAME
-        unset BUCKET_NAME
-        unset CODE_DEPLOY_APP_NAME
-        unset DEPLOYMENT_GROUP_NAME
-        unset S3_ACCESSKEY
-        unset S3_SECRETKEY
-        unset S3_BUCKET
-        unset MAIL_USERNAME
-        unset MAIL_PASSWORD
