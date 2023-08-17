@@ -24,7 +24,7 @@ public enum BaseResponseStatus {
     EXCEEDED_PARTY_USER_COUNT(false, 2008, "해당 모임에 가입할 수 있는 인원이 초과되었습니다."),
     INVALID_APPLICATION(false, 2009, "해당하는 요청이 존재하지 않습니다"),
     FULL_OF_KOREAN(false, 2010, "해당 모임에 가입할 수 있는 한국인 인원이 초과되었습니다."),
-    DUPLICATED_LOGIN_ID(false, 2011, "해당 아이디가 이미 존재합니다. 다른 아이디를 사용해주세요"),
+    DUPLICATED_LOGIN_ID(false, 2013, "해당 아이디가 이미 존재합니다. 다른 아이디를 사용해주세요"),
 
 
     /**
