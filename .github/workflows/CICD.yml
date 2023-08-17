@@ -21,18 +21,17 @@ jobs:
           - 6379:6379
     
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        token: ${{secrets.TOKEN_GITHUB}}
+        submodules: recursive
+        
     - name: Setup Java JDK
       uses: actions/setup-java@v3
       with:
         distribution: 'corretto'
         java-version: 17
-        
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        token: ${{secrets.TOKEN_GITHUB}}
-        submodules: true
 
     - name: Git Submodule Update
       run: |
@@ -46,7 +45,7 @@ jobs:
       uses: gradle/gradle-build-action@v2
       
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build -Dspring.config.location=./config/application.yml
       shell: bash
       
     - name: Make Zip File
