@@ -13,6 +13,7 @@ DEPLOY_LOG="$REPOSITORY/deploy.log"
 TIME_NOW=$(date +%c)
 
 JAVA_PATH=$(which java)
+echo "$JAVA_PATH"
 
 CURRENT_PID=$(pgrep -f $APP_NAME)
 
@@ -30,7 +31,6 @@ fi
 echo "$TIME_NOW > $JAR_FILE 파일 실행"
 echo "$TIME_NOW > $JAR_FILE 파일 실행" >> $DEPLOY_LOG
 
-echo $JAVA_PATH
 nohup $JAVA_PATH -jar $JAR_PATH > $APP_LOG 2> $ERROR_LOG &
 
 NEW_PID=$(pgrep -f $JAR_PATH)
