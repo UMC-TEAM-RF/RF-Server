@@ -111,6 +111,11 @@ public class UserService {
 
     public DeleteUserRes deleteUser(Long userId) throws BaseException{
         try {
+            //유저의 프로필 이미지를 S3에서 삭제
+            User user = userRepository.getReferenceById(userId);
+            String imageFilePath = user.getImageFilePath();
+            String fileKey = s3Uploader.changeFileKeyPath(imageFilePath);
+            s3Uploader.deleteFile(fileKey);
             userRepository.deleteById(userId);
             return new DeleteUserRes(true);
         } catch (Exception e) {
