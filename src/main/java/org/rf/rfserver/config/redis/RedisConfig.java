@@ -1,7 +1,9 @@
 package org.rf.rfserver.config.redis;
 
+import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.chat.dto.ChatDto;
 import org.rf.rfserver.chat.service.ChatSubscriber;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -14,10 +16,12 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
+    private final RedisProperties redisProperties;
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(); // redisConnectionFactory 를 LettuceConnectionFactory를 이용함
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisProperties.getHost(), redisProperties.getPort()); // redisConnectionFactory 를 LettuceConnectionFactory를 이용함
         return lettuceConnectionFactory;
     }
     @Bean
@@ -34,7 +38,7 @@ public class RedisConfig {
         return new MessageListenerAdapter(subscriber, "onMessage"); // MessageListener 를 지정함
     }
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory()); // redis 클라이언트와 redis 서버의 연결을 가져오는 객체
         redisTemplate.setKeySerializer(new StringRedisSerializer()); // redis 의 key 값의 직렬화 역직렬화에 사용하는 Serializer 지정
