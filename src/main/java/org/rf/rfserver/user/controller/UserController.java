@@ -3,6 +3,8 @@ package org.rf.rfserver.user.controller;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
+import org.rf.rfserver.mail.dto.PostResetPasswordReq;
+import org.rf.rfserver.mail.dto.PostResetPasswordRes;
 import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.service.UserService;
 import org.springframework.http.MediaType;
@@ -61,6 +63,26 @@ public class UserController {
     public BaseResponse<GetNicknameCheckRes> checkNickname(@PathVariable("nickName") String nickName) {
         try {
             return new BaseResponse<>(userService.checkNickname(nickName));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    // 아이디 찾기
+    @PostMapping("/findId")
+    public BaseResponse<PostResetPasswordRes> findId(@RequestBody PostResetPasswordReq postPasswordReq) {
+        try {
+            return new BaseResponse<>(userService.findId(postPasswordReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    // 비밀번호 재설정
+    @PostMapping("/resetPassword")
+    public BaseResponse<PostResetPasswordRes> resetPassword(@RequestBody PostResetPasswordReq postPasswordReq) {
+        try {
+            return new BaseResponse<>(userService.resetPassword(postPasswordReq));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

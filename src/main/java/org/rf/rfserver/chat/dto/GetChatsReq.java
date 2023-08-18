@@ -1,13 +1,13 @@
-package org.rf.rfserver.party.dto.partyjoinapply;
+package org.rf.rfserver.chat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-public class PostJoinApplicationReq {
+public class GetChatsReq {
+    private Long chatId;
     private Long userId;
-    private Long partyId;
 }

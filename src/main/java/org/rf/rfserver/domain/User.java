@@ -33,6 +33,7 @@ public class User extends BaseEntity{
     private int love;
     private int hate;
     private String email;
+    private String imageUrl;
     private Boolean isEmailVerified;
     private String imageFilePath;
 
@@ -73,9 +74,10 @@ public class User extends BaseEntity{
         this.userParties = new ArrayList<>();
     }
 
-    public User updateUser(String nickName, String password, List<Language> interestingLanguages, String introduce, Mbti mbti, LifeStyle lifeStyle) {
+    public User updateUser(String nickName, String password, String imageFilePath, List<Language> interestingLanguages, String introduce, Mbti mbti, LifeStyle lifeStyle) {
         this.nickName = nickName == null ? this.nickName : nickName;
         this.password = password == null ? this.password : password;
+        this.imageFilePath = imageFilePath == null ? this.imageFilePath : imageFilePath;
         this.interestingLanguages = interestingLanguages == null ? this.interestingLanguages : interestingLanguages;
         this.introduce = introduce == null ? this.introduce : introduce;
         this.mbti = mbti == null ? this.mbti : mbti;
@@ -102,6 +104,10 @@ public class User extends BaseEntity{
     public void removeUserParty(UserParty userParty) {
         this.userParties.remove(userParty);
         userParty.setUser(null);
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
 
