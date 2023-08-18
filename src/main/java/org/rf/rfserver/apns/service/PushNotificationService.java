@@ -38,9 +38,8 @@ public class PushNotificationService {
                 .setAlertTitle(title)
                 .setAlertBody(body)
                 .setMutableContent(true)
-                .setShowActionButton(false)
                 .setThreadId(threadId)
-                .setSound(ApnsPayloadBuilder.DEFAULT_SOUND_FILENAME, true, 1);
+                .setSound(ApnsPayloadBuilder.DEFAULT_SOUND_FILENAME);
         String payload = payloadBuilder.build();
         JsonParser parser = new JsonParser();
         try {
@@ -64,11 +63,10 @@ public class PushNotificationService {
         SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, apnsTopic, payload);
         ApnsClient apnsClient = apnsClientService.getApnsClient();
         PushNotificationFuture<SimpleApnsPushNotification, PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture;
-        sendNotificationFuture = apnsClient.sendNotification(pushNotification);
         try {
             PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse;
             do {
-                pushNotificationResponse = sendNotificationFuture.get();
+                pushNotificationResponse = apnsClient.sendNotification(pushNotification).get();
             } while(!pushNotificationResponse.isAccepted());
         } catch(ExecutionException e) {
             e.printStackTrace();
