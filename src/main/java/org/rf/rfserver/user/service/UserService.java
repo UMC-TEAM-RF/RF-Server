@@ -87,7 +87,13 @@ public class UserService {
                     , patchUserReq.getMbti()
                     , patchUserReq.getLifeStyle()
             );
+            //사용자가 새로운 이미지로 바꾸려고 할 때
             if(file != null){
+                String preImageFilePath = user.getImageFilePath();
+                if(preImageFilePath != "default"){
+                    String fileKey = s3Uploader.changeFileKeyPath(preImageFilePath);
+                    s3Uploader.deleteFile(fileKey);
+                }
                 String imageFilePath = s3Uploader.fileUpload(file, "userImage");
                 user.updateImageUrl(imageFilePath);
             }

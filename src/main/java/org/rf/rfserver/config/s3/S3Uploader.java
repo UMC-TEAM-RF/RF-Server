@@ -1,8 +1,9 @@
 package org.rf.rfserver.config.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,5 +72,20 @@ public class S3Uploader {
             return Optional.of(convertFile);
         }
         return Optional.empty();
+    }
+    //파일의 S3 내부 진짜 경로로 변경
+    public String changeFileKeyPath(String fileName){
+        String fileKey = fileName.replace(String.format("https://%s.s3.%s.amazonaws.com/", bucket, amazonS3Client.getRegion()),"");
+        return fileKey;
+    }
+    //파일 삭제
+    public void deleteFile(String fileName){
+        try{
+            amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
+            log.info("기존 파일이 정상적으로 삭제되었습니다.");
+        } catch (AmazonS3Exception e){
+            e.printStackTrace();
+            log.info("기존 파일 삭제에 실패했습니다.");
+        }
     }
 }
