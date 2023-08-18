@@ -2,6 +2,7 @@ package org.rf.rfserver.sign.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
+import org.rf.rfserver.config.BaseResponse;
 import org.rf.rfserver.sign.dto.CreateAccessTokenReq;
 import org.rf.rfserver.sign.dto.CreateAccessTokenRes;
 import org.rf.rfserver.sign.service.TokenService;
@@ -17,10 +18,8 @@ public class TokenApiController {
     private final TokenService tokenService;
 
     @PostMapping("/token")
-    public ResponseEntity<CreateAccessTokenRes> createNewAccessToken(@RequestBody CreateAccessTokenReq request) throws BaseException {
+    public BaseResponse<CreateAccessTokenRes> createNewAccessToken(@RequestBody CreateAccessTokenReq request) throws BaseException {
         String newAccessToken = tokenService.createNewAccessToken(request.getRefreshToken());
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new CreateAccessTokenRes(newAccessToken));
-//        return new BaseResponse<>(new CreateAccessTokenRes(newAccessToken));
+        return new BaseResponse<>(new CreateAccessTokenRes(newAccessToken));
     }
 }

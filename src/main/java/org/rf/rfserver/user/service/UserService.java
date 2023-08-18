@@ -13,6 +13,7 @@ import org.rf.rfserver.constant.Country;
 import org.rf.rfserver.domain.User;
 import org.rf.rfserver.domain.UserParty;
 
+import org.rf.rfserver.sign.service.RefreshTokenService;
 import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.dto.sign.LoginReq;
 import org.rf.rfserver.user.dto.sign.LoginRes;
@@ -36,6 +37,7 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final TokenProvider tokenProvider;
     private final MailService mailService;
+    private final RefreshTokenService refreshTokenService;
 
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
         isDuplicatedLoginId(postUserReq.getLoginId());
@@ -200,6 +202,7 @@ public class UserService {
                 .orElseThrow(() -> new BaseException(INVALID_LOGIN_IR_OR_PASSWORD));
         String accessToken = tokenProvider.generateToken(user, Duration.ofHours(ACCESS_TOKEN_EXPIRATION));
         String refreshToken = tokenProvider.generateToken(user, Duration.ofDays(REFRESH_TOKEN_EXPIRATION));
+        refreshTokenService.saveRefreshToken(user.getId(), refreshToken);
         user.setDeviceToken(loginReq.getDeviceToken());
         return LoginRes.builder()
                 .accessToken(accessToken)

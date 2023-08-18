@@ -17,4 +17,8 @@ public class RefreshTokenService {
         return refreshTokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new BaseException(INVALID_TOKEN));
     }
+
+    public void saveRefreshToken(Long userId, String refreshToken) {
+        refreshTokenRepository.save(new RefreshToken(userId, refreshToken));
+    }
 }
