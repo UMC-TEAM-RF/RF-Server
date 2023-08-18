@@ -28,12 +28,21 @@ public class Schedule extends BaseEntity{
     private Party party;
 
     @Builder
-    public Schedule(String scheduleName, LocalDateTime datetime, String location, Long participantCount, Long alert, Party party) {
+    public Schedule(String scheduleName, LocalDateTime datetime, String location, Long participantCount, Long alert, Party party){
         this.scheduleName = scheduleName;
         this.datetime = datetime;
         this.location = location;
         this.participantCount = participantCount;
         this.alert = alert;
         this.party = party;
+    }
+
+    public Schedule updateSchedule(String scheduleName, LocalDateTime datetime, String location, Long alert){
+        this.scheduleName = scheduleName ==  null ? this.scheduleName : scheduleName;
+        this.datetime = datetime == null ? this.datetime : datetime;
+        this.location = location == null ? this.location : location;
+        this.alert = alert == null ? this.alert : alert;
+
+        return this;
     }
 }

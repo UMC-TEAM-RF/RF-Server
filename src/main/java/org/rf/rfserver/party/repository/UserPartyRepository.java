@@ -24,4 +24,5 @@ public interface UserPartyRepository extends JpaRepository<UserParty, Long> {
     @Query("DELETE From UserParty up " +
             "WHERE up.id in :userPartyIds")
     void deleteUserParties(@Param("userPartyIds") List<Long> userPartyIds);
+    List<UserParty> findByUser(User user);
 }
