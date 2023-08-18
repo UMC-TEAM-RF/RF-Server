@@ -23,6 +23,7 @@ public class ApiService {
         enumValues.put("PreferAges", toEnumValues(PreferAges.class));
         enumValues.put("Rule", toEnumValues(Rule.class));
         enumValues.put("University", toEnumValues(University.class));
+        enumValues.put("MessageType", toEnumValues(MessageType.class));
         enumValues.put("ReportType", toEnumValues(ReportType.class));
         return enumValues;
     }
