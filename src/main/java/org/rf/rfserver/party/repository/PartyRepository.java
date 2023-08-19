@@ -11,7 +11,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface PartyRepository extends JpaRepository<Party, Long>, JpaSpecificationExecutor<Party> {
-   @Query("SELECT p FROM Party p WHERE p.id NOT IN (SELECT bp.blockedParty.id FROM BlockParty bp WHERE bp.blockerUser.id = ?1)")
+   @Query("SELECT p FROM Party p " +
+           "WHERE p.id NOT IN " +
+           "(SELECT bp.blockedParty.id FROM BlockParty bp WHERE bp.blockerUser.id = ?1)")
    Page<Party> findNonBlockedPartiesByUserId(Long userId, Pageable pageable);
 
    // 사용자 관심사 기반 모임 목록 불러오기 (가입한 모임, 차단한 모임 제외)
@@ -23,4 +25,10 @@ public interface PartyRepository extends JpaRepository<Party, Long>, JpaSpecific
            ")")
    Page<Party> findInterestParties(List<Interest> userInterests, Long userId, Pageable pageable);
 
+   /**
+    * 모임 이름으로 모임 검색
+    * IgnoreCase : 대소문자를 구분하지 않고 검색
+    * Containing : 부분 일치하는 결과 반환
+    * */
+   Page<Party> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }
