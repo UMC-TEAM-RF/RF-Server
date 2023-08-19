@@ -20,5 +20,4 @@ public class PatchUserReq {
     private String introduce = null;
     private Mbti mbti = null;
     private LifeStyle lifeStyle = null;
-    private String imageFilePath = null;
 }

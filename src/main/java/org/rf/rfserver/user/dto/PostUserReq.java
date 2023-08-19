@@ -10,7 +10,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@NoArgsConstructor
 public class PostUserReq {
     private String loginId;
     private String password;
