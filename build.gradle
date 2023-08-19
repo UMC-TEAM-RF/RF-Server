@@ -19,6 +19,9 @@ configurations {
 
 repositories {
 	mavenCentral()
+	flatDir{
+		dirs 'config/externalLibrary'
+	}
 }
 
 dependencies {
@@ -36,6 +39,11 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// 푸시 알림 관련
+	implementation name: 'pushy', version: '0.15.2', ext: 'jar'
+	implementation 'io.netty:netty-all:4.1.85.Final'
+	implementation 'com.eatthepath:fast-uuid:0.2.0'
 
 	testCompileOnly 'org.projectlombok:lombok' // 테스트 의존성 추가
 	testAnnotationProcessor 'org.projectlombok:lombok' // 테스트 의존성 추가

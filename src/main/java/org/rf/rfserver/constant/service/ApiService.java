@@ -25,6 +25,7 @@ public class ApiService {
         enumValues.put("University", toEnumValues(University.class));
         enumValues.put("MessageType", toEnumValues(MessageType.class));
         enumValues.put("ReportType", toEnumValues(ReportType.class));
+        enumValues.put("PushNotificationType", toEnumValues(PushNotificationType.class));
         return enumValues;
     }
     private List<EnumValue> toEnumValues(Class<? extends EnumModel> e) {
