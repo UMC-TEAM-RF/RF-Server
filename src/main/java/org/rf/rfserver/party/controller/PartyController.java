@@ -128,4 +128,13 @@ public class PartyController {
         }
     }
 
+    // 모임 이름 검색
+    @GetMapping("/find/{name}")
+    public BaseResponse<PageDto<List<GetPartyRes>>> searchParty(@PathVariable("name") String name, Pageable pageable) {
+        try {
+            return new BaseResponse<>(partyService.searchParty(name, pageable));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }
