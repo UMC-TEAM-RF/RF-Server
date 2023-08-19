@@ -59,3 +59,10 @@ task copySubmodule(type: Copy) {
 	include '*.yml'
 	into './src/main/resources'
 }
+
+processResources.dependsOn('copyApnsAuthKey')
+task copyApnsAuthKey(type: Copy) {
+	from './config/apnsAuthKey'
+	include '*'
+	into './src/main/resources/apnsAuthKey'
+}
