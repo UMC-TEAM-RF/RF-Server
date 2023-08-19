@@ -293,4 +293,31 @@ public class PartyService {
                         .build())
                 .collect(Collectors.toList()));
     }
+
+    // 모임 이름 검색
+    public PageDto<List<GetPartyRes>> searchParty(String name, Pageable pageable) throws BaseException{
+
+        if (name.trim().isEmpty()) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+        Page<Party> parties = partyRepository.findByNameContainingIgnoreCase(name, pageable);
+
+        return new PageDto<>(parties.getNumber(), parties.getTotalPages(), parties.stream()
+                .map(party -> GetPartyRes.builder()
+                        .id(party.getId())
+                        .name(party.getName())
+                        .content(party.getContent())
+                        .location(party.getLocation())
+                        .language(party.getLanguage())
+                        .imageFilePath(party.getImageFilePath())
+                        .preferAges(party.getPreferAges())
+                        .memberCount(party.getMemberCount())
+                        .nativeCount(party.getNativeCount())
+                        .ownerId(party.getOwnerId())
+                        .userProfiles(userService.getUserProfiles(party.getUsers()))
+                        .schedules(party.getSchedules())
+                        .build())
+                .collect(Collectors.toList()));
+    }
 }
