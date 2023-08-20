@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.s3.S3Uploader;
+
+import org.rf.rfserver.constant.Interest;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
@@ -18,8 +20,6 @@ import org.rf.rfserver.user.repository.UserRepository;
 import org.rf.rfserver.user.service.UserService;
 
 import org.rf.rfserver.config.PageDto;
-
-import org.rf.rfserver.party.dto.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -251,7 +251,7 @@ public class PartyService {
                         .memberCount(party.getMemberCount())
                         .nativeCount(party.getNativeCount())
                         .ownerId(party.getOwnerId())
-                        //.users(party.getUsers())
+                        .userProfiles(userService.getUserProfiles(party.getUsers()))
                         .schedules(party.getSchedules())
                         .build())
                 .collect(Collectors.toList()));
@@ -280,7 +280,7 @@ public class PartyService {
                         .memberCount(userParty.getParty().getMemberCount())
                         .nativeCount(userParty.getParty().getNativeCount())
                         .ownerId(userParty.getParty().getOwnerId())
-                        //.users(userParty.getParty().getUsers())
+                        .userProfiles(userService.getUserProfiles(userParty.getParty().getUsers()))
                         .schedules(userParty.getParty().getSchedules())
                         .build())
                 .collect(Collectors.toList()));
@@ -302,4 +302,23 @@ public class PartyService {
         }
     }
 
+    // 사용자 관심사 기반 모임 목록 불러오기 (가입한 모임, 차단한 모임 제외)
+    public PageDto<List<GetInterestPartyRes>> getPartiesByUserInterests(Long userId, Pageable pageable) throws BaseException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
+        List<Interest> interests = user.getUserInterests();
+        Page<Party> parties = partyRepository.findInterestParties(interests, userId, pageable);
+
+        return new PageDto<>(parties.getNumber(), parties.getTotalPages(), parties.stream()
+                .map(party -> GetInterestPartyRes.builder()
+                        .id(party.getId())
+                        .name(party.getName())
+                        .content(party.getContent())
+                        .imageFilePath(party.getImageFilePath())
+                        .memberCount(party.getMemberCount())
+                        .ownerId(party.getOwnerId())
+                        .build())
+                .collect(Collectors.toList()));
+    }
 }

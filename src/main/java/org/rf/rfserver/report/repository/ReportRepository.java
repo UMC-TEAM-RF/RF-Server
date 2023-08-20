@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
     Page<Report> findReportsByReporter(User reporter, Pageable pageable);
-    Page<Report> findReportsByActor(User actor, Pageable pageable);
-    Page<Report> findReportsByActorParty(Party actorParty, Pageable pageable);
+    Page<Report> findReportsByReportedUser(User reportedUser, Pageable pageable);
+    Page<Report> findReportsByReportedParty(Party reportedParty, Pageable pageable);
     Page<Report> findAll(Pageable pageable);
 }
