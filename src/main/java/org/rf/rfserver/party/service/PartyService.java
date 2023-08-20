@@ -45,7 +45,6 @@ public class PartyService {
     private final PartyJoinApplicationRepository partyJoinApplicationRepository;
     private final S3Uploader s3Uploader;
 
-
     public PostPartyRes createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
         try {
             User user = userService.findUserById(postPartyReq.getOwnerId());
@@ -64,7 +63,7 @@ public class PartyService {
                     .build());
             addOwnerToParty(user, party);
             //file 비어있는지 체크
-            if(file != null){
+            if (file != null) {
                 String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
                 party.updateImageUrl(imageFilePath);
             }
@@ -77,7 +76,7 @@ public class PartyService {
     public void addOwnerToParty(User user, Party party) {
         UserParty userParty = new UserParty(party, user);
         userPartyRepository.save(userParty);
-        if(userService.isKorean(user)) {
+        if (userService.isKorean(user)) {
             party.plusCurrentNativeCount();
         }
     }
@@ -106,6 +105,11 @@ public class PartyService {
                 .build();
     }
 
+    public PatchPartyRes updateParty(Long partyId, PatchPartyReq patchPartyReq) throws BaseException {
+        Party party = findPartyById(partyId);
+        party.updateParty(patchPartyReq);
+        return new PatchPartyRes(true);
+    }
 
     public DeletePartyRes deleteParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
@@ -139,7 +143,7 @@ public class PartyService {
 
     public void joinValidation(Party party, User user) throws BaseException {
         isFullParty(party);
-        if(userService.isKorean(user)) {
+        if (userService.isKorean(user)) {
             isFullOfKorean(party);
         }
         userService.isExceededPartyCount(user);
@@ -153,15 +157,14 @@ public class PartyService {
     }
 
     public void isFullOfKorean(Party party) throws BaseException {
-        if(party.getNativeCount() <= party.getCurrentNativeCount()) {
+        if (party.getNativeCount() <= party.getCurrentNativeCount()) {
             throw new BaseException(FULL_OF_KOREAN);
         }
     }
 
-
     public void isJoinedUser(User user, Party party) throws BaseException {
-        for (UserParty userParty : party.getUsers() ) {
-            if(userParty.getUser() == user) {
+        for (UserParty userParty : party.getUsers()) {
+            if (userParty.getUser() == user) {
                 throw new BaseException(INVALID_JOIN_APPLICATION);
             }
         }
@@ -249,6 +252,7 @@ public class PartyService {
 
     /**
      * 클라이언트가 속한 그룹 리스트를 조회 서비스
+     *
      * @param userId
      * @return List[GetPartyRes]
      * @throws BaseException
@@ -275,6 +279,7 @@ public class PartyService {
                         .build())
                 .collect(Collectors.toList()));
     }
+
     // 사용자 관심사 기반 모임 목록 불러오기 (가입한 모임, 차단한 모임 제외)
     public PageDto<List<GetInterestPartyRes>> getPartiesByUserInterests(Long userId, Pageable pageable) throws BaseException {
         User user = userRepository.findById(userId)
