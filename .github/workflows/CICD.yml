@@ -51,6 +51,7 @@ jobs:
     - name: Make Zip File
       run: |
         mkdir content
+        mkdir config config/apnsAuthKey
         mv ./build/libs/*.jar ./content/
         mv ./config/apnsAuthKey/* ./content/config/apnsAuthKey/
         zip buildFile.zip ./appspec.yml ./content/* ./scripts/deploy.sh
