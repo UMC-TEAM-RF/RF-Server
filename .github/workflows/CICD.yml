@@ -51,8 +51,10 @@ jobs:
     - name: Make Zip File
       run: |
         mkdir content
+        mkdir content/config content/config/apnsAuthKey
         mv ./build/libs/*.jar ./content/
-        zip buildFile.zip ./appspec.yml ./content/*.jar ./scripts/deploy.sh
+        mv ./config/apnsAuthKey/* ./content/config/apnsAuthKey/
+        zip buildFile.zip ./appspec.yml ./content/* ./scripts/deploy.sh
       shell: bash
       
     - name: Configure AWS credentials
