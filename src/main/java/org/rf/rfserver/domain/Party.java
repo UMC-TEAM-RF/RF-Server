@@ -12,8 +12,6 @@ import org.rf.rfserver.constant.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.rf.rfserver.constant.Toggle.*;
-
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -74,12 +72,8 @@ public class Party extends BaseEntity{
         this.currentNativeCount--;
     }
 
-    public void changeRecruitmentState(Toggle toggle) {
-        if(toggle == ON) {
-            isRecruiting = true;
-        } else if(toggle == OFF) {
-            isRecruiting = false;
-        }
+    public void changeRecruitmentState(Boolean toggle) {
+        isRecruiting = toggle;
     }
 
     public void addUserParty(UserParty userParty) {

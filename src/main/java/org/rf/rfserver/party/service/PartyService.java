@@ -1,11 +1,9 @@
 package org.rf.rfserver.party.service;
 
-import jakarta.mail.Part;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.s3.S3Uploader;
-import org.rf.rfserver.constant.Toggle;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
@@ -34,7 +32,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
-import static org.rf.rfserver.constant.Toggle.*;
 
 @Transactional
 @Slf4j
@@ -156,14 +153,14 @@ public class PartyService {
         isJoinedUser(user, party);
     }
 
-    public boolean isFullParty(Party party) throws BaseException {
+    public boolean isFullParty(Party party) {
         if (party.getUsers().size() >= party.getMemberCount()) {
             return true;
         }
         return false;
     }
 
-    public boolean isFullOfKorean(Party party) throws BaseException {
+    public boolean isFullOfKorean(Party party) {
         if(party.getNativeCount() <= party.getCurrentNativeCount()) {
             return true;
         }
@@ -188,7 +185,7 @@ public class PartyService {
             party.plusCurrentNativeCount();
         }
         if (isFullParty(party)) {
-            party.changeRecruitmentState(OFF);
+            party.changeRecruitmentState(false);
         }
         deletePartyJoinApplication(partyJoinApplicationId);
         return new PostApproveJoinRes(partyJoinApplicationId);
@@ -292,9 +289,9 @@ public class PartyService {
     public TogglePartyRecruitmentRes togglePartyRecruitment(Long partyId) throws BaseException {
         Party party = findPartyById(partyId);
         if (party.getIsRecruiting()) {
-            party.changeRecruitmentState(OFF);
+            party.changeRecruitmentState(false);
         } else if(!party.getIsRecruiting()) {
-            party.changeRecruitmentState(ON);
+            party.changeRecruitmentState(true);
         }
         return new TogglePartyRecruitmentRes(party.getIsRecruiting());
     }
