@@ -2,10 +2,12 @@ package org.rf.rfserver.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.rf.rfserver.constant.*;
 
 import java.util.List;
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class PostUserReq {
     private String loginId;
