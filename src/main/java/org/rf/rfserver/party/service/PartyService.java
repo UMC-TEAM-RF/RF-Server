@@ -133,17 +133,14 @@ public class PartyService {
     public PostJoinApplicationRes joinApply(PostJoinApplicationReq postJoinApplyReq) throws BaseException {
         Party party = findPartyById(postJoinApplyReq.getPartyId());
         User user = userService.findUserById(postJoinApplyReq.getUserId());
-        joinApplyValidation(party, user);
+        joinValidation(party, user);
         PartyJoinApplication partyJoinApplication = new PartyJoinApplication(user, party);
         partyJoinApplicationRepository.save(partyJoinApplication);
         return new PostJoinApplicationRes(partyJoinApplication.getId());
     }
 
-    public void joinApplyValidation(Party party, User user) throws BaseException {
-        isRecruiting(party);
-        if (isFullParty(party)) {
-            throw new BaseException(EXCEEDED_PARTY_USER_COUNT);
-        }
+    public void joinValidation(Party party, User user) throws BaseException {
+        isFullParty(party);
         if(userService.isKorean(user)) {
             if (isFullOfKorean(party)) {
                 throw new BaseException(FULL_OF_KOREAN);
@@ -180,6 +177,7 @@ public class PartyService {
                 .orElseThrow(() -> new BaseException(INVALID_APPLICATION));
         User user = userService.findUserById(partyJoinApplication.getUser().getId());
         Party party = findPartyById(partyJoinApplication.getParty().getId());
+        joinValidation(party, user);
         makeUserParty(user, party);
         if (userService.isKorean(user)) {
             party.plusCurrentNativeCount();
