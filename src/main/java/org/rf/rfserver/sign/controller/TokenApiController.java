@@ -6,8 +6,6 @@ import org.rf.rfserver.config.BaseResponse;
 import org.rf.rfserver.sign.dto.CreateAccessTokenReq;
 import org.rf.rfserver.sign.dto.CreateAccessTokenRes;
 import org.rf.rfserver.sign.service.TokenService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
