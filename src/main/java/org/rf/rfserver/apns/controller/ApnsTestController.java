@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 public class ApnsTestController {
     private final ApnsService apnsService;
     private final DeviceTokenService deviceTokenService;
-    @PutMapping("/test-setTestDeviceToken")
-    public BaseResponse<Boolean> setDeviceToken() {
-        deviceTokenService.setDeviceToken(1L,(String)""); // 테스트용 device token 입력 하여 사용
+    @PutMapping("/test-setTestDeviceToken/{userId}/{deviceToken}")
+    public BaseResponse<Boolean> setDeviceToken(@PathVariable Long userId, @PathVariable String deviceToken) {
+        deviceTokenService.setDeviceToken(userId, deviceToken); // 테스트용 device token 입력 하여 사용
         return new BaseResponse<>(true);
     }
     @PostMapping("/test")
