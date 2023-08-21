@@ -117,8 +117,8 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
-
-    @GetMapping("/toggle/{partyId}")
+  
+     @GetMapping("/toggle/{partyId}")
     public BaseResponse<TogglePartyRecruitmentRes> togglePartyRecruitment(@PathVariable Long partyId) {
         try {
             return new BaseResponse<>(partyService.togglePartyRecruitment(partyId));
@@ -136,5 +136,4 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
-
 }

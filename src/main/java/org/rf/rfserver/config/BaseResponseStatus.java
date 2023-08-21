@@ -30,8 +30,6 @@ public enum BaseResponseStatus {
     INVALID_LOGIN_IR_OR_PASSWORD(false, 2014, "아이디 또는 비밀번호가 일치하지 않습니다"),
 
 
-
-
     /**
      * 3000 : Response 오류
      */

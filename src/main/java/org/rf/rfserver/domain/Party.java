@@ -8,11 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.rf.rfserver.constant.*;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.rf.rfserver.constant.Toggle.*;
 
 @Getter
 @Entity
@@ -76,10 +74,10 @@ public class Party extends BaseEntity{
         this.currentNativeCount--;
     }
 
-    public void changeRecruitmentState(Toggle toggle) {
-        if(toggle == ON) {
+    public void changeRecruitmentState(Boolean toggle) {
+        if(toggle == true) {
             isRecruiting = true;
-        } else if(toggle == OFF) {
+        } else if(toggle == true) {
             isRecruiting = false;
         }
     }
