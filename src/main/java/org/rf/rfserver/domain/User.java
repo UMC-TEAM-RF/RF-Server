@@ -146,6 +146,7 @@ public class User extends BaseEntity implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }

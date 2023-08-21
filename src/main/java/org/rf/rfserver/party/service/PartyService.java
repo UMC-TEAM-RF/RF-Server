@@ -1,6 +1,5 @@
 package org.rf.rfserver.party.service;
 
-import jakarta.mail.Part;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.rf.rfserver.config.BaseException;
@@ -47,7 +46,6 @@ public class PartyService {
     private final PartyJoinApplicationRepository partyJoinApplicationRepository;
     private final S3Uploader s3Uploader;
 
-
     public PostPartyRes createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
         try {
             User user = userService.findUserById(postPartyReq.getOwnerId());
@@ -66,7 +64,7 @@ public class PartyService {
                     .build());
             addOwnerToParty(user, party);
             //file 비어있는지 체크
-            if(file != null){
+            if (file != null) {
                 String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
                 party.updateImageUrl(imageFilePath);
             }
@@ -79,7 +77,7 @@ public class PartyService {
     public void addOwnerToParty(User user, Party party) {
         UserParty userParty = new UserParty(party, user);
         userPartyRepository.save(userParty);
-        if(userService.isKorean(user)) {
+        if (userService.isKorean(user)) {
             party.plusCurrentNativeCount();
         }
     }
@@ -143,7 +141,7 @@ public class PartyService {
 
     public void joinValidation(Party party, User user) throws BaseException {
         isFullParty(party);
-        if(userService.isKorean(user)) {
+        if (userService.isKorean(user)) {
             if (isFullOfKorean(party)) {
                 throw new BaseException(FULL_OF_KOREAN);
             }
@@ -160,15 +158,15 @@ public class PartyService {
     }
 
     public boolean isFullOfKorean(Party party) throws BaseException {
-        if(party.getNativeCount() <= party.getCurrentNativeCount()) {
+        if (party.getNativeCount() <= party.getCurrentNativeCount()) {
             return true;
         }
         return false;
     }
 
     public void isJoinedUser(User user, Party party) throws BaseException {
-        for (UserParty userParty : party.getUsers() ) {
-            if(userParty.getUser() == user) {
+        for (UserParty userParty : party.getUsers()) {
+            if (userParty.getUser() == user) {
                 throw new BaseException(INVALID_JOIN_APPLICATION);
             }
         }
@@ -259,6 +257,7 @@ public class PartyService {
 
     /**
      * 클라이언트가 속한 그룹 리스트를 조회 서비스
+     *
      * @param userId
      * @return List[GetPartyRes]
      * @throws BaseException
@@ -290,7 +289,7 @@ public class PartyService {
         Party party = findPartyById(partyId);
         if (party.getIsRecruiting()) {
             party.changeRecruitmentState(false);
-        } else if(!party.getIsRecruiting()) {
+        } else if (!party.getIsRecruiting()) {
             party.changeRecruitmentState(true);
         }
         return new TogglePartyRecruitmentRes(party.getIsRecruiting());
@@ -298,7 +297,7 @@ public class PartyService {
 
 
     public void isRecruiting(Party party) throws BaseException {
-        if(!party.getIsRecruiting()) {
+        if (!party.getIsRecruiting()) {
             throw new BaseException(NOT_RECRUITING);
         }
     }

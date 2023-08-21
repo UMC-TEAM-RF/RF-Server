@@ -11,15 +11,15 @@ import java.util.List;
 @Setter
 @Builder
 public class LoginRes {
-    String accessToken;
-    String refreshToken;
+    private String accessToken;
+    private String refreshToken;
     private String nickName;
     private University university;
     private List<Language> interestingLanguages;
     private String introduce;
     private Country country;
     private Mbti mbti;
-    private int entrance;
+    private Integer entrance;
     private String email;
     private List<Country> interestCountries;
     private List<Interest> interests;
