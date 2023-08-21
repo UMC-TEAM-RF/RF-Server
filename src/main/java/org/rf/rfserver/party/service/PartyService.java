@@ -140,6 +140,7 @@ public class PartyService {
     }
 
     public void joinValidation(Party party, User user) throws BaseException {
+        isRecruiting(party);
         isFullParty(party);
         if(userService.isKorean(user)) {
             if (isFullOfKorean(party)) {
@@ -318,5 +319,17 @@ public class PartyService {
                         .ownerId(party.getOwnerId())
                         .build())
                 .collect(Collectors.toList()));
+    }
+
+    public EjectUserRes ejectUser(EjectUserReq ejectUserReq) throws BaseException {
+        isOwner(ejectUserReq.getOwnerId(), ejectUserReq.getPartyId());
+        leaveParty(ejectUserReq.getUserId(), ejectUserReq.getPartyId());
+        return new EjectUserRes(true);
+    }
+
+    public void isOwner(Long ownerId, Long partyId) throws BaseException {
+        if(findPartyById(partyId).getOwnerId() != ownerId) {
+            throw new BaseException(NOT_OWNER);
+        }
     }
 }
