@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PatchPartyReq {
-    private String name = null;
     private String content = null;
     private String location = null;
     private Language language = null;

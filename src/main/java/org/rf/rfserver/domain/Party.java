@@ -62,7 +62,6 @@ public class Party extends BaseEntity{
     }
 
     public void updateParty(PatchPartyReq patchPartyReq) {
-        this.name = patchPartyReq.getName() == null ? this.name : patchPartyReq.getName();
         this.location = patchPartyReq.getLocation() == null ? this.location : patchPartyReq.getLocation();
         this.content = patchPartyReq.getContent() == null ? this.content : patchPartyReq.getContent();
         this.language = patchPartyReq.getLanguage() == null ? this.language : patchPartyReq.getLanguage();
