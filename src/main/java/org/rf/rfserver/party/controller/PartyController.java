@@ -126,6 +126,15 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+  
+     @GetMapping("/toggle/{partyId}")
+    public BaseResponse<TogglePartyRecruitmentRes> togglePartyRecruitment(@PathVariable Long partyId) {
+        try {
+            return new BaseResponse<>(partyService.togglePartyRecruitment(partyId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 
     // 사용자 관심사 기반 모임 목록 불러오기
     @GetMapping("/user/{userId}/interests")
@@ -136,5 +145,4 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
-
 }

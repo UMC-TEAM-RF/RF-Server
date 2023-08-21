@@ -1,4 +1,4 @@
-name: Build and Deploy to AWS EC2
+name: Deploy to EC2
 
 on:
   push:
@@ -51,10 +51,11 @@ jobs:
     - name: Make Zip File
       run: |
         mkdir content
-        mkdir content/config content/config/apnsAuthKey
+        mkdir content/config
+        mkdir content/config/apnsAuthKey
         mv ./build/libs/*.jar ./content/
-        mv ./config/apnsAuthKey/* ./content/config/apnsAuthKey/
-        zip buildFile.zip ./appspec.yml ./content/* ./scripts/deploy.sh
+        mv ./config/apnsAuthKey/*.p8 ./content/config/apnsAuthKey/
+        zip buildFile.zip ./appspec.yml ./content/*.jar ./scripts/deploy.sh ./content/config/apnsAuthKey/*.p8
       shell: bash
       
     - name: Configure AWS credentials
