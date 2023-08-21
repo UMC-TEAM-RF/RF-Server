@@ -37,6 +37,7 @@ public class User extends BaseEntity implements UserDetails {
     private int love;
     private int hate;
     private String email;
+    private String imageUrl;
     private Boolean isEmailVerified;
     private String imageFilePath;
     private String deviceToken;
