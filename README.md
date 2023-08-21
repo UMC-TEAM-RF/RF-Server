@@ -1,3 +1,4 @@
+![Deploy To EC2](https://github.com/UMC-TEAM-RF/RF-Server/actions/workflows/CICD.yml/badge.svg)
 <h1 align="middle"> RF </h1>
 
 <p align="middle"> 글로벌한 대학 생활을 위한 첫 단계 RF </p>
