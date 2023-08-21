@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.s3.S3Uploader;
+
 import org.rf.rfserver.constant.Interest;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.party.*;
@@ -90,6 +91,7 @@ public class PartyService {
                 .name(party.getName())
                 .content(party.getContent())
                 .location(party.getLocation())
+                .isRecruiting(party.getIsRecruiting())
                 .language(party.getLanguage())
                 .imageFilePath(party.getImageFilePath())
                 .preferAges(party.getPreferAges())
@@ -145,19 +147,24 @@ public class PartyService {
         isFullParty(party);
         if (userService.isKorean(user)) {
             isFullOfKorean(party);
+        if(userService.isKorean(user)) {
+            if (isFullOfKorean(party)) {
+                throw new BaseException(FULL_OF_KOREAN);
+            }
         }
         userService.isExceededPartyCount(user);
         isJoinedUser(user, party);
     }
 
-    public void isFullParty(Party party) throws BaseException {
+    public boolean isFullParty(Party party) {
         if (party.getUsers().size() >= party.getMemberCount()) {
-            throw new BaseException(EXCEEDED_PARTY_USER_COUNT);
+            return true;
         }
+        return false;
     }
 
     public void isFullOfKorean(Party party) throws BaseException {
-        if (party.getNativeCount() <= party.getCurrentNativeCount()) {
+        if(party.getNativeCount() <= party.getCurrentNativeCount()) {
             throw new BaseException(FULL_OF_KOREAN);
         }
     }
@@ -179,6 +186,9 @@ public class PartyService {
         makeUserParty(user, party);
         if (userService.isKorean(user)) {
             party.plusCurrentNativeCount();
+        }
+        if (isFullParty(party)) {
+            party.changeRecruitmentState(false);
         }
         deletePartyJoinApplication(partyJoinApplicationId);
         return new PostApproveJoinRes(partyJoinApplicationId);
@@ -278,6 +288,22 @@ public class PartyService {
                         .schedules(userParty.getParty().getSchedules())
                         .build())
                 .collect(Collectors.toList()));
+    }
+
+    public TogglePartyRecruitmentRes togglePartyRecruitment(Long partyId) throws BaseException {
+        Party party = findPartyById(partyId);
+        if (party.getIsRecruiting()) {
+            party.changeRecruitmentState(false);
+        } else if(!party.getIsRecruiting()) {
+            party.changeRecruitmentState(true);
+        }
+        return new TogglePartyRecruitmentRes(party.getIsRecruiting());
+    }
+
+    public void isRecruiting(Party party) throws BaseException {
+        if(!party.getIsRecruiting()) {
+            throw new BaseException(NOT_RECRUITING);
+        }
     }
 
     // 사용자 관심사 기반 모임 목록 불러오기 (가입한 모임, 차단한 모임 제외)
