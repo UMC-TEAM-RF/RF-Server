@@ -20,8 +20,8 @@ public class PostPartyRes {
     private Language language;
     private String imageFilePath;
     private PreferAges preferAges;
-    private Integer memberCount;
-    private Integer nativeCount;
+    private int memberCount;
+    private int nativeCount;
     private Long ownerId;
     private List<Rule> rules;
     private List<Interest> interests;
