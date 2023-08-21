@@ -1,9 +1,7 @@
 package org.rf.rfserver.config.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -72,4 +68,9 @@ public class S3Uploader {
         }
         return Optional.empty();
     }
+    //S3 이미지 URL을 가져오는 함수
+    public String bannerImageFiles(String path){
+        return amazonS3Client.getUrl(bucket, path).toString();
+    }
+
 }
