@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 REPOSITORY=/home/ubuntu/rfServerProject/content
+JAVA_PATH=/home/ubuntu/.sdkman/candidates/java/current/bin/java
 cd $REPOSITORY
 
 APP_NAME=rfserver
@@ -11,9 +12,6 @@ ERROR_LOG="$REPOSITORY/error.log"
 DEPLOY_LOG="$REPOSITORY/deploy.log"
 
 TIME_NOW=$(date +%c)
-
-JAVA_PATH=$(which java)
-echo "$JAVA_PATH"
 
 CURRENT_PID=$(pgrep -f $APP_NAME)
 

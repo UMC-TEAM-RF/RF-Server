@@ -118,6 +118,15 @@ public class PartyController {
         }
     }
 
+     @GetMapping("/toggle/{partyId}")
+    public BaseResponse<TogglePartyRecruitmentRes> togglePartyRecruitment(@PathVariable Long partyId) {
+        try {
+            return new BaseResponse<>(partyService.togglePartyRecruitment(partyId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
     // 사용자 관심사 기반 모임 목록 불러오기
     @GetMapping("/user/{userId}/interests")
     public BaseResponse<PageDto<List<GetInterestPartyRes>>> getPartiesByUserInterests(@PathVariable("userId") Long userId, Pageable pageable) {
@@ -128,13 +137,4 @@ public class PartyController {
         }
     }
 
-    // 모임 이름 검색
-    @GetMapping("/find/{name}")
-    public BaseResponse<PageDto<List<GetPartyRes>>> searchParty(@PathVariable("name") String name, Pageable pageable) {
-        try {
-            return new BaseResponse<>(partyService.searchParty(name, pageable));
-        } catch (BaseException e) {
-            return new BaseResponse<>(e.getStatus());
-        }
-    }
 }

@@ -1,4 +1,4 @@
-name: Build and Deploy to AWS EC2
+name: Deploy to EC2
 
 on:
   push:
@@ -45,14 +45,17 @@ jobs:
       uses: gradle/gradle-build-action@v2
       
     - name: Build with Gradle
-      run: ./gradlew build -Dspring.config.location=./config/application.yml
+      run: ./gradlew clean build
       shell: bash
       
     - name: Make Zip File
       run: |
         mkdir content
+        mkdir content/config
+        mkdir content/config/apnsAuthKey
         mv ./build/libs/*.jar ./content/
-        zip buildFile.zip ./appspec.yml ./content/*.jar ./scripts/deploy.sh
+        mv ./config/apnsAuthKey/*.p8 ./content/config/apnsAuthKey/
+        zip buildFile.zip ./appspec.yml ./content/*.jar ./scripts/deploy.sh ./content/config/apnsAuthKey/*.p8
       shell: bash
       
     - name: Configure AWS credentials
@@ -75,17 +78,3 @@ jobs:
           --deployment-config-name CodeDeployDefault.OneAtATime \
           --deployment-group-name $DEPLOYMENT_GROUP_NAME \
           --s3-location bucket=$BUCKET_NAME,key=$PROJECT_NAME/buildFile.zip,bundleType=zip
-          
-    - name: Sleep for 15 seconds
-      run: sleep 15
-      shell: bash
-
-    - name: Deploy in AWS EC2
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{secrets.EC2_HOST}}
-        username: ${{secrets.SSH_USERNAME}}
-        key: ${{secrets.SSH_KEY}}
-        script: |
-          cd ${{secrets.EC2_SCRIPTS_PATH}}
-          sudo ./deploy.sh
