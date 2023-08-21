@@ -49,6 +49,15 @@ public class PartyController {
         }
     }
 
+    @PatchMapping("/{partyId}")
+    public BaseResponse<PatchPartyRes> getParty(@PathVariable("partyId") Long partyId, @RequestBody PatchPartyReq patchPartyReq) {
+        try {
+            return new BaseResponse<>(partyService.updateParty(partyId, patchPartyReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
     @DeleteMapping("/{partyId}")
     public BaseResponse<DeletePartyRes> deleteParty(@PathVariable("partyId") Long partyId) {
         try {

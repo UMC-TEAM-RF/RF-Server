@@ -47,7 +47,6 @@ public class PartyService {
     private final PartyJoinApplicationRepository partyJoinApplicationRepository;
     private final S3Uploader s3Uploader;
 
-
     public PostPartyRes createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
         try {
             User user = userService.findUserById(postPartyReq.getOwnerId());
@@ -86,7 +85,7 @@ public class PartyService {
     public void addOwnerToParty(User user, Party party) {
         UserParty userParty = new UserParty(party, user);
         userPartyRepository.save(userParty);
-        if(userService.isKorean(user)) {
+        if (userService.isKorean(user)) {
             party.plusCurrentNativeCount();
         }
     }
@@ -116,6 +115,11 @@ public class PartyService {
                 .build();
     }
 
+    public PatchPartyRes updateParty(Long partyId, PatchPartyReq patchPartyReq) throws BaseException {
+        Party party = findPartyById(partyId);
+        party.updateParty(patchPartyReq);
+        return new PatchPartyRes(true);
+    }
 
     public DeletePartyRes deleteParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
@@ -149,6 +153,8 @@ public class PartyService {
 
     public void joinValidation(Party party, User user) throws BaseException {
         isFullParty(party);
+        if (userService.isKorean(user)) {
+            isFullOfKorean(party);
         if(userService.isKorean(user)) {
             if (isFullOfKorean(party)) {
                 throw new BaseException(FULL_OF_KOREAN);
@@ -165,16 +171,15 @@ public class PartyService {
         return false;
     }
 
-    public boolean isFullOfKorean(Party party) {
+    public void isFullOfKorean(Party party) throws BaseException {
         if(party.getNativeCount() <= party.getCurrentNativeCount()) {
-            return true;
+            throw new BaseException(FULL_OF_KOREAN);
         }
-        return false;
     }
 
     public void isJoinedUser(User user, Party party) throws BaseException {
-        for (UserParty userParty : party.getUsers() ) {
-            if(userParty.getUser() == user) {
+        for (UserParty userParty : party.getUsers()) {
+            if (userParty.getUser() == user) {
                 throw new BaseException(INVALID_JOIN_APPLICATION);
             }
         }
@@ -265,6 +270,7 @@ public class PartyService {
 
     /**
      * 클라이언트가 속한 그룹 리스트를 조회 서비스
+     *
      * @param userId
      * @return List[GetPartyRes]
      * @throws BaseException
