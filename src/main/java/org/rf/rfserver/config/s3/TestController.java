@@ -1,7 +1,6 @@
 package org.rf.rfserver.config.s3;
 
 import lombok.RequiredArgsConstructor;
-import org.rf.rfserver.config.s3.S3Uploader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
