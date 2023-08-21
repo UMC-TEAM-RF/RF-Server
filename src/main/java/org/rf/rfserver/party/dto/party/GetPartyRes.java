@@ -20,8 +20,8 @@ public class GetPartyRes {
     private String imageFilePath;
     private PreferAges preferAges;
     private LocalDateTime createdDate;
-    private Integer memberCount;
-    private Integer nativeCount;
+    private int memberCount;
+    private int nativeCount;
     private Boolean isRecruiting;
     private Long ownerId;
     private List<Rule> rules;

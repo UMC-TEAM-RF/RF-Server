@@ -8,13 +8,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+
 public class GetInterestPartyRes {
     private Long id;
     private String name;
     private String content;
     private String imageFilePath;
     private LocalDateTime createdDate;
-    private Integer memberCount;
+    private int memberCount;
     private Long ownerId;
     private List<Interest> interests;
 
