@@ -350,7 +350,7 @@ public class PartyService {
     }
     public void sendDenyJoinPush(Long userId, String userName, Long partyId, String partyName) {
         apnsService.sendPush(new PushDto(PushNotificationType.DENY, userId, PushNotificationType.DENY.getValue(), partyName, userName + "친구, 다음 기회에 만나요.", partyId));
-
+    }
     // 모임 검색 + 필터링
     public PageDto<List<GetPartyRes>> searchPartyByFilter(
             Long userId, String name, Boolean isRecruiting, PreferAges preferAges,
@@ -388,6 +388,8 @@ public class PartyService {
     public EjectUserRes ejectUser(EjectUserReq ejectUserReq) throws BaseException {
         isOwner(ejectUserReq.getOwnerId(), ejectUserReq.getPartyId());
         leaveParty(ejectUserReq.getUserId(), ejectUserReq.getPartyId());
+        // redis partyIduserId 데이터베이스에서 userId 제거
+        partyidUseridService.deleteUseridFromPartyid(ejectUserReq.getPartyId(), ejectUserReq.getUserId());
         return new EjectUserRes(true);
     }
 
