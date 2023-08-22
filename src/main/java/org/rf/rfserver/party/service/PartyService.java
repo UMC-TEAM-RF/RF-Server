@@ -323,13 +323,13 @@ public class PartyService {
         }
     }
 
-    // 사용자 관심사 기반 모임 목록 불러오기 (가입한 모임, 차단한 모임 제외)
-    public PageDto<List<GetInterestPartyRes>> getPartiesByUserInterests(Long userId, Pageable pageable) throws BaseException {
+    // 사용자 관심사 기반 [단체 모임] 목록 불러오기 (가입한 모임, 차단한 모임 제외 / 같은 대학교 유저가 생성한 모임만 조회 가능)
+    public PageDto<List<GetInterestPartyRes>> recommendGroupParties(Long userId, Pageable pageable) throws BaseException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 
         List<Interest> interests = user.getUserInterests();
-        Page<Party> parties = partyRepository.findInterestParties(interests, userId, pageable);
+        Page<Party> parties = partyRepository.recommendGroupParties(interests, userId, pageable);
 
         return new PageDto<>(parties.getNumber(), parties.getTotalPages(), parties.stream()
                 .map(party -> GetInterestPartyRes.builder()
@@ -383,6 +383,26 @@ public class PartyService {
                         .schedules(party.getSchedules())
                         .interests(party.getInterests())
                         .rules(party.getRules())
+                        .build())
+                .collect(Collectors.toList()));
+    }
+
+    // 사용자 관심사 기반 [1:1(개인)] 모임 목록 불러오기 (가입한 모임, 차단한 모임 제외 / 같은 대학교 유저가 생성한 모임만 조회 가능)
+    public PageDto<List<GetInterestPartyRes>> recommendPersonalParties(Long userId, Pageable pageable) throws BaseException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
+        List<Interest> interests = user.getUserInterests();
+        Page<Party> parties = partyRepository.recommendPersonalParties(interests, userId, pageable);
+
+        return new PageDto<>(parties.getNumber(), parties.getTotalPages(), parties.stream()
+                .map(party -> GetInterestPartyRes.builder()
+                        .id(party.getId())
+                        .name(party.getName())
+                        .content(party.getContent())
+                        .imageFilePath(party.getImageFilePath())
+                        .memberCount(party.getMemberCount())
+                        .ownerId(party.getOwnerId())
                         .build())
                 .collect(Collectors.toList()));
     }
