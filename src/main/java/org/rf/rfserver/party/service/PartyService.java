@@ -6,7 +6,7 @@ import org.rf.rfserver.apns.dto.PushDto;
 import org.rf.rfserver.apns.service.ApnsService;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.s3.S3Uploader;
-
+import org.rf.rfserver.constant.Banner;
 import org.rf.rfserver.constant.Interest;
 import org.rf.rfserver.constant.PushNotificationType;
 import org.rf.rfserver.constant.PreferAges;
@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
@@ -56,7 +57,7 @@ public class PartyService {
     public PostPartyRes createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
         try {
             User user = userService.findUserById(postPartyReq.getOwnerId());
-            Party party = partyRepository.save(Party.builder()
+            Party party = Party.builder()
                     .name(postPartyReq.getName())
                     .content(postPartyReq.getContent())
                     .location(postPartyReq.getLocation())
@@ -68,14 +69,21 @@ public class PartyService {
                     .ownerId(postPartyReq.getOwnerId())
                     .rules(postPartyReq.getRules())
                     .interests(postPartyReq.getInterests())
-                    .build());
+                    .build();
             addOwnerToParty(user, party);
+
             //file 비어있는지 체크
-            if (file != null) {
-                String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
+            String imageFilePath;
+            if(file != null){
+                imageFilePath = s3Uploader.fileUpload(file, "partyImage");
                 party.updateImageUrl(imageFilePath);
             }
-            return new PostPartyRes(party.getId(), postPartyReq);
+            if (file == null){
+                imageFilePath = s3Uploader.getImageFilePath(Banner.getRandomBanner().getUrl());
+                party.updateImageUrl(imageFilePath);
+            }
+            partyRepository.save(party);
+            return new PostPartyRes(party.getId(), postPartyReq, party.getImageFilePath());
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
@@ -161,6 +169,7 @@ public class PartyService {
         }
         userService.isExceededPartyCount(user);
         isJoinedUser(user, party);
+        }
     }
 
     public boolean isFullParty(Party party) {

@@ -26,13 +26,13 @@ public class PostPartyRes {
     private List<Rule> rules;
     private List<Interest> interests;
 
-    public PostPartyRes(Long partyId, PostPartyReq postPartyReq) {
+    public PostPartyRes(Long partyId, PostPartyReq postPartyReq, String imageFilePath) {
         this.partyId = partyId;
         this.name = postPartyReq.getName();
         this.content = postPartyReq.getContent();
         this.location = postPartyReq.getLocation();
         this.language = postPartyReq.getLanguage();
-        this.imageFilePath = postPartyReq.getImageFilePath();
+        this.imageFilePath = imageFilePath;
         this.preferAges = postPartyReq.getPreferAges();
         this.memberCount = postPartyReq.getMemberCount();
         this.nativeCount = postPartyReq.getNativeCount();
