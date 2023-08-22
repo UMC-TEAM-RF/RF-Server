@@ -14,11 +14,20 @@ import java.util.Set;
 public class PartyidUseridService {
     private final PartyidUseridRepository partyidUseridRepository;
     public Boolean setPartyidUserid(Long partyId, Long userId) {
-        PartyidUserid partyidUserid = partyidUseridRepository.findById(partyId)
-                .orElse(new PartyidUserid(partyId, new HashSet<>()));
-        partyidUserid.getUserIds().add(userId);
-        partyidUseridRepository.save(partyidUserid);
-        return true;
+        try {
+            PartyidUserid partyidUserid = partyidUseridRepository.findById(partyId)
+                    .orElse(new PartyidUserid(partyId, new HashSet<>()));
+            partyidUserid.getUserIds().add(userId);
+            partyidUseridRepository.save(partyidUserid);
+            return true;
+
+        } catch (Exception e) {
+            PartyidUserid partyidUserid = new PartyidUserid(partyId, new HashSet<>());
+            partyidUserid.getUserIds().add(userId);
+            partyidUseridRepository.save(partyidUserid);
+            return true;
+
+        }
     }
     public Set<Long> getUserids(Long partyId){
         PartyidUserid partyidUserid = partyidUseridRepository.findById(partyId)

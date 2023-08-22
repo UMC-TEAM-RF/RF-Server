@@ -11,10 +11,8 @@ import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.dto.sign.LoginReq;
 import org.rf.rfserver.user.dto.sign.LoginRes;
 import org.rf.rfserver.user.service.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

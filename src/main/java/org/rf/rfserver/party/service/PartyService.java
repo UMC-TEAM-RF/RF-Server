@@ -88,7 +88,7 @@ public class PartyService {
         }
     }
 
-    public void addOwnerToParty(User user, Party party) {
+    public void addOwnerToParty(User user, Party party) throws BaseException {
         makeUserParty(user, party);
         if (userService.isKorean(user)) {
             party.plusCurrentNativeCount();
@@ -178,11 +178,11 @@ public class PartyService {
         return false;
     }
 
-    public Boolean isFullOfKorean(Party party) throws BaseException {
+    public Boolean isFullOfKorean(Party party) {
         if(party.getNativeCount() <= party.getCurrentNativeCount()) {
             return true;
         }
-        throw new BaseException(FULL_OF_KOREAN);
+       return false;
     }
 
     public void isJoinedUser(User user, Party party) throws BaseException {
@@ -211,7 +211,7 @@ public class PartyService {
         return new PostApproveJoinRes(partyJoinApplicationId);
     }
 
-    public void makeUserParty(User user, Party party) {
+    public void makeUserParty(User user, Party party) throws BaseException {
         UserParty userParty = new UserParty(party, user);
         userPartyRepository.save(userParty);
         partyidUseridService.setPartyidUserid(party.getId(), user.getId());
