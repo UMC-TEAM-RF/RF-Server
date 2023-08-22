@@ -28,6 +28,7 @@ public enum BaseResponseStatus {
     DUPLICATED_LOGIN_ID(false, 2012, "해당 아이디가 이미 존재합니다. 다른 아이디를 사용해주세요"),
     INVALID_TOKEN(false, 2013, "유효하지 않은 토큰입니다."),
     INVALID_LOGIN_IR_OR_PASSWORD(false, 2014, "아이디 또는 비밀번호가 일치하지 않습니다"),
+    NOT_OWNER(false, 2015, "모임장이 아니면 강퇴할 수 없습니다"),
 
 
     /**

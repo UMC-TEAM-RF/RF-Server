@@ -13,21 +13,25 @@ import org.rf.rfserver.user.dto.sign.LoginRes;
 import org.rf.rfserver.user.service.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
-    @PostMapping()
-    public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
+
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public BaseResponse<PostUserRes> createUser(@RequestPart("postUserReq") PostUserReq postUserReq, @RequestPart(value = "file", required = false) MultipartFile file) {
         try {
-            return new BaseResponse<>(userService.createUser(postUserReq));
+            return new BaseResponse<>(userService.createUser(postUserReq, file));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
     @GetMapping("/{userId}")
     public BaseResponse<GetUserRes> getUser(@PathVariable("userId") Long userId) {
         try {
@@ -38,9 +42,9 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public BaseResponse<PatchUserRes> updateUser(@PathVariable("userId") Long userId, @RequestBody PatchUserReq patchUserReq) {
+    public BaseResponse<PatchUserRes> updateUser(@PathVariable("userId") Long userId, @RequestPart PatchUserReq patchUserReq, @RequestPart(value = "file", required = false) MultipartFile file) {
         try {
-            return new BaseResponse<>(userService.updateUser(userId, patchUserReq));
+            return new BaseResponse<>(userService.updateUser(userId, patchUserReq, file));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

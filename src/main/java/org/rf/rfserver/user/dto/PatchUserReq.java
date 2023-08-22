@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class PatchUserReq {
     private String nickName = null;
     private String password = null;

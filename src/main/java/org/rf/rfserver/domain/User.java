@@ -90,6 +90,10 @@ public class User extends BaseEntity implements UserDetails {
         return this;
     }
 
+    public void updateImageUrl(String imageFilePath){
+        this.imageFilePath = imageFilePath;
+    }
+
     public boolean isMoreThanLimitedPartyNumber() {
         if (userParties.size() > MAX_PARTY_NUMBER) {
             return true;
