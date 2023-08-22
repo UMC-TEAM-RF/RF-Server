@@ -6,6 +6,7 @@ import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.s3.S3Uploader;
 
 import org.rf.rfserver.constant.Interest;
+import org.rf.rfserver.constant.PreferAges;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
@@ -45,6 +46,7 @@ public class PartyService {
     private final UserPartyRepository userPartyRepository;
     private final PartyJoinApplicationRepository partyJoinApplicationRepository;
     private final S3Uploader s3Uploader;
+
 
     public PostPartyRes createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
         try {
@@ -324,6 +326,41 @@ public class PartyService {
                         .imageFilePath(party.getImageFilePath())
                         .memberCount(party.getMemberCount())
                         .ownerId(party.getOwnerId())
+                        .build())
+                .collect(Collectors.toList()));
+    }
+
+
+    // 모임 검색 + 필터링
+    public PageDto<List<GetPartyRes>> searchPartyByFilter(
+            Long userId, String name, Boolean isRecruiting, PreferAges preferAges,
+            Integer partyMembersOption, List<Interest> interests,
+            Pageable pageable) throws BaseException {
+
+        Page<Party> parties = partyRepository.searchPartyByFilter(
+                userId, name, isRecruiting, preferAges,
+                partyMembersOption, interests == null ? null : interests.size(), interests,
+                pageable);
+
+        return new PageDto<>(parties.getNumber(), parties.getTotalPages(), parties.stream()
+                .map(party -> GetPartyRes.builder()
+                        .id(party.getId())
+                        .name(party.getName())
+                        .content(party.getContent())
+                        .location(party.getLocation())
+                        .isRecruiting(party.getIsRecruiting())
+                        .language(party.getLanguage())
+                        .imageFilePath(party.getImageFilePath())
+                        .preferAges(party.getPreferAges())
+                        .memberCount(party.getMemberCount())
+                        .nativeCount(party.getNativeCount())
+                        .ownerId(party.getOwnerId())
+                        .schedules(party.getSchedules())
+                        .interests(party.getInterests())
+                        .userProfiles(userService.getUserProfiles(party.getUsers()))
+                        .schedules(party.getSchedules())
+                        .interests(party.getInterests())
+                        .rules(party.getRules())
                         .build())
                 .collect(Collectors.toList()));
     }
