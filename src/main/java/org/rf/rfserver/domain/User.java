@@ -109,5 +109,25 @@ public class User extends BaseEntity{
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void increaseLike() {
+        this.love++;
+    }
+
+    public void decreaseLike() {
+        if(this.love > 0) {
+            this.love--;
+        }
+    }
+
+    public void increaseHate() {
+        this.hate++;
+    }
+
+    public void decreaseHate() {
+        if(this.hate > 0) {
+            this.hate--;
+        }
+    }
 }
 
