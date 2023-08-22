@@ -152,7 +152,7 @@ public class PartyController {
     // 모임 검색 + 필터링
     @GetMapping("/search")
     public BaseResponse<PageDto<List<GetPartyRes>>> searchParties(
-            @RequestParam(value = "userId", required = false) Long userId,
+            @RequestParam(value = "userId", required = true) Long userId,
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "isRecruiting", required = false) Boolean isRecruiting,
             @RequestParam(value = "preferAges", required = false) PreferAges preferAges,
