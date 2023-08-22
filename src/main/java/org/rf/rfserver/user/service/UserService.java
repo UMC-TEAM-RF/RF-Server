@@ -40,7 +40,7 @@ public class UserService {
     private final RefreshTokenService refreshTokenService;
     private final S3Uploader s3Uploader;
 
-    public PostUserRes createUser(PostUserReq postUserReq, MultipartFile file) throws BaseException {
+    public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
         isDuplicatedLoginId(postUserReq.getLoginId());
         User user = User.builder()
                 .loginId(postUserReq.getLoginId())
@@ -58,15 +58,15 @@ public class UserService {
                 .lifeStyle(postUserReq.getLifeStyle())
                 .build();
         try {
-            if(file != null) {
-                String imageFilePath = s3Uploader.fileUpload(file, "userImage");
-                user.updateImageUrl(imageFilePath);
-            }
+            String imageFilePath = s3Uploader.getImageFilePath("userDefault/defaultImage.jpg");
+            user.updateImageUrl(imageFilePath);
             userRepository.save(user);
+            System.out.println(imageFilePath);
             return new PostUserRes(user.getId());
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
+
     }
 
     public GetUserRes getUser(Long userId) throws BaseException{

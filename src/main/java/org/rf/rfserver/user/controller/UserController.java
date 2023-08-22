@@ -23,10 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public BaseResponse<PostUserRes> createUser(@RequestPart("postUserReq") PostUserReq postUserReq, @RequestPart(value = "file", required = false) MultipartFile file) {
+    @PostMapping
+    public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
         try {
-            return new BaseResponse<>(userService.createUser(postUserReq, file));
+            return new BaseResponse<>(userService.createUser(postUserReq));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

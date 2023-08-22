@@ -34,7 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
@@ -169,10 +168,10 @@ public class PartyService {
         }
         userService.isExceededPartyCount(user);
         isJoinedUser(user, party);
-        }
     }
 
-    public boolean isFullParty(Party party) {
+
+    public Boolean isFullParty(Party party) {
         if (party.getUsers().size() >= party.getMemberCount()) {
             return true;
         }
