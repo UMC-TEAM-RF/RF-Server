@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ChatRepository extends JpaRepository<Chat, Long> {
-    @Query("SELECT c FROM Chat c JOIN FETCH UserParty up ON c.party = up.party WHERE c.id > :chatId AND up.user = :user")
+    @Query("SELECT c FROM Chat c JOIN FETCH UserParty up ON c.partyId = up.party.id WHERE c.id > :chatId AND up.user = :user")
     List<Chat> findChatsByIdAfterAndUserPartiesContainUser(Long chatId, User user);
     @Transactional
     void deleteChatsByCreatedAtBefore(LocalDateTime dateTime);

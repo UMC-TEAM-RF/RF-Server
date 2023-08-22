@@ -2,9 +2,12 @@ package org.rf.rfserver.party.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.rf.rfserver.apns.dto.PushDto;
+import org.rf.rfserver.apns.service.ApnsService;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.s3.S3Uploader;
 import org.rf.rfserver.constant.Interest;
+import org.rf.rfserver.constant.PushNotificationType;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
@@ -14,6 +17,7 @@ import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
 import org.rf.rfserver.party.repository.PartyJoinApplicationRepository;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
+import org.rf.rfserver.redisDomain.partyidUserid.service.PartyidUseridService;
 import org.rf.rfserver.user.dto.GetUserProfileRes;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.rf.rfserver.user.service.UserService;
@@ -44,7 +48,8 @@ public class PartyService {
     private final UserPartyRepository userPartyRepository;
     private final PartyJoinApplicationRepository partyJoinApplicationRepository;
     private final S3Uploader s3Uploader;
-
+    private final PartyidUseridService partyidUseridService;
+    private final ApnsService apnsService;
 
     public PostPartyRes createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
         try {
@@ -75,8 +80,7 @@ public class PartyService {
     }
 
     public void addOwnerToParty(User user, Party party) {
-        UserParty userParty = new UserParty(party, user);
-        userPartyRepository.save(userParty);
+        makeUserParty(user, party);
         if(userService.isKorean(user)) {
             party.plusCurrentNativeCount();
         }
@@ -134,6 +138,7 @@ public class PartyService {
         joinValidation(party, user);
         PartyJoinApplication partyJoinApplication = new PartyJoinApplication(user, party);
         partyJoinApplicationRepository.save(partyJoinApplication);
+        sendJoinApplyPush(party.getOwnerId(), user.getNickName(), party.getId(), party.getName());
         return new PostJoinApplicationRes(partyJoinApplication.getId());
     }
 
@@ -178,15 +183,20 @@ public class PartyService {
             party.plusCurrentNativeCount();
         }
         deletePartyJoinApplication(partyJoinApplicationId);
+        sendApproveJoinPush(user.getId(), user.getNickName(), party.getId(), party.getName());
         return new PostApproveJoinRes(partyJoinApplicationId);
     }
 
     public void makeUserParty(User user, Party party) {
         UserParty userParty = new UserParty(party, user);
         userPartyRepository.save(userParty);
+        partyidUseridService.setPartyidUserid(party.getId(), user.getId());
     }
 
     public PostDenyJoinRes denyJoin(Long partyJoinApplicationId) throws BaseException {
+        PartyJoinApplication partyJoinApplication = partyJoinApplicationRepository.findById(partyJoinApplicationId)
+                .orElseThrow();
+        sendDenyJoinPush(partyJoinApplication.getUser().getId(), partyJoinApplication.getUser().getNickName(), partyJoinApplication.getParty().getId(), partyJoinApplication.getParty().getName());
         deletePartyJoinApplication(partyJoinApplicationId);
         return new PostDenyJoinRes(partyJoinApplicationId);
     }
@@ -216,6 +226,9 @@ public class PartyService {
 
         // 사용자와 모임 연결 제거
         userPartyRepository.delete(userParty);
+
+        // redis partyIduserId 데이터베이스에서 userId 제거
+        partyidUseridService.deleteUseridFromPartyid(partyId, userId);
 
         return LeavePartyRes.builder()
                 .userId(userId)
@@ -293,5 +306,16 @@ public class PartyService {
                         .ownerId(party.getOwnerId())
                         .build())
                 .collect(Collectors.toList()));
+    }
+
+    public void sendJoinApplyPush(Long userId, String userName, Long partyId, String partyName) {
+        apnsService.sendPush(new PushDto(PushNotificationType.APPLY, userId, PushNotificationType.APPLY.getValue(), partyName, userName + "친구가 가입을 원해요.", partyId));
+    }
+
+    public void sendApproveJoinPush(Long userId, String userName, Long partyId, String partyName) {
+        apnsService.sendPush(new PushDto(PushNotificationType.APPROVE, userId, PushNotificationType.APPROVE.getValue(), partyName, userName + "친구, 가입을 환영해요.", partyId));
+    }
+    public void sendDenyJoinPush(Long userId, String userName, Long partyId, String partyName) {
+        apnsService.sendPush(new PushDto(PushNotificationType.DENY, userId, PushNotificationType.DENY.getValue(), partyName, userName + "친구, 다음 기회에 만나요.", partyId));
     }
 }
