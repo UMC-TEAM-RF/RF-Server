@@ -4,8 +4,12 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.rf.rfserver.constant.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.rf.rfserver.constant.RfRule.*;
@@ -13,7 +17,7 @@ import static org.rf.rfserver.constant.RfRule.*;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseEntity{
+public class User extends BaseEntity implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,6 +40,7 @@ public class User extends BaseEntity{
     private String imageUrl;
     private Boolean isEmailVerified;
     private String imageFilePath;
+    private String deviceToken;
 
     @Enumerated(EnumType.STRING)
     private List<Country> interestCountries;
@@ -89,12 +94,17 @@ public class User extends BaseEntity{
         this.imageFilePath = imageFilePath;
     }
 
-    public boolean isMoreThanFiveParties() {
-        if (userParties.size() > maxPartyNumber) {
+    public boolean isMoreThanLimitedPartyNumber() {
+        if (userParties.size() > MAX_PARTY_NUMBER) {
             return true;
         }
         return false;
     }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
+
 
     public void addUserParty(UserParty userParty) {
         this.userParties.add(userParty);
@@ -104,6 +114,41 @@ public class User extends BaseEntity{
     public void removeUserParty(UserParty userParty) {
         this.userParties.remove(userParty);
         userParty.setUser(null);
+    }
+
+    @Override //사용자가 가지고 있는 권한의 목록 반환
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("user"));
+    }
+
+    @Override //사용자를 식별할 수 있는 사용자 이름을 반환
+    public String getUsername() {
+        return loginId;
+    }
+
+    @Override // 사용자 비밀번호 반환
+    public String getPassword() {
+        return password;
+    }
+
+    @Override // 계정이 만료되었는지
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override //계정이 잠금 되었는지
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override //비밀번호가 만료 되었는지
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override // 사용 가능한지
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setPassword(String password) {

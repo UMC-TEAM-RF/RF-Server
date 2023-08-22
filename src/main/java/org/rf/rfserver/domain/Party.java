@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 import org.rf.rfserver.constant.*;
 import org.rf.rfserver.party.dto.party.PatchPartyReq;
 
-
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Getter
 @Entity
@@ -88,7 +88,11 @@ public class Party extends BaseEntity{
     }
 
     public void changeRecruitmentState(Boolean toggle) {
-        isRecruiting = toggle;
+        if(toggle == true) {
+            isRecruiting = true;
+        } else if(toggle == true) {
+            isRecruiting = false;
+        }
     }
 
     public void addUserParty(UserParty userParty) {

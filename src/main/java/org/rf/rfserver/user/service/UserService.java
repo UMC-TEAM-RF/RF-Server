@@ -3,7 +3,7 @@ package org.rf.rfserver.user.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
-import org.rf.rfserver.domain.*;
+import org.rf.rfserver.config.jwt.TokenProvider;
 import org.rf.rfserver.mail.dto.PostResetPasswordReq;
 import org.rf.rfserver.mail.dto.PostResetPasswordRes;
 import org.rf.rfserver.mail.service.MailService;
@@ -12,16 +12,21 @@ import org.rf.rfserver.constant.Country;
 import org.rf.rfserver.domain.User;
 import org.rf.rfserver.domain.UserParty;
 
+import org.rf.rfserver.sign.service.RefreshTokenService;
 import org.rf.rfserver.user.dto.*;
+import org.rf.rfserver.user.dto.sign.LoginReq;
+import org.rf.rfserver.user.dto.sign.LoginRes;
 import org.rf.rfserver.user.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
+import static org.rf.rfserver.constant.RfRule.*;
 import static org.rf.rfserver.constant.MailMessage.FIND_ID;
 import static org.rf.rfserver.constant.MailMessage.RESET_PASSWORD;
 
@@ -29,13 +34,17 @@ import static org.rf.rfserver.constant.MailMessage.RESET_PASSWORD;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final S3Uploader s3Uploader;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final TokenProvider tokenProvider;
     private final MailService mailService;
+    private final RefreshTokenService refreshTokenService;
+    private final S3Uploader s3Uploader;
+
     public PostUserRes createUser(PostUserReq postUserReq, MultipartFile file) throws BaseException {
         isDuplicatedLoginId(postUserReq.getLoginId());
         User user = User.builder()
                 .loginId(postUserReq.getLoginId())
-                .password(postUserReq.getPassword())
+                .password(bCryptPasswordEncoder.encode(postUserReq.getPassword()))
                 .entrance(postUserReq.getEntrance())
                 .university(postUserReq.getUniversity())
                 .nickName(postUserReq.getNickName())
@@ -112,7 +121,7 @@ public class UserService {
     }
 
     public void isExceededPartyCount(User user) throws BaseException {
-        if (user.isMoreThanFiveParties()) {
+        if (user.isMoreThanLimitedPartyNumber()) {
             throw new BaseException(EXCEEDED_PARTY_COUNT);
         }
     }
@@ -206,6 +215,31 @@ public class UserService {
             userIds.add(userParty.getUser().getId());
         }
         return userRepository.getUserProfilesByUserParties(userIds);
+    }
+
+    public LoginRes login(LoginReq loginReq) throws BaseException {
+        User user = userRepository.findByLoginId(loginReq.getLoginId())
+                .filter(it -> bCryptPasswordEncoder.matches(loginReq.getPassword(), it.getPassword()))	// 암호화된 비밀번호와 비교하도록 수정
+                .orElseThrow(() -> new BaseException(INVALID_LOGIN_IR_OR_PASSWORD));
+        String accessToken = tokenProvider.generateToken(user, Duration.ofHours(ACCESS_TOKEN_EXPIRATION));
+        String refreshToken = tokenProvider.generateToken(user, Duration.ofDays(REFRESH_TOKEN_EXPIRATION));
+        refreshTokenService.saveRefreshToken(user.getId(), refreshToken);
+        user.setDeviceToken(loginReq.getDeviceToken());
+        return LoginRes.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .nickName(user.getNickName())
+                .university(user.getUniversity())
+                .interestingLanguages(user.getInterestingLanguages())
+                .introduce(user.getIntroduce())
+                .country(user.getCountry())
+                .mbti(user.getMbti())
+                .entrance(user.getEntrance())
+                .email(user.getEmail())
+                .interestCountries(user.getInterestCountries())
+                .interests(user.getUserInterests())
+                .lifeStyle(user.getLifeStyle())
+                .build();
     }
 
     public void isDuplicatedLoginId(String loginId) throws BaseException {

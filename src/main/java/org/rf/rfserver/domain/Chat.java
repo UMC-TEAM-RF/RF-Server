@@ -19,23 +19,25 @@ public class Chat extends BaseEntity{
     private MessageType type;
 //    private boolean checked;
 
-    @ManyToOne(fetch = LAZY)
-    private User speaker;
+    private Long speakerUserId;
+    private String speakerUserName;
+    private String speakerUserImageUrl;
 
-    @ManyToOne(fetch = LAZY)
-    private User victim;
+    private Long victimUserId;
+    private String victimUserName;
+    private String victimUserImageUrl;
 
-    @ManyToOne(fetch = LAZY)
-    private Party party;
+    private Long partyId;
+    private String partyName;
 
     private Long replyAtChatId;
     @ManyToOne(fetch = LAZY)
     private Schedule schedule;
-    public Chat(String content, MessageType type, User speaker, Party party) {
+    public Chat(String content, MessageType type, Long speakerUserId, Long partyId) {
         this.content = content;
         this.type = type;
-        this.speaker = speaker;
-        this.party = party;
+        this.speakerUserId = speakerUserId;
+        this.partyId = partyId;
     }
     public Chat setReplyAtChatId(Long replyAtChatId) {
         this.replyAtChatId = replyAtChatId;
@@ -45,8 +47,8 @@ public class Chat extends BaseEntity{
         this.schedule = schedule;
         return this;
     }
-    public Chat setVictim(User victim) {
-        this.victim = victim;
+    public Chat setVictim(Long victimUserId) {
+        this.victimUserId = victimUserId;
         return this;
     }
 }

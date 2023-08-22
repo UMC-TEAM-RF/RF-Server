@@ -26,7 +26,9 @@ public enum BaseResponseStatus {
     FULL_OF_KOREAN(false, 2010, "해당 모임에 가입할 수 있는 한국인 인원이 초과되었습니다."),
     NOT_RECRUITING(false, 2011, "해당 모임은 모집마감 상태입니다."),
     DUPLICATED_LOGIN_ID(false, 2012, "해당 아이디가 이미 존재합니다. 다른 아이디를 사용해주세요"),
-    NOT_OWNER(false, 2013, "모임장이 아니면 강퇴할 수 없습니다"),
+    INVALID_TOKEN(false, 2013, "유효하지 않은 토큰입니다."),
+    INVALID_LOGIN_IR_OR_PASSWORD(false, 2014, "아이디 또는 비밀번호가 일치하지 않습니다"),
+    NOT_OWNER(false, 2015, "모임장이 아니면 강퇴할 수 없습니다"),
 
 
     /**
