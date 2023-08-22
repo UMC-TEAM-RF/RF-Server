@@ -9,36 +9,17 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder
 public class LoginRes {
     private String accessToken;
     private String refreshToken;
-    private String nickName;
-    private University university;
-    private List<Language> interestingLanguages;
-    private String introduce;
-    private Country country;
-    private Mbti mbti;
-    private Integer entrance;
-    private String email;
-    private List<Country> interestCountries;
-    private List<Interest> interests;
-    private LifeStyle lifeStyle;
+    private UserDemo userDemo;
 
     public LoginRes(String accessToken, String refreshToken, String nickName, University university, List<Language> interestingLanguages, String introduce,
-                    Country country, Mbti mbti, int entrance, String email, List<Country> interestCountries, List<Interest> interests, LifeStyle lifeStyle) {
+                    Country country, Mbti mbti, int entrance, String email, List<Country> interestCountries, List<Interest> interests, LifeStyle lifeStyle,
+                    String imageFilePath, Long userId) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        this.nickName = nickName;
-        this.university = university;
-        this.interestingLanguages = interestingLanguages;
-        this.introduce = introduce;
-        this.country = country;
-        this.mbti = mbti;
-        this.entrance = entrance;
-        this.email = email;
-        this.interestCountries = interestCountries;
-        this.interests = interests;
-        this.lifeStyle = lifeStyle;
+        userDemo = new UserDemo(nickName, university, interestingLanguages, introduce, country, mbti, entrance,
+                email, interestCountries, interests, lifeStyle, imageFilePath, userId);
     }
 }

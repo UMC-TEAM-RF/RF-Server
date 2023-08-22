@@ -169,7 +169,6 @@ public class PartyService {
         }
         userService.isExceededPartyCount(user);
         isJoinedUser(user, party);
-        }
     }
 
     public boolean isFullParty(Party party) {
