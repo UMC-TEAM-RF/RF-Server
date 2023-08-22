@@ -40,7 +40,7 @@ public class UserService {
     private final RefreshTokenService refreshTokenService;
     private final S3Uploader s3Uploader;
 
-    public PostUserRes createUser(PostUserReq postUserReq, MultipartFile file) throws BaseException {
+    public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
         isDuplicatedLoginId(postUserReq.getLoginId());
         User user = User.builder()
                 .loginId(postUserReq.getLoginId())
@@ -58,15 +58,15 @@ public class UserService {
                 .lifeStyle(postUserReq.getLifeStyle())
                 .build();
         try {
-            if(file != null) {
-                String imageFilePath = s3Uploader.fileUpload(file, "userImage");
-                user.updateImageUrl(imageFilePath);
-            }
+            String imageFilePath = s3Uploader.getImageFilePath("userDefault/defaultImage.jpg");
+            user.updateImageUrl(imageFilePath);
             userRepository.save(user);
+            System.out.println(imageFilePath);
             return new PostUserRes(user.getId());
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
+
     }
 
     public GetUserRes getUser(Long userId) throws BaseException{
@@ -163,7 +163,7 @@ public class UserService {
         }
     }
 
-  // 아이디 찾기
+    // 아이디 찾기
     public PostResetPasswordRes findId(PostResetPasswordReq postPasswordReq) throws BaseException {
         // 데이터베이스에서 사용자 찾기
         User user = userRepository.findByEmail(postPasswordReq.getMail())
@@ -202,7 +202,7 @@ public class UserService {
         return new PostResetPasswordRes(true, RESET_PASSWORD);
     }
 
-      public boolean isKorean(User user) {
+    public boolean isKorean(User user) {
         if (user.getCountry() == Country.KOREA) {
             return true;
         }
@@ -234,6 +234,46 @@ public class UserService {
         if(userRepository.existsUserByLoginId(loginId)) {
             throw new BaseException(DUPLICATED_LOGIN_ID);
         }
+    }
+
+    public void pressLike(Long giveUserId, Long receiveUserId) throws BaseException {
+        User giveUser = userRepository.findById(giveUserId)
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+        User receiveUser = userRepository.findById(receiveUserId)
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
+        receiveUser.increaseLike();
+        userRepository.save(receiveUser);
+    }
+
+    public void cancelLike(Long giveUserId, Long receiveUserId) throws BaseException {
+        User giveUser = userRepository.findById(giveUserId)
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+        User receiveUser = userRepository.findById(receiveUserId)
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
+        receiveUser.decreaseLike();
+        userRepository.save(receiveUser);
+    }
+
+    public void pressHate(Long giveUserId, Long receiveUserId) throws BaseException {
+        User giveUser = userRepository.findById(giveUserId)
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+        User receiveUser = userRepository.findById(receiveUserId)
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
+        receiveUser.increaseHate();
+        userRepository.save(receiveUser);
+    }
+
+    public void cancelHate(Long giveUserId, Long receiveUserId) throws BaseException {
+        User giveUser = userRepository.findById(giveUserId)
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+        User receiveUser = userRepository.findById(receiveUserId)
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
+        receiveUser.decreaseHate();
+        userRepository.save(receiveUser);
     }
 }
 
