@@ -120,16 +120,35 @@ public class PartyService {
                 .build();
     }
 
-    public PatchPartyRes updateParty(Long partyId, PatchPartyReq patchPartyReq) throws BaseException {
+    public PatchPartyRes updateParty(Long partyId, PatchPartyReq patchPartyReq, MultipartFile file) throws BaseException {
+        try{
         Party party = findPartyById(partyId);
         party.updateParty(patchPartyReq);
+        if(file != null){
+            String preImageFilePath = party.getImageFilePath();
+            String fileKey = s3Uploader.changeFileKeyPath(preImageFilePath);
+            if(fileKey.contains("partyBanner/")){
+                String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
+                party.updateImageUrl(imageFilePath);
+            } else {
+                s3Uploader.deleteFile(fileKey);
+                String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
+                party.updateImageUrl(imageFilePath);
+            }
+        }
         return new PatchPartyRes(true);
+        } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 
     public DeletePartyRes deleteParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(INVALID_PARTY));
         deleteUserParty(party.getUsers());
+        String imageFilePath = party.getImageFilePath();
+        String fileKey = s3Uploader.changeFileKeyPath(imageFilePath);
+        s3Uploader.deleteFile(fileKey);
         partyRepository.delete(party);
         return new DeletePartyRes(partyId);
     }
