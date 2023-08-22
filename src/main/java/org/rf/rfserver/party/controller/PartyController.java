@@ -5,6 +5,8 @@ import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
 
 
+import org.rf.rfserver.constant.Interest;
+import org.rf.rfserver.constant.PreferAges;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
@@ -141,6 +143,26 @@ public class PartyController {
     public BaseResponse<PageDto<List<GetInterestPartyRes>>> getPartiesByUserInterests(@PathVariable("userId") Long userId, Pageable pageable) {
         try {
             return new BaseResponse<>(partyService.getPartiesByUserInterests(userId, pageable));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+
+    // 모임 검색 + 필터링
+    @GetMapping("/search")
+    public BaseResponse<PageDto<List<GetPartyRes>>> searchParties(
+            @RequestParam(value = "userId", required = false) Long userId,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "isRecruiting", required = false) Boolean isRecruiting,
+            @RequestParam(value = "preferAges", required = false) PreferAges preferAges,
+            @RequestParam(value = "partyMembersOption", required = false) Integer partyMembersOption,
+            @RequestParam(value = "interests", required = false) List<Interest> interests,
+            Pageable pageable) {
+        try {
+            return new BaseResponse<>(partyService.searchPartyByFilter(
+                    userId, name, isRecruiting, preferAges,
+                    partyMembersOption, interests, pageable));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
