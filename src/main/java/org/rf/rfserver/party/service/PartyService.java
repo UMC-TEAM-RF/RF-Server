@@ -156,7 +156,7 @@ public class PartyService {
         isJoinedUser(user, party);
     }
 
-    public boolean isFullParty(Party party) throws BaseException {
+    public boolean isFullParty(Party party) {
         if (party.getUsers().size() >= party.getMemberCount()) {
             return true;
         }
