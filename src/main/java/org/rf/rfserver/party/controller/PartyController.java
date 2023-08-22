@@ -5,6 +5,8 @@ import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
 
 
+import org.rf.rfserver.constant.Interest;
+import org.rf.rfserver.constant.PreferAges;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
@@ -31,7 +33,7 @@ public class PartyController {
 
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public BaseResponse<PostPartyRes> createParty(@RequestPart("postPartyReq") PostPartyReq postPartyReq, @RequestPart("file") MultipartFile file) {
+    public BaseResponse<PostPartyRes> createParty(@RequestPart("postPartyReq") PostPartyReq postPartyReq, @RequestPart(value = "file",required = false) MultipartFile file) {
         try {
             return new BaseResponse<>(partyService.createParty(postPartyReq,file));
         } catch (BaseException e) {
@@ -137,12 +139,51 @@ public class PartyController {
     }
 
     // 사용자 관심사 기반 모임 목록 불러오기
-    @GetMapping("/user/{userId}/interests")
-    public BaseResponse<PageDto<List<GetInterestPartyRes>>> getPartiesByUserInterests(@PathVariable("userId") Long userId, Pageable pageable) {
+    @GetMapping("/user/{userId}/recommend/groupParty")
+    public BaseResponse<PageDto<List<GetInterestPartyRes>>> recommendGroupParties(@PathVariable("userId") Long userId, Pageable pageable) {
         try {
-            return new BaseResponse<>(partyService.getPartiesByUserInterests(userId, pageable));
+            return new BaseResponse<>(partyService.recommendGroupParties(userId, pageable));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+
+    // 모임 검색 + 필터링
+    @GetMapping("/search")
+    public BaseResponse<PageDto<List<GetPartyRes>>> searchParties(
+            @RequestParam(value = "userId", required = true) Long userId,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "isRecruiting", required = false) Boolean isRecruiting,
+            @RequestParam(value = "preferAges", required = false) PreferAges preferAges,
+            @RequestParam(value = "partyMembersOption", required = false) Integer partyMembersOption,
+            @RequestParam(value = "interests", required = false) List<Interest> interests,
+            Pageable pageable) {
+        try {
+            return new BaseResponse<>(partyService.searchPartyByFilter(
+                    userId, name, isRecruiting, preferAges,
+                    partyMembersOption, interests, pageable));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @PostMapping("/eject")
+    public BaseResponse<EjectUserRes> ejectUser(@RequestBody EjectUserReq ejectUserReq) {
+        try {
+            return new BaseResponse<>(partyService.ejectUser(ejectUserReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("/user/{userId}/recommend/personalParty")
+    public BaseResponse<PageDto<List<GetInterestPartyRes>>> recommendPersonalParties(@PathVariable("userId") Long userId, Pageable pageable) {
+        try {
+            return new BaseResponse<>(partyService.recommendPersonalParties(userId, pageable));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
 }

@@ -20,6 +20,7 @@ public class ApnsTestController {
     }
     @PostMapping("/test")
     public BaseResponse<Boolean> sendPush(@RequestBody PushDto pushDto) {
-        return new BaseResponse<>(apnsService.sendPush(pushDto));
+        apnsService.sendPush(pushDto);
+        return new BaseResponse<>(true);
     }
 }

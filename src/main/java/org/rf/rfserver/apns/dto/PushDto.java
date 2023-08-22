@@ -10,8 +10,9 @@ import org.rf.rfserver.constant.PushNotificationType;
 @AllArgsConstructor
 public class PushDto {
     private PushNotificationType type;
-    private Long userId;
+    private Long userId; // 받는 사용자 id
     private String title;
+    private String subTitle;
     private String body;
     private Long partyId; // CHAT, APPROVE 용
 }
