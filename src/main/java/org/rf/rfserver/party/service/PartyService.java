@@ -347,6 +347,8 @@ public class PartyService {
                         .imageFilePath(party.getImageFilePath())
                         .memberCount(party.getMemberCount())
                         .ownerId(party.getOwnerId())
+                        .interests(party.getInterests())
+                        .currentMemberCount(party.getUsers().size())
                         .build())
                 .collect(Collectors.toList()));
     }
@@ -411,6 +413,8 @@ public class PartyService {
                         .imageFilePath(party.getImageFilePath())
                         .memberCount(party.getMemberCount())
                         .ownerId(party.getOwnerId())
+                        .interests(party.getInterests())
+                        .currentMemberCount(party.getUsers().size())
                         .build())
                 .collect(Collectors.toList()));
     }

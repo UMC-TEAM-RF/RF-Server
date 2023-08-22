@@ -17,11 +17,13 @@ public class GetInterestPartyRes {
     private Integer memberCount;
     private Long ownerId;
     private List<Interest> interests;
+    private Integer currentMemberCount;
 
 
     @Builder
     public GetInterestPartyRes(Long id, String name, String content, String imageFilePath,
-                       LocalDateTime createdDate, int memberCount, Long ownerId, List<Interest> interests) {
+                       LocalDateTime createdDate, Integer memberCount, Long ownerId, List<Interest> interests,
+                               Integer currentMemberCount) {
         this.id = id;
         this.name = name;
         this.content = content;
@@ -30,5 +32,6 @@ public class GetInterestPartyRes {
         this.memberCount = memberCount;
         this.ownerId = ownerId;
         this.interests = interests;
+        this.currentMemberCount = currentMemberCount;
     }
 }
