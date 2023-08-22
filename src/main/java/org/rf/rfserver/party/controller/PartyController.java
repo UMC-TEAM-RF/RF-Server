@@ -5,6 +5,8 @@ import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
 
 
+import org.rf.rfserver.constant.Interest;
+import org.rf.rfserver.constant.PreferAges;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
@@ -44,6 +46,15 @@ public class PartyController {
     public BaseResponse<GetPartyRes> getParty(@PathVariable("partyId") Long partyId ) {
         try {
             return new BaseResponse<>(partyService.getParty(partyId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @PatchMapping("/{partyId}")
+    public BaseResponse<PatchPartyRes> getParty(@PathVariable("partyId") Long partyId, @RequestBody PatchPartyReq patchPartyReq) {
+        try {
+            return new BaseResponse<>(partyService.updateParty(partyId, patchPartyReq));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -117,12 +128,50 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+  
+     @GetMapping("/toggle/{partyId}")
+    public BaseResponse<TogglePartyRecruitmentRes> togglePartyRecruitment(@PathVariable Long partyId) {
+        try {
+            return new BaseResponse<>(partyService.togglePartyRecruitment(partyId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 
     // 사용자 관심사 기반 모임 목록 불러오기
     @GetMapping("/user/{userId}/interests")
     public BaseResponse<PageDto<List<GetInterestPartyRes>>> getPartiesByUserInterests(@PathVariable("userId") Long userId, Pageable pageable) {
         try {
             return new BaseResponse<>(partyService.getPartiesByUserInterests(userId, pageable));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+
+    // 모임 검색 + 필터링
+    @GetMapping("/search")
+    public BaseResponse<PageDto<List<GetPartyRes>>> searchParties(
+            @RequestParam(value = "userId", required = true) Long userId,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "isRecruiting", required = false) Boolean isRecruiting,
+            @RequestParam(value = "preferAges", required = false) PreferAges preferAges,
+            @RequestParam(value = "partyMembersOption", required = false) Integer partyMembersOption,
+            @RequestParam(value = "interests", required = false) List<Interest> interests,
+            Pageable pageable) {
+        try {
+            return new BaseResponse<>(partyService.searchPartyByFilter(
+                    userId, name, isRecruiting, preferAges,
+                    partyMembersOption, interests, pageable));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @PostMapping("/eject")
+    public BaseResponse<EjectUserRes> ejectUser(@RequestBody EjectUserReq ejectUserReq) {
+        try {
+            return new BaseResponse<>(partyService.ejectUser(ejectUserReq));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

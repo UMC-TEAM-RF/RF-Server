@@ -7,7 +7,7 @@
 |Backend|Backend|Backend, DevOps, Deploy|Backend|
 |:----:|:----:|:----:|:----:|
 |<a href="https://github.com/lxxyxin"><img src="https://avatars.githubusercontent.com/u/91695537?v=4"></a>|<a href="https://github.com/minjgziii"><img src="https://avatars.githubusercontent.com/u/104371003?v=4"></a>|<a href="https://github.com/jaewonLeeKOR"><img src="https://avatars.githubusercontent.com/u/58386334?v=4"></a>|<a href="https://github.com/kuk6933"><img src="https://avatars.githubusercontent.com/u/77862152?v=4"></a>|
-|노리|만자|망고|베어|
+|<a href="https://github.com/lxxyxin">노리 / 이예린|<a href="https://github.com/minjgziii">만자 / 김민지|<a href="https://github.com/jaewonLeeKOR"> 👑 망고 / 이재원|<a href="https://github.com/kuk6933">베어 / 오형석|
 
 ## Skills
 |Backend|Infra/DevOps|

@@ -1,6 +1,7 @@
 package org.rf.rfserver.party.repository;
 
 import org.rf.rfserver.constant.Interest;
+import org.rf.rfserver.constant.PreferAges;
 import org.rf.rfserver.domain.Party;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,7 +24,8 @@ public interface PartyRepository extends JpaRepository<Party, Long>, JpaSpecific
 
    // 사용자 관심사 기반 모임 목록 불러오기 (가입한 모임, 차단한 모임 제외 / 같은 대학교 유저가 생성한 모임만 조회 가능)
    @Query("SELECT p FROM Party p " +
-           "JOIN User u ON p.ownerId = u.id JOIN p.interests i " +
+           "JOIN User u ON p.ownerId = u.id " +
+           "JOIN p.interests i " +
            "WHERE u.university IN " +
            "(SELECT owner.university FROM User owner WHERE owner.id = :userId) " +
            "AND i IN :userInterests " +
@@ -34,4 +36,36 @@ public interface PartyRepository extends JpaRepository<Party, Long>, JpaSpecific
            "SELECT bp.blockedParty.id FROM BlockParty bp WHERE bp.blockerUser.id = :userId" +
            ")")
    Page<Party> findInterestParties(List<Interest> userInterests, Long userId, Pageable pageable);
+
+   // 모임 검색 + 필터링
+   @Query("SELECT p FROM Party p " +
+           "JOIN User u ON p.ownerId = u.id " +
+           "JOIN FETCH p.interests i " +
+           "WHERE u.university IN " +
+           "(SELECT owner.university FROM User owner WHERE owner.id = :userId) " +
+           "AND (:name IS NULL OR (:name IS NOT NULL AND p.name LIKE %:name%)) " +
+           "AND (:isRecruiting IS NULL OR p.isRecruiting = :isRecruiting) " +
+           "AND (:preferAges IS NULL OR p.preferAges = :preferAges) " +
+           "AND (" +
+           "(:partyMembersOption = 1 AND p.memberCount = 2) " +
+           "OR (:partyMembersOption = 2 AND p.memberCount >= 3) " +
+           "OR :partyMembersOption IS NULL" +
+           ") " +
+           "AND (:interestsSize IS NULL OR i IN :interests) " +
+           "AND p.id NOT IN (" +
+           "SELECT up.party.id FROM UserParty up WHERE up.user.id = :userId" +
+           ") " +
+           "AND p.id NOT IN (" +
+           "SELECT bp.blockedParty.id FROM BlockParty bp WHERE bp.blockerUser.id = :userId" +
+           ")"
+   )
+   Page<Party> searchPartyByFilter(
+           @Param("userId") Long userId,
+           @Param("name") String name,
+           @Param("isRecruiting") Boolean isRecruiting,
+           @Param("preferAges") PreferAges preferAges,
+           @Param("partyMembersOption") Integer partyMembersOption,
+           @Param("interestsSize") Integer interestsSize,
+           @Param("interests") List<Interest> interests,
+           Pageable pageable);
 }

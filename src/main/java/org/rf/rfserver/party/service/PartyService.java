@@ -6,8 +6,10 @@ import org.rf.rfserver.apns.dto.PushDto;
 import org.rf.rfserver.apns.service.ApnsService;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.s3.S3Uploader;
+
 import org.rf.rfserver.constant.Interest;
 import org.rf.rfserver.constant.PushNotificationType;
+import org.rf.rfserver.constant.PreferAges;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
@@ -69,7 +71,7 @@ public class PartyService {
                     .build());
             addOwnerToParty(user, party);
             //file 비어있는지 체크
-            if(file != null){
+            if (file != null) {
                 String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
                 party.updateImageUrl(imageFilePath);
             }
@@ -81,7 +83,7 @@ public class PartyService {
 
     public void addOwnerToParty(User user, Party party) {
         makeUserParty(user, party);
-        if(userService.isKorean(user)) {
+        if (userService.isKorean(user)) {
             party.plusCurrentNativeCount();
         }
     }
@@ -95,6 +97,7 @@ public class PartyService {
                 .name(party.getName())
                 .content(party.getContent())
                 .location(party.getLocation())
+                .isRecruiting(party.getIsRecruiting())
                 .language(party.getLanguage())
                 .imageFilePath(party.getImageFilePath())
                 .preferAges(party.getPreferAges())
@@ -110,6 +113,11 @@ public class PartyService {
                 .build();
     }
 
+    public PatchPartyRes updateParty(Long partyId, PatchPartyReq patchPartyReq) throws BaseException {
+        Party party = findPartyById(partyId);
+        party.updateParty(patchPartyReq);
+        return new PatchPartyRes(true);
+    }
 
     public DeletePartyRes deleteParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
@@ -143,30 +151,34 @@ public class PartyService {
     }
 
     public void joinValidation(Party party, User user) throws BaseException {
+        isRecruiting(party);
         isFullParty(party);
         if(userService.isKorean(user)) {
-            isFullOfKorean(party);
+            if (isFullOfKorean(party)) {
+                throw new BaseException(FULL_OF_KOREAN);
+            }
         }
         userService.isExceededPartyCount(user);
         isJoinedUser(user, party);
     }
 
-    public void isFullParty(Party party) throws BaseException {
+    public boolean isFullParty(Party party) {
         if (party.getUsers().size() >= party.getMemberCount()) {
-            throw new BaseException(EXCEEDED_PARTY_USER_COUNT);
+            return true;
         }
+        return false;
     }
 
-    public void isFullOfKorean(Party party) throws BaseException {
+    public Boolean isFullOfKorean(Party party) throws BaseException {
         if(party.getNativeCount() <= party.getCurrentNativeCount()) {
-            throw new BaseException(FULL_OF_KOREAN);
+            return true;
         }
+        throw new BaseException(FULL_OF_KOREAN);
     }
-
 
     public void isJoinedUser(User user, Party party) throws BaseException {
-        for (UserParty userParty : party.getUsers() ) {
-            if(userParty.getUser() == user) {
+        for (UserParty userParty : party.getUsers()) {
+            if (userParty.getUser() == user) {
                 throw new BaseException(INVALID_JOIN_APPLICATION);
             }
         }
@@ -181,6 +193,9 @@ public class PartyService {
         makeUserParty(user, party);
         if (userService.isKorean(user)) {
             party.plusCurrentNativeCount();
+        }
+        if (isFullParty(party)) {
+            party.changeRecruitmentState(false);
         }
         deletePartyJoinApplication(partyJoinApplicationId);
         sendApproveJoinPush(user.getId(), user.getNickName(), party.getId(), party.getName());
@@ -262,6 +277,7 @@ public class PartyService {
 
     /**
      * 클라이언트가 속한 그룹 리스트를 조회 서비스
+     *
      * @param userId
      * @return List[GetPartyRes]
      * @throws BaseException
@@ -288,6 +304,23 @@ public class PartyService {
                         .build())
                 .collect(Collectors.toList()));
     }
+
+    public TogglePartyRecruitmentRes togglePartyRecruitment(Long partyId) throws BaseException {
+        Party party = findPartyById(partyId);
+        if (party.getIsRecruiting()) {
+            party.changeRecruitmentState(false);
+        } else if(!party.getIsRecruiting()) {
+            party.changeRecruitmentState(true);
+        }
+        return new TogglePartyRecruitmentRes(party.getIsRecruiting());
+    }
+
+    public void isRecruiting(Party party) throws BaseException {
+        if(!party.getIsRecruiting()) {
+            throw new BaseException(NOT_RECRUITING);
+        }
+    }
+
     // 사용자 관심사 기반 모임 목록 불러오기 (가입한 모임, 차단한 모임 제외)
     public PageDto<List<GetInterestPartyRes>> getPartiesByUserInterests(Long userId, Pageable pageable) throws BaseException {
         User user = userRepository.findById(userId)
@@ -317,5 +350,50 @@ public class PartyService {
     }
     public void sendDenyJoinPush(Long userId, String userName, Long partyId, String partyName) {
         apnsService.sendPush(new PushDto(PushNotificationType.DENY, userId, PushNotificationType.DENY.getValue(), partyName, userName + "친구, 다음 기회에 만나요.", partyId));
+
+    // 모임 검색 + 필터링
+    public PageDto<List<GetPartyRes>> searchPartyByFilter(
+            Long userId, String name, Boolean isRecruiting, PreferAges preferAges,
+            Integer partyMembersOption, List<Interest> interests,
+            Pageable pageable) throws BaseException {
+
+        Page<Party> parties = partyRepository.searchPartyByFilter(
+                userId, name, isRecruiting, preferAges,
+                partyMembersOption, interests == null ? null : interests.size(), interests,
+                pageable);
+
+        return new PageDto<>(parties.getNumber(), parties.getTotalPages(), parties.stream()
+                .map(party -> GetPartyRes.builder()
+                        .id(party.getId())
+                        .name(party.getName())
+                        .content(party.getContent())
+                        .location(party.getLocation())
+                        .isRecruiting(party.getIsRecruiting())
+                        .language(party.getLanguage())
+                        .imageFilePath(party.getImageFilePath())
+                        .preferAges(party.getPreferAges())
+                        .memberCount(party.getMemberCount())
+                        .nativeCount(party.getNativeCount())
+                        .ownerId(party.getOwnerId())
+                        .schedules(party.getSchedules())
+                        .interests(party.getInterests())
+                        .userProfiles(userService.getUserProfiles(party.getUsers()))
+                        .schedules(party.getSchedules())
+                        .interests(party.getInterests())
+                        .rules(party.getRules())
+                        .build())
+                .collect(Collectors.toList()));
+    }
+
+    public EjectUserRes ejectUser(EjectUserReq ejectUserReq) throws BaseException {
+        isOwner(ejectUserReq.getOwnerId(), ejectUserReq.getPartyId());
+        leaveParty(ejectUserReq.getUserId(), ejectUserReq.getPartyId());
+        return new EjectUserRes(true);
+    }
+
+    public void isOwner(Long ownerId, Long partyId) throws BaseException {
+        if(findPartyById(partyId).getOwnerId() != ownerId) {
+            throw new BaseException(NOT_OWNER);
+        }
     }
 }

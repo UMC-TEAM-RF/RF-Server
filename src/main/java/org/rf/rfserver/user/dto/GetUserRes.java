@@ -20,4 +20,5 @@ public class GetUserRes {
     private List<Country> interestCountries;
     private List<Interest> interests;
     private LifeStyle lifeStyle;
+    private String imageFilePath;
 }
