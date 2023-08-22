@@ -145,8 +145,6 @@ public class PartyService {
 
     public void joinValidation(Party party, User user) throws BaseException {
         isFullParty(party);
-        if (userService.isKorean(user)) {
-            isFullOfKorean(party);
         if(userService.isKorean(user)) {
             if (isFullOfKorean(party)) {
                 throw new BaseException(FULL_OF_KOREAN);
@@ -163,10 +161,11 @@ public class PartyService {
         return false;
     }
 
-    public void isFullOfKorean(Party party) throws BaseException {
+    public Boolean isFullOfKorean(Party party) throws BaseException {
         if(party.getNativeCount() <= party.getCurrentNativeCount()) {
-            throw new BaseException(FULL_OF_KOREAN);
+            return true;
         }
+        throw new BaseException(FULL_OF_KOREAN);
     }
 
     public void isJoinedUser(User user, Party party) throws BaseException {
