@@ -1,6 +1,7 @@
 package org.rf.rfserver.config.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.*;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
@@ -15,9 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -73,6 +72,12 @@ public class S3Uploader {
         }
         return Optional.empty();
     }
+
+    //S3 이미지 URL을 가져오는 함수
+    public String getImageFilePath(String path){
+        return amazonS3Client.getUrl(bucket, path).toString();
+    }
+
     //파일의 S3 내부 진짜 경로로 변경
     public String changeFileKeyPath(String fileName){
         String fileKey = fileName.replace(String.format("https://%s.s3.%s.amazonaws.com/", bucket, amazonS3Client.getRegion()),"");

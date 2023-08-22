@@ -29,13 +29,14 @@ public class PushNotificationService {
     private final DeviceTokenService deviceTokenService;
     @Value("${env.APNS_TOPIC}")
     private String apnsTopic;
-    public String buildPushNotificatoinPayload(PushNotificationType type, String title, String body, Object content) {
+    public String buildPushNotificatoinPayload(PushNotificationType type, String title, String subTitle, String body, Object content) {
         String threadId = "default";
         if(type == CHAT)
             threadId = "party-" + Long.toString((Long)content);
         final ApnsPayloadBuilder payloadBuilder = new SimpleApnsPayloadBuilder();
         payloadBuilder
                 .setAlertTitle(title)
+                .setAlertSubtitle(subTitle)
                 .setAlertBody(body)
                 .setMutableContent(true)
                 .setThreadId(threadId)

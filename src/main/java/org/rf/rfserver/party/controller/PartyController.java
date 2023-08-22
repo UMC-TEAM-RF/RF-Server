@@ -33,7 +33,7 @@ public class PartyController {
 
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public BaseResponse<PostPartyRes> createParty(@RequestPart("postPartyReq") PostPartyReq postPartyReq, @RequestPart("file") MultipartFile file) {
+    public BaseResponse<PostPartyRes> createParty(@RequestPart("postPartyReq") PostPartyReq postPartyReq, @RequestPart(value = "file",required = false) MultipartFile file) {
         try {
             return new BaseResponse<>(partyService.createParty(postPartyReq,file));
         } catch (BaseException e) {
@@ -139,10 +139,10 @@ public class PartyController {
     }
 
     // 사용자 관심사 기반 모임 목록 불러오기
-    @GetMapping("/user/{userId}/interests")
-    public BaseResponse<PageDto<List<GetInterestPartyRes>>> getPartiesByUserInterests(@PathVariable("userId") Long userId, Pageable pageable) {
+    @GetMapping("/user/{userId}/recommend/groupParty")
+    public BaseResponse<PageDto<List<GetInterestPartyRes>>> recommendGroupParties(@PathVariable("userId") Long userId, Pageable pageable) {
         try {
-            return new BaseResponse<>(partyService.getPartiesByUserInterests(userId, pageable));
+            return new BaseResponse<>(partyService.recommendGroupParties(userId, pageable));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
@@ -172,6 +172,15 @@ public class PartyController {
     public BaseResponse<EjectUserRes> ejectUser(@RequestBody EjectUserReq ejectUserReq) {
         try {
             return new BaseResponse<>(partyService.ejectUser(ejectUserReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("/user/{userId}/recommend/personalParty")
+    public BaseResponse<PageDto<List<GetInterestPartyRes>>> recommendPersonalParties(@PathVariable("userId") Long userId, Pageable pageable) {
+        try {
+            return new BaseResponse<>(partyService.recommendPersonalParties(userId, pageable));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

@@ -15,7 +15,6 @@ public class PostPartyReq {
     private String content;
     private String location;
     private Language language;
-    private String imageFilePath;
     private PreferAges preferAges;
     private Integer memberCount;
     private Integer nativeCount;
