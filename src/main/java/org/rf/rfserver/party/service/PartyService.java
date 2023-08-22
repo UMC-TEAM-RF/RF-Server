@@ -147,6 +147,7 @@ public class PartyService {
         isFullParty(party);
         if (userService.isKorean(user)) {
             isFullOfKorean(party);
+        }
         if(userService.isKorean(user)) {
             if (isFullOfKorean(party)) {
                 throw new BaseException(FULL_OF_KOREAN);
@@ -156,6 +157,7 @@ public class PartyService {
         isJoinedUser(user, party);
     }
 
+
     public boolean isFullParty(Party party) {
         if (party.getUsers().size() >= party.getMemberCount()) {
             return true;
@@ -163,11 +165,13 @@ public class PartyService {
         return false;
     }
 
-    public void isFullOfKorean(Party party) throws BaseException {
+    public Boolean isFullOfKorean(Party party) throws BaseException {
         if(party.getNativeCount() <= party.getCurrentNativeCount()) {
-            throw new BaseException(FULL_OF_KOREAN);
+            return true;
         }
+        throw new BaseException(FULL_OF_KOREAN);
     }
+
 
     public void isJoinedUser(User user, Party party) throws BaseException {
         for (UserParty userParty : party.getUsers()) {
