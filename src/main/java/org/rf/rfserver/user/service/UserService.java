@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.jwt.TokenProvider;
+import org.rf.rfserver.device.service.DeviceTokenService;
 import org.rf.rfserver.mail.dto.PostResetPasswordReq;
 import org.rf.rfserver.mail.dto.PostResetPasswordRes;
 import org.rf.rfserver.mail.service.MailService;
@@ -39,6 +40,7 @@ public class UserService {
     private final MailService mailService;
     private final RefreshTokenService refreshTokenService;
     private final S3Uploader s3Uploader;
+    private final DeviceTokenService deviceTokenService;
 
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
         isDuplicatedLoginId(postUserReq.getLoginId());
@@ -225,6 +227,7 @@ public class UserService {
         String refreshToken = tokenProvider.generateToken(user, Duration.ofDays(REFRESH_TOKEN_EXPIRATION));
         refreshTokenService.saveRefreshToken(user.getId(), refreshToken);
         user.setDeviceToken(loginReq.getDeviceToken());
+        deviceTokenService.setDeviceToken(user.getId(), loginReq.getDeviceToken());
         return new LoginRes(accessToken, refreshToken, user.getNickName(), user.getUniversity(), user.getInterestingLanguages(),
                 user.getIntroduce(), user.getCountry(), user.getMbti(), user.getEntrance(), user.getEmail(), user.getInterestCountries(),
                 user.getUserInterests(), user.getLifeStyle(), user.getImageFilePath(), user.getId());
