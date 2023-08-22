@@ -148,6 +148,9 @@ public class PartyService {
     public DeletePartyRes deleteParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(INVALID_PARTY));
+        String imageFilePath = party.getImageFilePath();
+        String fileKey = s3Uploader.changeFileKeyPath(imageFilePath);
+        s3Uploader.deleteFile(fileKey);
         deleteUserParty(party.getUsers());
         partyRepository.delete(party);
         return new DeletePartyRes(partyId);
