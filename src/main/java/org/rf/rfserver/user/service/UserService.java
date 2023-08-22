@@ -7,7 +7,7 @@ import org.rf.rfserver.domain.*;
 import org.rf.rfserver.mail.dto.PostResetPasswordReq;
 import org.rf.rfserver.mail.dto.PostResetPasswordRes;
 import org.rf.rfserver.mail.service.MailService;
-
+import org.rf.rfserver.config.s3.S3Uploader;
 import org.rf.rfserver.constant.Country;
 import org.rf.rfserver.domain.User;
 import org.rf.rfserver.domain.UserParty;
@@ -15,6 +15,8 @@ import org.rf.rfserver.domain.UserParty;
 import org.rf.rfserver.user.dto.*;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +29,9 @@ import static org.rf.rfserver.constant.MailMessage.RESET_PASSWORD;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final S3Uploader s3Uploader;
     private final MailService mailService;
-    public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
+    public PostUserRes createUser(PostUserReq postUserReq, MultipartFile file) throws BaseException {
         isDuplicatedLoginId(postUserReq.getLoginId());
         User user = User.builder()
                 .loginId(postUserReq.getLoginId())
@@ -46,6 +49,10 @@ public class UserService {
                 .lifeStyle(postUserReq.getLifeStyle())
                 .build();
         try {
+            if(file != null) {
+                String imageFilePath = s3Uploader.fileUpload(file, "userImage");
+                user.updateImageUrl(imageFilePath);
+            }
             userRepository.save(user);
             return new PostUserRes(user.getId());
         } catch (Exception e) {
@@ -68,6 +75,7 @@ public class UserService {
                     , user.getInterestCountries()
                     , user.getUserInterests()
                     , user.getLifeStyle()
+                    , user.getImageFilePath()
             );
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
@@ -75,7 +83,7 @@ public class UserService {
     }
 
     @Transactional
-    public PatchUserRes updateUser(Long userId, PatchUserReq patchUserReq) throws BaseException{
+    public PatchUserRes updateUser(Long userId, PatchUserReq patchUserReq, MultipartFile file) throws BaseException{
         try {
             User user = userRepository.getReferenceById(userId);
             user.updateUser(
@@ -87,6 +95,16 @@ public class UserService {
                     , patchUserReq.getMbti()
                     , patchUserReq.getLifeStyle()
             );
+            //사용자가 새로운 이미지로 바꾸려고 할 때
+            if(file != null){
+                String preImageFilePath = user.getImageFilePath();
+                if(preImageFilePath != "default"){
+                    String fileKey = s3Uploader.changeFileKeyPath(preImageFilePath);
+                    s3Uploader.deleteFile(fileKey);
+                }
+                String imageFilePath = s3Uploader.fileUpload(file, "userImage");
+                user.updateImageUrl(imageFilePath);
+            }
             return new PatchUserRes(true);
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
@@ -101,6 +119,11 @@ public class UserService {
 
     public DeleteUserRes deleteUser(Long userId) throws BaseException{
         try {
+            //유저의 프로필 이미지를 S3에서 삭제
+            User user = userRepository.getReferenceById(userId);
+            String imageFilePath = user.getImageFilePath();
+            String fileKey = s3Uploader.changeFileKeyPath(imageFilePath);
+            s3Uploader.deleteFile(fileKey);
             userRepository.deleteById(userId);
             return new DeleteUserRes(true);
         } catch (Exception e) {

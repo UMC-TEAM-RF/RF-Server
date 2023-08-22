@@ -51,6 +51,15 @@ public class PartyController {
         }
     }
 
+    @PatchMapping("/{partyId}")
+    public BaseResponse<PatchPartyRes> getParty(@PathVariable("partyId") Long partyId, @RequestBody PatchPartyReq patchPartyReq) {
+        try {
+            return new BaseResponse<>(partyService.updateParty(partyId, patchPartyReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
     @DeleteMapping("/{partyId}")
     public BaseResponse<DeletePartyRes> deleteParty(@PathVariable("partyId") Long partyId) {
         try {
@@ -119,7 +128,7 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
-
+  
      @GetMapping("/toggle/{partyId}")
     public BaseResponse<TogglePartyRecruitmentRes> togglePartyRecruitment(@PathVariable Long partyId) {
         try {
@@ -158,4 +167,14 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    @PostMapping("/eject")
+    public BaseResponse<EjectUserRes> ejectUser(@RequestBody EjectUserReq ejectUserReq) {
+        try {
+            return new BaseResponse<>(partyService.ejectUser(ejectUserReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
 }
