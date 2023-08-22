@@ -139,7 +139,7 @@ public class PartyController {
     }
 
     // 사용자 관심사 기반 모임 목록 불러오기
-    @GetMapping("/user/{userId}/interests")
+    @GetMapping("/user/{userId}/recommend/groupParty")
     public BaseResponse<PageDto<List<GetInterestPartyRes>>> getPartiesByUserInterests(@PathVariable("userId") Long userId, Pageable pageable) {
         try {
             return new BaseResponse<>(partyService.getPartiesByUserInterests(userId, pageable));
@@ -172,6 +172,15 @@ public class PartyController {
     public BaseResponse<EjectUserRes> ejectUser(@RequestBody EjectUserReq ejectUserReq) {
         try {
             return new BaseResponse<>(partyService.ejectUser(ejectUserReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("/user/{userId}/recommend/personalParty")
+    public BaseResponse<PageDto<List<GetInterestPartyRes>>> recommendPersonalParties(@PathVariable("userId") Long userId, Pageable pageable) {
+        try {
+            return new BaseResponse<>(partyService.recommendPersonalParties(userId, pageable));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
