@@ -2,10 +2,14 @@ package org.rf.rfserver.party.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.rf.rfserver.apns.dto.PushDto;
+import org.rf.rfserver.apns.service.ApnsService;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.s3.S3Uploader;
 import org.rf.rfserver.constant.Banner;
 import org.rf.rfserver.constant.Interest;
+import org.rf.rfserver.constant.PushNotificationType;
+import org.rf.rfserver.constant.PreferAges;
 import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
@@ -15,6 +19,7 @@ import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
 import org.rf.rfserver.party.repository.PartyJoinApplicationRepository;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
+import org.rf.rfserver.redisDomain.partyidUserid.service.PartyidUseridService;
 import org.rf.rfserver.user.dto.GetUserProfileRes;
 import org.rf.rfserver.user.repository.UserRepository;
 import org.rf.rfserver.user.service.UserService;
@@ -46,6 +51,8 @@ public class PartyService {
     private final UserPartyRepository userPartyRepository;
     private final PartyJoinApplicationRepository partyJoinApplicationRepository;
     private final S3Uploader s3Uploader;
+    private final PartyidUseridService partyidUseridService;
+    private final ApnsService apnsService;
 
     public PostPartyRes createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
         try {
@@ -83,8 +90,7 @@ public class PartyService {
     }
 
     public void addOwnerToParty(User user, Party party) {
-        UserParty userParty = new UserParty(party, user);
-        userPartyRepository.save(userParty);
+        makeUserParty(user, party);
         if (userService.isKorean(user)) {
             party.plusCurrentNativeCount();
         }
@@ -148,14 +154,15 @@ public class PartyService {
         joinValidation(party, user);
         PartyJoinApplication partyJoinApplication = new PartyJoinApplication(user, party);
         partyJoinApplicationRepository.save(partyJoinApplication);
+        sendJoinApplyPush(party.getOwnerId(), user.getNickName(), party.getId(), party.getName());
         return new PostJoinApplicationRes(partyJoinApplication.getId());
     }
 
+
     public void joinValidation(Party party, User user) throws BaseException {
+        isRecruiting(party);
         isFullParty(party);
         if (userService.isKorean(user)) {
-            isFullOfKorean(party);
-        if(userService.isKorean(user)) {
             if (isFullOfKorean(party)) {
                 throw new BaseException(FULL_OF_KOREAN);
             }
@@ -201,15 +208,20 @@ public class PartyService {
             party.changeRecruitmentState(false);
         }
         deletePartyJoinApplication(partyJoinApplicationId);
+        sendApproveJoinPush(user.getId(), user.getNickName(), party.getId(), party.getName());
         return new PostApproveJoinRes(partyJoinApplicationId);
     }
 
     public void makeUserParty(User user, Party party) {
         UserParty userParty = new UserParty(party, user);
         userPartyRepository.save(userParty);
+        partyidUseridService.setPartyidUserid(party.getId(), user.getId());
     }
 
     public PostDenyJoinRes denyJoin(Long partyJoinApplicationId) throws BaseException {
+        PartyJoinApplication partyJoinApplication = partyJoinApplicationRepository.findById(partyJoinApplicationId)
+                .orElseThrow();
+        sendDenyJoinPush(partyJoinApplication.getUser().getId(), partyJoinApplication.getUser().getNickName(), partyJoinApplication.getParty().getId(), partyJoinApplication.getParty().getName());
         deletePartyJoinApplication(partyJoinApplicationId);
         return new PostDenyJoinRes(partyJoinApplicationId);
     }
@@ -239,6 +251,9 @@ public class PartyService {
 
         // 사용자와 모임 연결 제거
         userPartyRepository.delete(userParty);
+
+        // redis partyIduserId 데이터베이스에서 userId 제거
+        partyidUseridService.deleteUseridFromPartyid(partyId, userId);
 
         return LeavePartyRes.builder()
                 .userId(userId)
@@ -304,14 +319,15 @@ public class PartyService {
         Party party = findPartyById(partyId);
         if (party.getIsRecruiting()) {
             party.changeRecruitmentState(false);
-        } else if(!party.getIsRecruiting()) {
+        } else if (!party.getIsRecruiting()) {
             party.changeRecruitmentState(true);
         }
         return new TogglePartyRecruitmentRes(party.getIsRecruiting());
     }
 
+
     public void isRecruiting(Party party) throws BaseException {
-        if(!party.getIsRecruiting()) {
+        if (!party.getIsRecruiting()) {
             throw new BaseException(NOT_RECRUITING);
         }
     }
@@ -334,5 +350,63 @@ public class PartyService {
                         .ownerId(party.getOwnerId())
                         .build())
                 .collect(Collectors.toList()));
+    }
+
+    public void sendJoinApplyPush(Long userId, String userName, Long partyId, String partyName) {
+        apnsService.sendPush(new PushDto(PushNotificationType.APPLY, userId, PushNotificationType.APPLY.getValue(), partyName, userName + "친구가 가입을 원해요.", partyId));
+    }
+
+    public void sendApproveJoinPush(Long userId, String userName, Long partyId, String partyName) {
+        apnsService.sendPush(new PushDto(PushNotificationType.APPROVE, userId, PushNotificationType.APPROVE.getValue(), partyName, userName + "친구, 가입을 환영해요.", partyId));
+    }
+    public void sendDenyJoinPush(Long userId, String userName, Long partyId, String partyName) {
+        apnsService.sendPush(new PushDto(PushNotificationType.DENY, userId, PushNotificationType.DENY.getValue(), partyName, userName + "친구, 다음 기회에 만나요.", partyId));
+    }
+    // 모임 검색 + 필터링
+    public PageDto<List<GetPartyRes>> searchPartyByFilter(
+            Long userId, String name, Boolean isRecruiting, PreferAges preferAges,
+            Integer partyMembersOption, List<Interest> interests,
+            Pageable pageable) throws BaseException {
+
+        Page<Party> parties = partyRepository.searchPartyByFilter(
+                userId, name, isRecruiting, preferAges,
+                partyMembersOption, interests == null ? null : interests.size(), interests,
+                pageable);
+
+        return new PageDto<>(parties.getNumber(), parties.getTotalPages(), parties.stream()
+                .map(party -> GetPartyRes.builder()
+                        .id(party.getId())
+                        .name(party.getName())
+                        .content(party.getContent())
+                        .location(party.getLocation())
+                        .isRecruiting(party.getIsRecruiting())
+                        .language(party.getLanguage())
+                        .imageFilePath(party.getImageFilePath())
+                        .preferAges(party.getPreferAges())
+                        .memberCount(party.getMemberCount())
+                        .nativeCount(party.getNativeCount())
+                        .ownerId(party.getOwnerId())
+                        .schedules(party.getSchedules())
+                        .interests(party.getInterests())
+                        .userProfiles(userService.getUserProfiles(party.getUsers()))
+                        .schedules(party.getSchedules())
+                        .interests(party.getInterests())
+                        .rules(party.getRules())
+                        .build())
+                .collect(Collectors.toList()));
+    }
+
+    public EjectUserRes ejectUser(EjectUserReq ejectUserReq) throws BaseException {
+        isOwner(ejectUserReq.getOwnerId(), ejectUserReq.getPartyId());
+        leaveParty(ejectUserReq.getUserId(), ejectUserReq.getPartyId());
+        // redis partyIduserId 데이터베이스에서 userId 제거
+        partyidUseridService.deleteUseridFromPartyid(ejectUserReq.getPartyId(), ejectUserReq.getUserId());
+        return new EjectUserRes(true);
+    }
+
+    public void isOwner(Long ownerId, Long partyId) throws BaseException {
+        if(findPartyById(partyId).getOwnerId() != ownerId) {
+            throw new BaseException(NOT_OWNER);
+        }
     }
 }

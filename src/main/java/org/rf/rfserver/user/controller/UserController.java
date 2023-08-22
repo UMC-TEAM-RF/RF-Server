@@ -1,12 +1,18 @@
 package org.rf.rfserver.user.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
 import org.rf.rfserver.config.BaseResponse;
 import org.rf.rfserver.mail.dto.PostResetPasswordReq;
 import org.rf.rfserver.mail.dto.PostResetPasswordRes;
 import org.rf.rfserver.user.dto.*;
+import org.rf.rfserver.user.dto.sign.LoginReq;
+import org.rf.rfserver.user.dto.sign.LoginRes;
 import org.rf.rfserver.user.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public BaseResponse<PostUserRes> createUser(@RequestPart("postUserReq") PostUserReq postUserReq, @RequestPart(value = "file", required = false) MultipartFile file) {
         try {
@@ -24,6 +31,7 @@ public class UserController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
     @GetMapping("/{userId}")
     public BaseResponse<GetUserRes> getUser(@PathVariable("userId") Long userId) {
         try {
@@ -68,6 +76,15 @@ public class UserController {
         }
     }
 
+    @PostMapping("/login")
+    public BaseResponse<LoginRes> login(@RequestBody LoginReq loginReq) {
+        try {
+            return new BaseResponse<>(userService.login(loginReq));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
     // 아이디 찾기
     @PostMapping("/findId")
     public BaseResponse<PostResetPasswordRes> findId(@RequestBody PostResetPasswordReq postPasswordReq) {
@@ -76,6 +93,11 @@ public class UserController {
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
+    }
+
+    @GetMapping("/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
     }
 
     // 비밀번호 재설정
