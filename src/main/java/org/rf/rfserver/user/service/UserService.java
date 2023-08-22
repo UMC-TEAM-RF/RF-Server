@@ -225,21 +225,9 @@ public class UserService {
         String refreshToken = tokenProvider.generateToken(user, Duration.ofDays(REFRESH_TOKEN_EXPIRATION));
         refreshTokenService.saveRefreshToken(user.getId(), refreshToken);
         user.setDeviceToken(loginReq.getDeviceToken());
-        return LoginRes.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .nickName(user.getNickName())
-                .university(user.getUniversity())
-                .interestingLanguages(user.getInterestingLanguages())
-                .introduce(user.getIntroduce())
-                .country(user.getCountry())
-                .mbti(user.getMbti())
-                .entrance(user.getEntrance())
-                .email(user.getEmail())
-                .interestCountries(user.getInterestCountries())
-                .interests(user.getUserInterests())
-                .lifeStyle(user.getLifeStyle())
-                .build();
+        return new LoginRes(accessToken, refreshToken, user.getNickName(), user.getUniversity(), user.getInterestingLanguages(),
+                user.getIntroduce(), user.getCountry(), user.getMbti(), user.getEntrance(), user.getEmail(), user.getInterestCountries(),
+                user.getUserInterests(), user.getLifeStyle(), user.getImageFilePath(), user.getId());
     }
 
     public void isDuplicatedLoginId(String loginId) throws BaseException {
