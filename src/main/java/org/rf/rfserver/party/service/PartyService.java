@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
@@ -120,35 +121,16 @@ public class PartyService {
                 .build();
     }
 
-    public PatchPartyRes updateParty(Long partyId, PatchPartyReq patchPartyReq, MultipartFile file) throws BaseException {
-        try{
+    public PatchPartyRes updateParty(Long partyId, PatchPartyReq patchPartyReq) throws BaseException {
         Party party = findPartyById(partyId);
         party.updateParty(patchPartyReq);
-        if(file != null){
-            String preImageFilePath = party.getImageFilePath();
-            String fileKey = s3Uploader.changeFileKeyPath(preImageFilePath);
-            if(fileKey.contains("partyBanner/")){
-                String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
-                party.updateImageUrl(imageFilePath);
-            } else {
-                s3Uploader.deleteFile(fileKey);
-                String imageFilePath = s3Uploader.fileUpload(file, "partyImage");
-                party.updateImageUrl(imageFilePath);
-            }
-        }
         return new PatchPartyRes(true);
-        } catch (Exception e){
-            throw new BaseException(DATABASE_ERROR);
-        }
     }
 
     public DeletePartyRes deleteParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(INVALID_PARTY));
         deleteUserParty(party.getUsers());
-        String imageFilePath = party.getImageFilePath();
-        String fileKey = s3Uploader.changeFileKeyPath(imageFilePath);
-        s3Uploader.deleteFile(fileKey);
         partyRepository.delete(party);
         return new DeletePartyRes(partyId);
     }
@@ -181,9 +163,6 @@ public class PartyService {
         isRecruiting(party);
         isFullParty(party);
         if (userService.isKorean(user)) {
-            isFullOfKorean(party);
-        }
-        if(userService.isKorean(user)) {
             if (isFullOfKorean(party)) {
                 throw new BaseException(FULL_OF_KOREAN);
             }
@@ -193,8 +172,7 @@ public class PartyService {
     }
 
 
-
-    public Boolean isFullParty(Party party) {
+    public boolean isFullParty(Party party) {
         if (party.getUsers().size() >= party.getMemberCount()) {
             return true;
         }
@@ -207,7 +185,6 @@ public class PartyService {
         }
         throw new BaseException(FULL_OF_KOREAN);
     }
-
 
     public void isJoinedUser(User user, Party party) throws BaseException {
         for (UserParty userParty : party.getUsers()) {
