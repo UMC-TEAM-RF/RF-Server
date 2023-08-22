@@ -145,10 +145,11 @@ public class PartyService {
         return new PostJoinApplicationRes(partyJoinApplication.getId());
     }
 
+
     public void joinValidation(Party party, User user) throws BaseException {
         isRecruiting(party);
         isFullParty(party);
-        if(userService.isKorean(user)) {
+        if (userService.isKorean(user)) {
             if (isFullOfKorean(party)) {
                 throw new BaseException(FULL_OF_KOREAN);
             }
@@ -296,14 +297,15 @@ public class PartyService {
         Party party = findPartyById(partyId);
         if (party.getIsRecruiting()) {
             party.changeRecruitmentState(false);
-        } else if(!party.getIsRecruiting()) {
+        } else if (!party.getIsRecruiting()) {
             party.changeRecruitmentState(true);
         }
         return new TogglePartyRecruitmentRes(party.getIsRecruiting());
     }
 
+
     public void isRecruiting(Party party) throws BaseException {
-        if(!party.getIsRecruiting()) {
+        if (!party.getIsRecruiting()) {
             throw new BaseException(NOT_RECRUITING);
         }
     }

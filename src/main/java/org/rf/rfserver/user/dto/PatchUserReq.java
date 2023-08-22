@@ -10,6 +10,7 @@ import org.rf.rfserver.constant.Mbti;
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 public class PatchUserReq {
