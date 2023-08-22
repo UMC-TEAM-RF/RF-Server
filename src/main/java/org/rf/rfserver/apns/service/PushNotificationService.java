@@ -56,6 +56,7 @@ public class PushNotificationService {
     }
     public void sendPushNotificationToUser(Long userId, String payload) {
         String deviceToken = (String) deviceTokenService.getDeviceTokenByUserId(userId);
+        if(deviceToken == null) return;
         sendPushNotification(deviceToken, payload);
     }
     public void sendPushNotification(String deviceToken, String payload) {
