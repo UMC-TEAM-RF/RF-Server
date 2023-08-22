@@ -28,6 +28,7 @@ public interface PartyRepository extends JpaRepository<Party, Long>, JpaSpecific
            "JOIN p.interests i " +
            "WHERE u.university IN " +
            "(SELECT owner.university FROM User owner WHERE owner.id = :userId) " +
+           "AND p.memberCount >= 3 " +
            "AND i IN :userInterests " +
            "AND p.id NOT IN (" +
            "SELECT up.party.id FROM UserParty up WHERE up.user.id = :userId" +
@@ -35,7 +36,7 @@ public interface PartyRepository extends JpaRepository<Party, Long>, JpaSpecific
            "AND p.id NOT IN (" +
            "SELECT bp.blockedParty.id FROM BlockParty bp WHERE bp.blockerUser.id = :userId" +
            ")")
-   Page<Party> findInterestParties(List<Interest> userInterests, Long userId, Pageable pageable);
+   Page<Party> recommendGroupParties(List<Interest> userInterests, Long userId, Pageable pageable);
 
    // 모임 검색 + 필터링
    @Query("SELECT p FROM Party p " +
@@ -75,7 +76,7 @@ public interface PartyRepository extends JpaRepository<Party, Long>, JpaSpecific
            "JOIN p.interests i " +
            "WHERE u.university IN " +
            "(SELECT owner.university FROM User owner WHERE owner.id = :userId) " +
-           "AND p.memberCount = 2" +
+           "AND p.memberCount = 2 " +
            "AND i IN :userInterests " +
            "AND p.id NOT IN (" +
            "SELECT up.party.id FROM UserParty up WHERE up.user.id = :userId" +
