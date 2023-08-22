@@ -26,6 +26,7 @@ public class ChatDto {
     private ChatUserDto victim;
     private ScheduleChatDto schedule;
     private Long partyId = null;
+    private String partyName;
     private Long chatId = null;
     private Long replyChatId = null;
     private String content = null;
@@ -34,21 +35,19 @@ public class ChatDto {
     public ChatDto(Chat chat) {
         DateTimeFormatter chatFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSS");
         this.type = chat.getType();
-        this.speaker = new ChatUserDto(chat.getSpeaker().getId(), chat.getSpeaker().getNickName(), chat.getSpeaker().getImageUrl());
+        this.speaker = new ChatUserDto(chat.getSpeakerUserId(), chat.getSpeakerUserName(), chat.getSpeakerUserImageUrl());
         this.schedule = type == SCHEDULE ? new ScheduleChatDto(chat.getSchedule()) : null;
-        this.partyId = chat.getParty().getId();
+        this.partyId = chat.getPartyId();
+        this.partyName = chat.getPartyName();
         this.chatId = chat.getId();
         this.replyChatId = type == REPLY ? chat.getReplyAtChatId() : null;
         this.content = chat.getContent();
         this.dateTime = chat.getCreatedAt().format(chatFormatter);
     }
 
-    public ChatDto setChatDtoForRes(Long partyId, Long chatId, String speakerName, String speakerImageUrl, LocalDateTime dateTime) {
+    public ChatDto setChatDtoForRes(Long chatId, LocalDateTime dateTime) {
         DateTimeFormatter chatFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSS");
-        this.partyId = partyId;
         this.chatId = chatId;
-        this.getSpeaker().setUserName(speakerName);
-        this.getSpeaker().setUserImageUrl(speakerImageUrl);
         this.dateTime = dateTime.format(chatFormatter);
         return this;
     }
