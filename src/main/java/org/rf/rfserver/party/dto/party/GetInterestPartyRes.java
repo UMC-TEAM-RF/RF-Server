@@ -19,7 +19,6 @@ public class GetInterestPartyRes {
     private List<Interest> interests;
     private Integer currentMemberCount;
 
-
     @Builder
     public GetInterestPartyRes(Long id, String name, String content, String imageFilePath,
                        LocalDateTime createdDate, Integer memberCount, Long ownerId, List<Interest> interests,
