@@ -9,6 +9,9 @@
 |<a href="https://github.com/lxxyxin"><img src="https://avatars.githubusercontent.com/u/91695537?v=4"></a>|<a href="https://github.com/minjgziii"><img src="https://avatars.githubusercontent.com/u/104371003?v=4"></a>|<a href="https://github.com/jaewonLeeKOR"><img src="https://avatars.githubusercontent.com/u/58386334?v=4"></a>|<a href="https://github.com/kuk6933"><img src="https://avatars.githubusercontent.com/u/77862152?v=4"></a>|
 |<a href="https://github.com/lxxyxin">노리 / 이예린|<a href="https://github.com/minjgziii">만자 / 김민지|<a href="https://github.com/jaewonLeeKOR"> 👑 망고 / 이재원|<a href="https://github.com/kuk6933">베어 / 오형석|
 
+## Software Architecture
+![RF_Architecture](https://github.com/UMC-TEAM-RF/RF-Server/assets/58386334/1893cd11-22f0-40ae-90f0-114a2ec7c202)
+
 ## Skills
 |Backend|Infra/DevOps|
 |:---:|:---:|
