@@ -10,7 +10,7 @@
 |<a href="https://github.com/lxxyxin">노리 / 이예린|<a href="https://github.com/minjgziii">만자 / 김민지|<a href="https://github.com/jaewonLeeKOR"> 👑 망고 / 이재원|<a href="https://github.com/kuk6933">베어 / 오형석|
 
 ## Software Architecture
-![RF_Architecture](https://github.com/UMC-TEAM-RF/RF-Server/assets/58386334/1893cd11-22f0-40ae-90f0-114a2ec7c202)
+![RF_Architecture](https://github.com/UMC-TEAM-RF/RF-Server/assets/58386334/dbead838-f3de-4d2b-ab36-36fcc520a75a)
 
 ## ERD
 <img width="1329" alt="image" src="https://github.com/UMC-TEAM-RF/RF-Server/assets/58386334/9f180013-8bb3-476a-8b3c-030b9efe82d1">
