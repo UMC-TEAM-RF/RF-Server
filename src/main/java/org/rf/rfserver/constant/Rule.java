@@ -17,7 +17,7 @@ public enum Rule implements EnumModel{
     ,NO_SEXUAL("선정적인 이야기 금지")
     ,POLITE_SPEECH("존댓말로 대화해요")
     ,INFORMAL_SPEECH("반말로 대화해요")
-    ,ACTIVE_VACATION("방학 떄도 활동할 사람을 원해요")
+    ,ACTIVE_VACATION("방학 때도 활동할 사람을 원해요")
     ,PURE("건전한 모임 활동을 원해요")
     ,DAILY_TALK("하루에 한 번 대화는 꼭 참여해요")
     ,FREE_MOOD("자유로운 분위기를 원해요")

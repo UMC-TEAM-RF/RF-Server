@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class PostPartyRes {
-    private Long partyId;
+    private Long id;
     private String name;
     private String content;
     private String location;
@@ -27,7 +27,7 @@ public class PostPartyRes {
     private List<Interest> interests;
 
     public PostPartyRes(Long partyId, PostPartyReq postPartyReq, String imageFilePath) {
-        this.partyId = partyId;
+        this.id = partyId;
         this.name = postPartyReq.getName();
         this.content = postPartyReq.getContent();
         this.location = postPartyReq.getLocation();

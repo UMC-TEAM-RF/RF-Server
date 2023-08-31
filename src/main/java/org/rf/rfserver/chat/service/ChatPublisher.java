@@ -79,7 +79,9 @@ public class ChatPublisher {
         if(chatDto.getType() == TEXT || chatDto.getType() == IMAGE || chatDto.getType() == SCHEDULE || chatDto.getType() == REPLY) {
             Set<Long> userIds = partyidUseridService.getUserids(partyId);
             for (Long userId : userIds) {
+                if(userId == chatDto.getSpeaker().getUserId()) continue;
                 String deviceToken = deviceTokenService.getDeviceTokenByUserId(userId);
+                if(deviceToken == null) continue;
                 if(chatDto.getType() == TEXT || chatDto.getType() == REPLY)
                     apnsService.sendPush(new PushDto(PushNotificationType.CHAT, userId, chatDto.getSpeaker().getUserName(), chatDto.getPartyName(), chat.getContent(),partyId));
                 if(chatDto.getType() == IMAGE)
