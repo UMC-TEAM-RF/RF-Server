@@ -12,6 +12,9 @@
 ## Software Architecture
 ![RF_Architecture](https://github.com/UMC-TEAM-RF/RF-Server/assets/58386334/1893cd11-22f0-40ae-90f0-114a2ec7c202)
 
+## ERD
+<img width="1329" alt="image" src="https://github.com/UMC-TEAM-RF/RF-Server/assets/58386334/9f180013-8bb3-476a-8b3c-030b9efe82d1">
+
 ## Skills
 |Backend|Infra/DevOps|
 |:---:|:---:|
