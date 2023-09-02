@@ -50,10 +50,13 @@ public class User extends BaseEntity implements UserDetails {
     private LifeStyle lifeStyle;
     @OneToMany(mappedBy = "user")
     private List<UserParty> userParties;
+    @OneToMany(mappedBy = "user")
+    private List<FavoriteParty> favoriteParties;
 
     @OneToMany(mappedBy = "blockerUser")
     @JsonManagedReference // 이 엔티티를 직렬화 할 때 관련된 BlockParty 엔티티를 포함
     private List<BlockParty> blockedParties;
+
 
 
     @Builder

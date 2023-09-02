@@ -29,6 +29,7 @@ public enum BaseResponseStatus {
     INVALID_TOKEN(false, 2013, "유효하지 않은 토큰입니다."),
     INVALID_LOGIN_IR_OR_PASSWORD(false, 2014, "아이디 또는 비밀번호가 일치하지 않습니다"),
     NOT_OWNER(false, 2015, "모임장이 아니면 강퇴할 수 없습니다"),
+    NOT_FAVORITE_PARTY(false, 2016, "해당 유저는 이 모임을 찜하지 않았습니다"),
 
 
     /**

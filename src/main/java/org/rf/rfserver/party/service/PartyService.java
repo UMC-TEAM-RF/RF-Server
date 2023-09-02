@@ -11,11 +11,14 @@ import org.rf.rfserver.constant.Interest;
 import org.rf.rfserver.constant.PushNotificationType;
 import org.rf.rfserver.constant.PreferAges;
 import org.rf.rfserver.domain.*;
+import org.rf.rfserver.party.dto.favoriteparty.FavoritePartyReq;
+import org.rf.rfserver.party.dto.favoriteparty.FavoritePartyRes;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
+import org.rf.rfserver.party.repository.FavoritePartyRepository;
 import org.rf.rfserver.party.repository.PartyJoinApplicationRepository;
 import org.rf.rfserver.party.repository.PartyRepository;
 import org.rf.rfserver.party.repository.UserPartyRepository;
@@ -52,6 +55,8 @@ public class PartyService {
     private final S3Uploader s3Uploader;
     private final PartyidUseridService partyidUseridService;
     private final ApnsService apnsService;
+    private final FavoritePartyRepository favoritePartyRepository;
+
 
     public PostPartyRes createParty(PostPartyReq postPartyReq, MultipartFile file) throws BaseException {
         try {
@@ -211,7 +216,7 @@ public class PartyService {
         return new PostApproveJoinRes(partyJoinApplicationId);
     }
 
-    public void makeUserParty(User user, Party party) throws BaseException {
+    public void makeUserParty(User user, Party party) {
         UserParty userParty = new UserParty(party, user);
         userPartyRepository.save(userParty);
         partyidUseridService.setPartyidUserid(party.getId(), user.getId());

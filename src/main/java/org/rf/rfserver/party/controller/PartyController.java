@@ -7,11 +7,14 @@ import org.rf.rfserver.config.BaseResponse;
 
 import org.rf.rfserver.constant.Interest;
 import org.rf.rfserver.constant.PreferAges;
+import org.rf.rfserver.party.dto.favoriteparty.FavoritePartyReq;
+import org.rf.rfserver.party.dto.favoriteparty.FavoritePartyRes;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
+import org.rf.rfserver.party.repository.FavoritePartyRepository;
 import org.rf.rfserver.party.service.PartyService;
 
 import org.rf.rfserver.config.PageDto;
@@ -185,5 +188,4 @@ public class PartyController {
             return new BaseResponse<>(e.getStatus());
         }
     }
-
 }
