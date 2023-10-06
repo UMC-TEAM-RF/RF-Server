@@ -1,0 +1,55 @@
+name: Test Build
+
+on:
+  push:
+    branches-ignore: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{secrets.TOKEN_GITHUB}}
+          submodules: recursive
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: 17
+
+      - name: Git Submodule Update
+        run: |
+          git submodule update --remote --recursive
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+        shell: bash
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Build with Gradle
+        run: ./gradlew clean build
+        shell: bash
+
+      - name: Move *.jar File
+        run: |
+          mkdir content
+          mv ./build/libs/*.jar ./content/
+
+      - name: Extract .jar File
+        uses: actions/upload-artifact@v3
+        with:
+          name: jar-file
+          path: |
+            ./content/*.jar
