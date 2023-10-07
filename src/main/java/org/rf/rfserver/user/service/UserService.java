@@ -58,6 +58,7 @@ public class UserService {
                 .interestCountries(postUserReq.getInterestCountries())
                 .userInterests(postUserReq.getInterests())
                 .lifeStyle(postUserReq.getLifeStyle())
+                .major(postUserReq.getMajor())
                 .build();
         try {
             String imageFilePath = s3Uploader.getImageFilePath("userDefault/defaultImage.jpg");
@@ -105,6 +106,7 @@ public class UserService {
                     , patchUserReq.getIntroduce()
                     , patchUserReq.getMbti()
                     , patchUserReq.getLifeStyle()
+                    , patchUserReq.getMajor()
             );
             //사용자가 새로운 이미지로 바꾸려고 할 때
             if(file != null){
