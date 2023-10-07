@@ -156,5 +156,5 @@ public enum Major implements EnumModel{
     private final String value;
 
     @Override
-    public String getKey() {return value;}
+    public String getKey() {return name();}
 }
