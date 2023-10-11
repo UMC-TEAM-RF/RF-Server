@@ -41,6 +41,7 @@ public class User extends BaseEntity implements UserDetails {
     private Boolean isEmailVerified;
     private String imageFilePath;
     private String deviceToken;
+    private Major major;
 
     @Enumerated(EnumType.STRING)
     private List<Country> interestCountries;
@@ -62,7 +63,7 @@ public class User extends BaseEntity implements UserDetails {
     @Builder
     public User(String loginId, String password, int entrance, University university, String nickName
             , Country country, List<Language> interestingLanguages, String introduce, Mbti mbti
-            , String email, List<Country> interestCountries, List<Interest> userInterests, LifeStyle lifeStyle) {
+            , String email, List<Country> interestCountries, List<Interest> userInterests, LifeStyle lifeStyle, Major major) {
         this.loginId= loginId;
         this.password = password;
         this.entrance = entrance;
@@ -82,7 +83,8 @@ public class User extends BaseEntity implements UserDetails {
         this.userParties = new ArrayList<>();
     }
 
-    public User updateUser(String nickName, String password, String imageFilePath, List<Language> interestingLanguages, String introduce, Mbti mbti, LifeStyle lifeStyle) {
+    public User updateUser(String nickName, String password, String imageFilePath, List<Language> interestingLanguages, String introduce, Mbti mbti,
+                           LifeStyle lifeStyle, Major major) {
         this.nickName = nickName == null ? this.nickName : nickName;
         this.password = password == null ? this.password : password;
         this.imageFilePath = imageFilePath == null ? this.imageFilePath : imageFilePath;
@@ -90,6 +92,7 @@ public class User extends BaseEntity implements UserDetails {
         this.introduce = introduce == null ? this.introduce : introduce;
         this.mbti = mbti == null ? this.mbti : mbti;
         this.lifeStyle = lifeStyle;
+        this.major = major;
         return this;
     }
 
