@@ -16,6 +16,7 @@ import org.rf.rfserver.party.dto.favoriteparty.FavoritePartyRes;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
+import org.rf.rfserver.party.dto.partyjoinapply.GetPartyJoinApplicationListRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
 import org.rf.rfserver.party.repository.FavoritePartyRepository;
@@ -438,7 +439,21 @@ public class PartyService {
         }
     }
 
-    public void getPartyJoinApplicationList(Long partyId) {
-        partyJoinApplicationRepository.
+    public List<GetPartyJoinApplicationListRes> getPartyJoinApplicationList(Long partyId) throws BaseException {
+        Party party = findPartyById(partyId);
+        List<PartyJoinApplication> partyJoinApplicationList = partyJoinApplicationRepository.findPartyJoinApplicationByParty(party);
+        return partyJoinApplicationList.stream()
+                .map(partyJoinApplication -> {
+                    User user = partyJoinApplication.getUser();
+                    return GetPartyJoinApplicationListRes.builder()
+                            .partyJoinApplicationId(partyJoinApplication.getId())
+                            .country(user.getCountry())
+                            .mbti(user.getMbti())
+                            .imageFilePath(user.getImageFilePath())
+                            .major(user.getMajor())
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
+
 }
