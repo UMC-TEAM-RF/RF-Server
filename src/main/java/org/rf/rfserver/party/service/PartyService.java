@@ -437,4 +437,8 @@ public class PartyService {
             throw new BaseException(NOT_OWNER);
         }
     }
+
+    public void getPartyJoinApplicationList(Long partyId) {
+        partyJoinApplicationRepository.
+    }
 }

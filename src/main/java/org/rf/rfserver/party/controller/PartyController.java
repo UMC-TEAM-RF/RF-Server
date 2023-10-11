@@ -7,6 +7,7 @@ import org.rf.rfserver.config.BaseResponse;
 
 import org.rf.rfserver.constant.Interest;
 import org.rf.rfserver.constant.PreferAges;
+import org.rf.rfserver.domain.PartyJoinApplication;
 import org.rf.rfserver.party.dto.favoriteparty.FavoritePartyReq;
 import org.rf.rfserver.party.dto.favoriteparty.FavoritePartyRes;
 import org.rf.rfserver.party.dto.party.*;
@@ -184,6 +185,15 @@ public class PartyController {
     public BaseResponse<PageDto<List<GetInterestPartyRes>>> recommendPersonalParties(@PathVariable("userId") Long userId, Pageable pageable) {
         try {
             return new BaseResponse<>(partyService.recommendPersonalParties(userId, pageable));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("/applyList")
+    public BaseResponse<List<PartyJoinApplication>> getPartyJoinApplicationList(@PathVariable Long partyId) {
+        try {
+            return new BaseResponse<>(partyService.getPartyJoinApplicationList(partyId));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
