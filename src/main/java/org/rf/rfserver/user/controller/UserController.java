@@ -155,4 +155,14 @@ public class UserController {
             return new BaseResponse<Void>(e.getStatus());
         }
     }
+
+    // 알프 점수 계산
+    @GetMapping("/getRFScore/{userId}")
+    public BaseResponse<GetRFScoreRes> getRFScore(@PathVariable("userId") Long userId) {
+        try {
+            return new BaseResponse<>(userService.getRFScore(userId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }
