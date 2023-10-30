@@ -31,6 +31,7 @@ public class ReportService {
         User reportedUser = userRepository.findById(postReportReq.getReportedUserId())
                 .orElseThrow(() -> new BaseException(NO_SUCH_USER));
         Report report = reportRepository.save(new Report(reporter, reportedUser, postReportReq.getContent(), postReportReq.getReportType()));
+        reportedUser.increaseReport();
         return new PostReportRes(report);
     }
 
