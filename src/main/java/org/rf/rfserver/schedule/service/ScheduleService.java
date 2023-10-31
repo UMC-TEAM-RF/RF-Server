@@ -87,24 +87,28 @@ public class ScheduleService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 
-        //월별 조회를 위한 LocalDateTime 변수 생성
-        LocalDateTime startDate = LocalDateTime.of(year, month, 1,0,0,0);
-        LocalDateTime endDate = startDate.with(TemporalAdjusters.lastDayOfMonth());
+        try {
+            //월별 조회를 위한 LocalDateTime 변수 생성
+            LocalDateTime startDate = LocalDateTime.of(year, month, 1, 0, 0, 0);
+            LocalDateTime endDate = startDate.with(TemporalAdjusters.lastDayOfMonth());
 
-        //유저가 가입한 모임 목록을 가져옴
-        List<UserParty> userParties = userPartyRepository.findByUser(user);
+            //유저가 가입한 모임 목록을 가져옴
+            List<UserParty> userParties = userPartyRepository.findByUser(user);
 
-        //userParties에서 모임 정보만 리스트로 가져옴
-        List<Party> parties = userParties.stream()
+            //userParties에서 모임 정보만 리스트로 가져옴
+            List<Party> parties = userParties.stream()
                 .map(UserParty::getParty)
                 .collect(Collectors.toList());
 
-        //모임별 스케줄을 불러옴
-        List<Schedule> schedules = scheduleRepository.findByParties(parties, startDate, endDate);
+            //모임별 스케줄을 불러옴
+            List<Schedule> schedules = scheduleRepository.findByParties(parties, startDate, endDate);
 
-        return schedules.stream()
-                .map(GetScheduleRes::new)
-                .collect(Collectors.toList());
+            return schedules.stream()
+                    .map(GetScheduleRes::new)
+                    .collect(Collectors.toList());
+        } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 
     /**
