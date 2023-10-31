@@ -166,9 +166,6 @@ public class User extends BaseEntity implements UserDetails {
 
     public void decreaseLike() {
         this.love--;
-        /*if(this.love > 0) {
-            this.love--;
-        }*/
     }
 
     public void increaseHate() {
@@ -177,9 +174,6 @@ public class User extends BaseEntity implements UserDetails {
 
     public void decreaseHate() {
         this.hate--;
-        /*if(this.hate > 0) {
-            this.hate--;
-        }*/
     }
 
     // 신고
