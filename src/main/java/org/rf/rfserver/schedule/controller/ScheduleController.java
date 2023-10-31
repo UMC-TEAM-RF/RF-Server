@@ -46,13 +46,13 @@ public class ScheduleController {
     /**
      * 유저 일정 조회
      * @param userId
-     * @param getScheduleReq
+     * @param year, month
      * @return List[GetScheduleRes]
      **/
     @GetMapping("/user/{userId}")
-    public BaseResponse<List<GetScheduleRes>> getScheduleByUser(@PathVariable ("userId") Long userId, @RequestBody GetScheduleReq getScheduleReq){
+    public BaseResponse<List<GetScheduleRes>> getScheduleByUser(@PathVariable ("userId") Long userId, @RequestParam ("year") int year, @RequestParam ("month") int month){
         try{
-            return new BaseResponse<>(scheduleService.getScheduleByUser(userId, getScheduleReq));
+            return new BaseResponse<>(scheduleService.getScheduleByUser(userId, year, month));
         } catch (BaseException e){
             return new BaseResponse<>(e.getStatus());
         }

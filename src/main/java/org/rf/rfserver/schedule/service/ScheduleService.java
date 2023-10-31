@@ -78,18 +78,14 @@ public class ScheduleService {
     /**
      * 해당 유저의 일정 조회(월별 조회)
      * @param userId
-     * @param getScheduleReq
+     * @param year, month
      * @return List[GetScheduleRes]
      * @throws BaseException
      */
-    public List<GetScheduleRes> getScheduleByUser(Long userId, GetScheduleReq getScheduleReq) throws BaseException{
+    public List<GetScheduleRes> getScheduleByUser(Long userId, int year, int month) throws BaseException{
         //해당 유저가 존재하는지 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
-
-        //사용자가 조회하고자 하는 연도와 달의 정보를 가져옴
-        int year = getScheduleReq.getYear();
-        int month = getScheduleReq.getMonth();
 
         //월별 조회를 위한 LocalDateTime 변수 생성
         LocalDateTime startDate = LocalDateTime.of(year, month, 1,0,0,0);
