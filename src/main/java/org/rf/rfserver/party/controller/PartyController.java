@@ -10,6 +10,7 @@ import org.rf.rfserver.constant.PreferAges;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
+import org.rf.rfserver.party.dto.partyjoinapply.GetPartyJoinApplicationListRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
 import org.rf.rfserver.party.service.PartyService;
@@ -43,7 +44,7 @@ public class PartyController {
 
 
     @GetMapping("/{partyId}")
-    public BaseResponse<GetPartyRes> getParty(@PathVariable("partyId") Long partyId ) {
+    public BaseResponse<GetPartyRes> getParty(@PathVariable("partyId") Long partyId ){
         try {
             return new BaseResponse<>(partyService.getParty(partyId));
         } catch (BaseException e) {
@@ -186,4 +187,12 @@ public class PartyController {
         }
     }
 
+    @GetMapping("/applyList/{partyId}")
+    public BaseResponse<List<GetPartyJoinApplicationListRes>> getPartyJoinApplicationList(@PathVariable Long partyId) {
+        try {
+            return new BaseResponse<>(partyService.getPartyJoinApplicationList(partyId));
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }
