@@ -24,4 +24,5 @@ public class PostUserReq {
     private List<Country> interestCountries;
     private List<Interest> interests;
     private LifeStyle lifeStyle;
+    private Major major;
 }
