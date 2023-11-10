@@ -46,6 +46,42 @@ public class MailService {
         }
     }
 
+    // 아이디 찾기
+    public PostFindIDRes findID (PostFindIDReq findIDReq) throws BaseException {
+        try {
+            String userName = findIDReq.getNickName();
+            String mailAddress = findIDReq.getMail();
+
+            User user = userRepository.findByNickName(userName)
+                    .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
+            if(!user.getEmail().equals(mailAddress)) {
+                throw new BaseException(INVALID_MAIL);
+            }
+
+            SimpleMailMessage message = new SimpleMailMessage();
+            setFindIDMessage(message, mailAddress);
+            javaMailSender.send(message);
+
+            return new PostFindIDRes(userName, mail.getMailAddress());
+        } catch (Exception e) {
+            throw new BaseException(INVALID_MAIL);
+        }
+    }
+
+    // 사용자에게 받은 인증 코드 확인 (아이디 찾기)
+    public PostFindIDCheckRes checkFindID(PostCheckReq checkReq) throws BaseException {
+        try {
+            checkRequest(checkReq, mail);
+            mail.setIsAuth(true);
+            User user = userRepository.findByEmail(mail.getMailAddress())
+                    .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+            return new PostFindIDCheckRes(true, user.getLoginId());
+        } catch (Exception e) {
+            throw new BaseException(INVALID_CODE);
+        }
+    }
+
     // 사용자에게 받은 인증 코드 확인
     public PostCheckRes checkCode(PostCheckReq checkReq) throws BaseException {
         try {
@@ -64,13 +100,23 @@ public class MailService {
         return splitMail.get(1);
     }
 
-    // 이메일 메시지의 세부 정보를 설정
+    // 이메일 메시지의 세부 정보를 설정 (학교 인증을 위한 메일)
     private void setMessage(SimpleMailMessage message, String mailAddress) {
         message.setTo(mailAddress);
         MailMessage mailTitle = MailMessage.MAIL_TITLE;
         message.setSubject(mailTitle.getContent());
         saveMailInfo(mailAddress);
         MailMessage mailMessage = MailMessage.MAIL_MESSAGE;
+        message.setText(mailMessage.getContent() + mail.getCode());
+    }
+
+    // 이메일 메시지의 세부 정보를 설정 (아이디 찾기를 위한 메일)
+    private void setFindIDMessage(SimpleMailMessage message, String mailAddress) {
+        message.setTo(mailAddress);
+        MailMessage mailTitle = MailMessage.MAIL_TITLE;
+        message.setSubject(mailTitle.getContent());
+        saveMailInfo(mailAddress);
+        MailMessage mailMessage = MailMessage.FINDID_MESSAGE;
         message.setText(mailMessage.getContent() + mail.getCode());
     }
 
