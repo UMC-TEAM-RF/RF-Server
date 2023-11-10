@@ -17,6 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     public Boolean existsUserByLoginId(String loginId);
     public Boolean existsUserByNickName(String nickName);
     Optional<User> findByEmail(String email);
+    Optional<User> findByNickName(String nickName);
 
     @Query("SELECT NEW org.rf.rfserver.user.dto.GetUserProfileRes(u.nickName, u.imageFilePath, u.country) " +
             "From User u " +
