@@ -78,6 +78,7 @@ public class User extends BaseEntity implements UserDetails {
         this.userInterests = userInterests;
         this.lifeStyle = lifeStyle;
         this.userParties = new ArrayList<>();
+        this.major = major;
     }
 
     public User updateUser(String nickName, String password, String imageFilePath, List<Language> interestingLanguages, String introduce, Mbti mbti,

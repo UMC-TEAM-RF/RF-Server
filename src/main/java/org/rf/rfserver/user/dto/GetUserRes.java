@@ -21,4 +21,5 @@ public class GetUserRes {
     private List<Interest> interests;
     private LifeStyle lifeStyle;
     private String imageFilePath;
+    private Major major;
 }
