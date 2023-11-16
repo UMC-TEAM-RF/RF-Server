@@ -78,37 +78,37 @@ public class ScheduleService {
     /**
      * 해당 유저의 일정 조회(월별 조회)
      * @param userId
-     * @param getScheduleReq
+     * @param year, month
      * @return List[GetScheduleRes]
      * @throws BaseException
      */
-    public List<GetScheduleRes> getScheduleByUser(Long userId, GetScheduleReq getScheduleReq) throws BaseException{
+    public List<GetScheduleRes> getScheduleByUser(Long userId, int year, int month) throws BaseException{
         //해당 유저가 존재하는지 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
 
-        //사용자가 조회하고자 하는 연도와 달의 정보를 가져옴
-        int year = getScheduleReq.getYear();
-        int month = getScheduleReq.getMonth();
+        try {
+            //월별 조회를 위한 LocalDateTime 변수 생성
+            LocalDateTime startDate = LocalDateTime.of(year, month, 1, 0, 0, 0);
+            LocalDateTime endDate = startDate.with(TemporalAdjusters.lastDayOfMonth());
 
-        //월별 조회를 위한 LocalDateTime 변수 생성
-        LocalDateTime startDate = LocalDateTime.of(year, month, 1,0,0,0);
-        LocalDateTime endDate = startDate.with(TemporalAdjusters.lastDayOfMonth());
+            //유저가 가입한 모임 목록을 가져옴
+            List<UserParty> userParties = userPartyRepository.findByUser(user);
 
-        //유저가 가입한 모임 목록을 가져옴
-        List<UserParty> userParties = userPartyRepository.findByUser(user);
-
-        //userParties에서 모임 정보만 리스트로 가져옴
-        List<Party> parties = userParties.stream()
+            //userParties에서 모임 정보만 리스트로 가져옴
+            List<Party> parties = userParties.stream()
                 .map(UserParty::getParty)
                 .collect(Collectors.toList());
 
-        //모임별 스케줄을 불러옴
-        List<Schedule> schedules = scheduleRepository.findByParties(parties, startDate, endDate);
+            //모임별 스케줄을 불러옴
+            List<Schedule> schedules = scheduleRepository.findByParties(parties, startDate, endDate);
 
-        return schedules.stream()
-                .map(GetScheduleRes::new)
-                .collect(Collectors.toList());
+            return schedules.stream()
+                    .map(GetScheduleRes::new)
+                    .collect(Collectors.toList());
+        } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 
     /**
