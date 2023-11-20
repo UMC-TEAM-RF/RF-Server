@@ -64,7 +64,6 @@ public class UserService {
             String imageFilePath = s3Uploader.getImageFilePath("userDefault/defaultImage.jpg");
             user.updateImageUrl(imageFilePath);
             userRepository.save(user);
-            System.out.println(imageFilePath);
             return new PostUserRes(user.getId());
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
@@ -88,6 +87,7 @@ public class UserService {
                     , user.getUserInterests()
                     , user.getLifeStyle()
                     , user.getImageFilePath()
+                    , user.getMajor()
             );
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
