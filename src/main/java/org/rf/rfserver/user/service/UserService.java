@@ -1,5 +1,6 @@
 package org.rf.rfserver.user.service;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.rf.rfserver.config.BaseException;
@@ -279,6 +280,32 @@ public class UserService {
 
         receiveUser.decreaseHate();
         userRepository.save(receiveUser);
+    }
+
+    // 알프 점수 계산
+    public GetRFScoreRes getRFScore(Long userId) throws BaseException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+
+        int love = user.getLove();
+        int hate = user.getHate();
+        int report = user.getReport();
+        int score = user.getScore();
+
+        int change = love - hate - 5 * report;
+        score += change;
+
+        // score가 최대 점수 100보다 높은 경우
+        if(score > 100) {
+            return new GetRFScoreRes(100);
+        }
+        // score가 최저 점수 0보다 낮은 경우
+        else if(score < 0) {
+            return new GetRFScoreRes(0);
+        }
+        else {
+            return new GetRFScoreRes(score);
+        }
     }
 }
 

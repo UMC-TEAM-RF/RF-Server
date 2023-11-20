@@ -36,6 +36,8 @@ public class User extends BaseEntity implements UserDetails {
     private int entrance;
     private int love;
     private int hate;
+    private int report;
+    private int score;
     private String email;
     private String imageUrl;
     private Boolean isEmailVerified;
@@ -72,12 +74,15 @@ public class User extends BaseEntity implements UserDetails {
         this.mbti = mbti;
         this.love = 0;
         this.hate = 0;
+        this.report = 0;
+        this.score = 30;
         this.email = email;
         this.imageFilePath = "default";
         this.interestCountries = interestCountries;
         this.userInterests = userInterests;
         this.lifeStyle = lifeStyle;
         this.userParties = new ArrayList<>();
+
     }
 
     public User updateUser(String nickName, String password, String imageFilePath, List<Language> interestingLanguages, String introduce, Mbti mbti,
@@ -163,9 +168,7 @@ public class User extends BaseEntity implements UserDetails {
     }
 
     public void decreaseLike() {
-        if(this.love > 0) {
-            this.love--;
-        }
+        this.love--;
     }
 
     public void increaseHate() {
@@ -173,9 +176,13 @@ public class User extends BaseEntity implements UserDetails {
     }
 
     public void decreaseHate() {
-        if(this.hate > 0) {
-            this.hate--;
-        }
+        this.hate--;
     }
+
+    // 신고
+    public void increaseReport() {
+        this.report++;
+    }
+
 }
 
