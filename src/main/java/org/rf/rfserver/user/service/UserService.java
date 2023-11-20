@@ -225,7 +225,7 @@ public class UserService {
         User user = userRepository.findByLoginId(loginReq.getLoginId())
                 .filter(it -> bCryptPasswordEncoder.matches(loginReq.getPassword(), it.getPassword()))	// 암호화된 비밀번호와 비교하도록 수정
                 .orElseThrow(() -> new BaseException(INVALID_LOGIN_IR_OR_PASSWORD));
-        String accessToken = tokenProvider.generateToken(user, Duration.ofHours(ACCESS_TOKEN_EXPIRATION));
+        String accessToken = tokenProvider.generateToken(user, Duration.ofDays(ACCESS_TOKEN_EXPIRATION));
         String refreshToken = tokenProvider.generateToken(user, Duration.ofDays(REFRESH_TOKEN_EXPIRATION));
         refreshTokenService.saveRefreshToken(user.getId(), refreshToken);
         user.setDeviceToken(loginReq.getDeviceToken());
