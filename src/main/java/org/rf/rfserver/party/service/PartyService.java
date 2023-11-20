@@ -14,6 +14,7 @@ import org.rf.rfserver.domain.*;
 import org.rf.rfserver.party.dto.party.*;
 import org.rf.rfserver.party.dto.partyjoin.PostApproveJoinRes;
 import org.rf.rfserver.party.dto.partyjoin.PostDenyJoinRes;
+import org.rf.rfserver.party.dto.partyjoinapply.GetPartyJoinApplicationListRes;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationReq;
 import org.rf.rfserver.party.dto.partyjoinapply.PostJoinApplicationRes;
 import org.rf.rfserver.party.repository.PartyJoinApplicationRepository;
@@ -431,5 +432,21 @@ public class PartyService {
         if(findPartyById(partyId).getOwnerId() != ownerId) {
             throw new BaseException(NOT_OWNER);
         }
+    }
+
+    public List<GetPartyJoinApplicationListRes> getPartyJoinApplicationList(Long partyId) throws BaseException {
+        List<PartyJoinApplication> partyJoinApplicationList = partyJoinApplicationRepository.findPartyJoinApplicationByParty(partyId);
+        return partyJoinApplicationList.stream()
+                .map(partyJoinApplication -> {
+                    User user = partyJoinApplication.getUser();
+                    return GetPartyJoinApplicationListRes.builder()
+                            .partyJoinApplicationId(partyJoinApplication.getId())
+                            .country(user.getCountry())
+                            .mbti(user.getMbti())
+                            .imageFilePath(user.getImageFilePath())
+                            .major(user.getMajor())
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 }
