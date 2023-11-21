@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static org.rf.rfserver.config.BaseResponseStatus.*;
@@ -121,15 +122,36 @@ public class PartyService {
                 .build();
     }
 
-    public PatchPartyRes updateParty(Long partyId, PatchPartyReq patchPartyReq) throws BaseException {
-        Party party = findPartyById(partyId);
-        party.updateParty(patchPartyReq);
-        return new PatchPartyRes(true);
+    public PatchPartyRes updateParty(Long partyId, PatchPartyReq patchPartyReq, MultipartFile file) throws BaseException {
+        try{
+            Party party = findPartyById(partyId);
+            if(file != null){
+                String preImageFilePath = party.getImageFilePath();
+                //기본 배너 이미지일때
+                if(preImageFilePath.contains("partyBanner/")){
+                    String imageFilePath = s3Uploader.fileUpload(file,"partyImage");
+                } else {
+                    //이전 이미지 버킷에서 삭제
+                    String fileKey = s3Uploader.changeFileKeyPath(preImageFilePath);
+                    s3Uploader.deleteFile(fileKey);
+                    //새 이미지 업데이트
+                    String imageFilePath = s3Uploader.fileUpload(file,"partyImage");
+                    party.updateImageUrl(imageFilePath);
+                }
+            }
+            party.updateParty(patchPartyReq);
+            return new PatchPartyRes(true);
+        } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 
     public DeletePartyRes deleteParty(Long partyId) throws BaseException {
         Party party = partyRepository.findById(partyId)
                 .orElseThrow(() -> new BaseException(INVALID_PARTY));
+        String imageFilePath = party.getImageFilePath();
+        String fileKey = s3Uploader.changeFileKeyPath(imageFilePath);
+        s3Uploader.deleteFile(fileKey);
         deleteUserParty(party.getUsers());
         partyRepository.delete(party);
         return new DeletePartyRes(partyId);
@@ -172,7 +194,7 @@ public class PartyService {
     }
 
 
-    public Boolean isFullParty(Party party) {
+    public boolean isFullParty(Party party) {
         if (party.getUsers().size() >= party.getMemberCount()) {
             return true;
         }

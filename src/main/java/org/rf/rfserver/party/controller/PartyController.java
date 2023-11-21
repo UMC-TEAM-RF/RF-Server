@@ -53,9 +53,9 @@ public class PartyController {
     }
 
     @PatchMapping("/{partyId}")
-    public BaseResponse<PatchPartyRes> getParty(@PathVariable("partyId") Long partyId, @RequestBody PatchPartyReq patchPartyReq) {
+    public BaseResponse<PatchPartyRes> getParty(@PathVariable("partyId") Long partyId, @RequestPart("patchPartyReq") PatchPartyReq patchPartyReq, @RequestPart(value = "file", required = false) MultipartFile file) {
         try {
-            return new BaseResponse<>(partyService.updateParty(partyId, patchPartyReq));
+            return new BaseResponse<>(partyService.updateParty(partyId, patchPartyReq, file));
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }

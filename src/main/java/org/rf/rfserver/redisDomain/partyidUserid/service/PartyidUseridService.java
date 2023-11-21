@@ -20,14 +20,13 @@ public class PartyidUseridService {
             partyidUserid.getUserIds().add(userId);
             partyidUseridRepository.save(partyidUserid);
             return true;
-
         } catch (Exception e) {
             PartyidUserid partyidUserid = new PartyidUserid(partyId, new HashSet<>());
             partyidUserid.getUserIds().add(userId);
             partyidUseridRepository.save(partyidUserid);
             return true;
-
         }
+
     }
     public Set<Long> getUserids(Long partyId){
         PartyidUserid partyidUserid = partyidUseridRepository.findById(partyId)
